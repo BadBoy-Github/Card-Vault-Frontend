@@ -1,0 +1,268 @@
+@import "tailwindcss";
+
+/* ===== Apple-style design system ===== */
+:root {
+  /* Colors - apple.com light */
+  --color-glass-bg: rgba(255, 255, 255, 0.8);
+  --color-glass-border: rgba(0, 0, 0, 0.06);
+  --color-glass-shadow: rgba(0, 0, 0, 0.04);
+  --color-glass-highlight: rgba(255, 255, 255, 0.8);
+  --color-surface: #f5f5f7;
+  --color-surface-elevated: #ffffff;
+  --color-text: #1d1d1f;
+  --color-text-muted: #6e6e73;
+  --color-accent: #06c;
+  --color-accent-hover: #0077ed;
+  --color-background: #ffffff;
+  --color-section-bg: #fbfbfd;
+  --gradient-bg: #fbfbfd;
+  --blur-glass: 20px;
+  --blur-glass-strong: 36px;
+  /* Typography */
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  --text-hero: 3.5rem;
+  --text-display: 2.75rem;
+  --text-title: 1.5rem;
+  --text-body: 1.0625rem;
+  --text-caption: 0.875rem;
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.47;
+  --tracking-tighter: -0.025em;
+  --section-padding: 5rem;
+  --section-padding-lg: 6.5rem;
+}
+
+:root.dark {
+  --color-glass-bg: rgba(29, 29, 31, 0.72);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glass-shadow: rgba(0, 0, 0, 0.25);
+  --color-glass-highlight: rgba(255, 255, 255, 0.04);
+  --color-surface: #1d1d1f;
+  --color-surface-elevated: #2d2d2d;
+  --color-text: #f5f5f7;
+  --color-text-muted: #a1a1a6;
+  --color-accent: #2997ff;
+  --color-accent-hover: #5eb3ff;
+  --color-background: #000000;
+  --color-section-bg: #000000;
+  --gradient-bg: #000000;
+  --blur-glass: 20px;
+  --blur-glass-strong: 36px;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+  background: var(--gradient-bg);
+  background-attachment: fixed;
+  color: var(--color-text);
+  transition: background 0.5s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Apple-style typography classes */
+.apple-hero {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, var(--text-hero));
+  font-weight: 600;
+  letter-spacing: var(--tracking-tighter);
+  line-height: var(--leading-tight);
+}
+
+.apple-display {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, var(--text-display));
+  font-weight: 600;
+  letter-spacing: var(--tracking-tighter);
+  line-height: var(--leading-tight);
+}
+
+.apple-title {
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: var(--leading-snug);
+}
+
+.apple-body {
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+  color: var(--color-text-muted);
+}
+
+/* Liquid glass surfaces - refined for Apple look */
+.glass {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 4px 24px var(--color-glass-shadow);
+}
+
+.glass-strong {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--blur-glass-strong)) saturate(200%);
+  -webkit-backdrop-filter: blur(var(--blur-glass-strong)) saturate(200%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 8px 32px var(--color-glass-shadow);
+}
+
+.glass-card {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 2px 16px var(--color-glass-shadow);
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.35s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 8px 32px var(--color-glass-shadow);
+}
+
+.glass-input {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset;
+}
+
+.glass-pill {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 1px 4px var(--color-glass-shadow);
+}
+
+.glass-btn {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 1px 8px var(--color-glass-shadow);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.glass-btn:hover {
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 2px 12px var(--color-glass-shadow);
+}
+
+.glass-cta {
+  background: var(--color-accent);
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 2px 12px color-mix(in srgb, var(--color-accent) 35%, transparent);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-cta:hover {
+  background: var(--color-accent-hover);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset, 0 4px 16px color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+.glass-panel {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--blur-glass-strong)) saturate(200%);
+  -webkit-backdrop-filter: blur(var(--blur-glass-strong)) saturate(200%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 4px 24px var(--color-glass-shadow);
+}
+
+/* Apple-style link */
+.apple-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: var(--text-body);
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.apple-link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+/* Section spacing - responsive */
+.section-padding {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+@media (min-width: 640px) {
+  .section-padding {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: var(--section-padding);
+    padding-bottom: var(--section-padding);
+  }
+}
+
+.section-padding-lg {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+@media (min-width: 640px) {
+  .section-padding-lg {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+}
+@media (min-width: 768px) {
+  .section-padding-lg {
+    padding-top: var(--section-padding-lg);
+    padding-bottom: var(--section-padding-lg);
+  }
+}
+
+/* Responsive typography - tighter on small screens */
+@media (max-width: 639px) {
+  .apple-hero {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+  }
+  .apple-display {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+}
+
+/* Touch targets - min 44px for interactive elements on touch devices */
+@media (hover: none) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Optional: hide scrollbar on category strip (mobile) while keeping scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Theme transition */
+.theme-transition,
+.theme-transition * {
+  transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
