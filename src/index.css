@@ -34,6 +34,7 @@
   --section-padding-lg: 6.5rem;
 }
 
+
 :root.dark {
   --color-glass-bg: rgba(29, 29, 31, 0.72);
   --color-glass-border: rgba(255, 255, 255, 0.08);
