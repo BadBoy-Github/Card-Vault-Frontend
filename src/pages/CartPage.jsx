@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { HiShoppingCart } from 'react-icons/hi'
 
 export default function CartPage() {
   const { user } = useAuth()
@@ -32,7 +33,9 @@ export default function CartPage() {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="glass-panel flex flex-1 flex-col items-center justify-center rounded-[32px] p-10 text-center">
-          <div className="mb-10 text-6xl animate-bounce-subtle">🛒</div>
+          <div className="mb-10 text-7xl text-[var(--color-accent)] animate-bounce-subtle flex items-center justify-center">
+            <HiShoppingCart />
+          </div>
           <p className="apple-body text-[19px] font-medium text-[var(--color-text)]">Your cart is currently empty.</p>
           <p className="apple-body mt-2 text-[15px] text-[var(--color-text-muted)]">Add some gift cards to get started.</p>
           <Link

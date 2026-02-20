@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { HiExclamationCircle } from 'react-icons/hi'
 
 export default function PaymentTrafficPage() {
   const whatsappNumber = "+1234567890" // Placeholder, user should provide
@@ -10,7 +11,7 @@ export default function PaymentTrafficPage() {
       <div className="glass-panel mx-auto flex w-full max-w-5xl flex-col items-center justify-center rounded-[40px] p-6 text-center">
         <div className="mb-4 flex justify-center sm:mb-6">
           <div className="relative">
-            <span className="text-4xl sm:text-6xl animate-pulse">⚠️</span>
+            <HiExclamationCircle className="text-5xl sm:text-7xl text-red-500 animate-pulse" />
             <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-500 animate-ping" />
           </div>
         </div>
