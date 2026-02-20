@@ -13,13 +13,17 @@ export default function Header() {
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
-      setSearchQuery('')
-      closeMobileMenu()
+  const handleSearchChange = (value) => {
+    setSearchQuery(value)
+    if (value.trim()) {
+      navigate(`/search?q=${encodeURIComponent(value.trim())}`)
+    } else {
+      navigate('/')
     }
+  }
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
   }
 
   const navLinks = (
@@ -37,9 +41,6 @@ export default function Header() {
             {ids.length}
           </span>
         )}
-      </Link>
-      <Link to="/orders" className="text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
-        Orders
       </Link>
       <Link to="/cart" className="text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
         Cart
@@ -60,13 +61,13 @@ export default function Header() {
         </Link>
 
         {/* Desktop Search Bar */}
-        <form onSubmit={handleSearch} className="hidden flex-1 max-w-md mx-4 md:block">
+        <form onSubmit={handleSearchSubmit} className="hidden flex-1 max-w-md mx-4 md:block">
           <div className="relative group">
             <input
               type="text"
               placeholder="Search gift cards..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="glass-input w-full rounded-full py-2 pl-10 pr-4 text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all"
             />
             <svg className="absolute left-3.5 top-2.5 h-4 w-4 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,13 +150,13 @@ export default function Header() {
           aria-label="Navigation menu"
         >
           <div className="container-wide py-4 sm:py-6">
-            <form onSubmit={handleSearch} className="mb-4 px-4">
+            <form onSubmit={handleSearchSubmit} className="mb-4 px-4">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Search gift cards..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   className="glass-input w-full rounded-full py-2.5 pl-10 pr-4 text-[16px] focus:outline-none"
                 />
                 <svg className="absolute left-3.5 top-3 h-5 w-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,13 +183,6 @@ export default function Header() {
                     {ids.length}
                   </span>
                 )}
-              </Link>
-              <Link
-                to="/orders"
-                className="flex min-h-[44px] items-center rounded-xl px-4 text-[17px] text-[var(--color-text)]"
-                onClick={closeMobileMenu}
-              >
-                Orders
               </Link>
               <Link
                 to="/cart"

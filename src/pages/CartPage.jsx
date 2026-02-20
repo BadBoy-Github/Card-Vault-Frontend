@@ -24,24 +24,27 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container-wide flex-1 flex flex-col py-16 sm:py-24">
-      <div className="mb-10 text-center">
+    <div className="container-wide flex  flex-col py-6 sm:py-10 mt-20">
+      <div className="mb-6 shrink-0 md:mb-8 text-center">
         <h1 className="apple-display text-[var(--color-text)]">Your Cart</h1>
-        <p className="apple-body mt-3 text-[17px]">Manage your items and prepare for checkout.</p>
+        <p className="apple-body mt-4 text-[17px]">Manage your items and prepare for checkout.</p>
       </div>
 
-      <div className="glass-panel flex flex-1 flex-col items-center justify-center rounded-2xl p-12 text-center">
-        <div className="mb-6 text-5xl">🛒</div>
-        <p className="apple-body text-[17px]">Your cart is currently empty.</p>
-        <Link
-          to="/"
-          className="glass-cta mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-[17px] font-medium text-white"
-        >
-          Explore Gift Cards
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Link>
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="glass-panel flex flex-1 flex-col items-center justify-center rounded-[32px] p-10 text-center">
+          <div className="mb-10 text-6xl animate-bounce-subtle">🛒</div>
+          <p className="apple-body text-[19px] font-medium text-[var(--color-text)]">Your cart is currently empty.</p>
+          <p className="apple-body mt-2 text-[15px] text-[var(--color-text-muted)]">Add some gift cards to get started.</p>
+          <Link
+            to="/"
+            className="glass-cta mt-8 inline-flex items-center gap-3 rounded-full px-8 py-3.5 text-[17px] font-semibold text-white transition-all hover:scale-105 active:scale-95"
+          >
+            Explore Gift Cards
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </div>
   )

@@ -1,7 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { getGiftCardById } from '../data'
 import { useWishlist } from '../context/WishlistContext'
-import { useOrders } from '../context/OrderContext'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
 
@@ -10,7 +9,6 @@ export default function ProductPage() {
   const navigate = useNavigate()
   const card = getGiftCardById(id)
   const { has, toggle } = useWishlist()
-  const { addOrder } = useOrders()
   const { user } = useAuth()
   const [quantity, setQuantity] = useState(1)
   const [bought, setBought] = useState(false)
@@ -40,10 +38,10 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="container-wide flex-1 flex flex-col py-20 sm:py-24 md:py-32">
+    <div className="container-wide flex h-[calc(100vh-theme(spacing.16))] flex-col py-6 sm:h-[calc(100vh-theme(spacing.20))] sm:py-10">
       <Link
         to="/"
-        className="apple-link mb-6 inline-flex min-h-[44px] w-fit items-center gap-2 text-[15px] sm:mb-10 sm:text-[17px]"
+        className="apple-link mb-4 inline-flex min-h-[44px] w-fit items-center gap-2 text-[15px] sm:mb-6 sm:text-[17px]"
       >
         <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -51,8 +49,8 @@ export default function ProductPage() {
         Back to gift cards
       </Link>
 
-      <div className="glass-card grid flex-1 gap-6 overflow-hidden rounded-2xl md:grid-cols-2 md:gap-8">
-        <div className="relative aspect-[4/3] min-h-[200px] overflow-hidden bg-[var(--color-surface)] sm:min-h-0">
+      <div className="glass-card flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl md:flex-row">
+        <div className="relative h-48 w-full shrink-0 overflow-hidden bg-[var(--color-surface)] sm:h-64 md:h-full md:w-1/2">
           <img
             src={card.image}
             alt={card.name}
@@ -65,70 +63,65 @@ export default function ProductPage() {
           )}
         </div>
 
-        <div className="flex flex-col p-5 sm:p-6 md:p-8">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-[var(--color-text-muted)] sm:text-xs">
-            {card.brand}
-          </p>
-          <h1 className="apple-display mt-1 text-[var(--color-text)]">{card.name}</h1>
-          <p className="apple-body mt-3 text-[15px] sm:mt-4 sm:text-[17px]">{card.description}</p>
+        <div className="flex flex-1 flex-col overflow-y-auto p-6 md:p-10 custom-scrollbar">
+          <div className="flex flex-1 flex-col">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-[var(--color-text-muted)] sm:text-xs">
+              {card.brand}
+            </p>
+            <h1 className="apple-display mt-1 text-[var(--color-text)]">{card.name}</h1>
+            <p className="apple-body mt-4 text-[15px] leading-relaxed sm:text-[17px]">{card.description}</p>
 
-          <div className="mt-5 flex items-center gap-3 sm:mt-6 sm:gap-4">
-            <span className="text-2xl font-bold text-[var(--color-text)] sm:text-3xl">{card.denomination}</span>
-            <span className="text-[var(--color-text-muted)]">each</span>
+            <div className="mt-6 flex items-center gap-4">
+              <span className="text-3xl font-bold text-[var(--color-text)] sm:text-4xl">{card.denomination}</span>
+              <span className="text-[var(--color-text-muted)]">digital delivery</span>
+            </div>
+
+            <div className="mt-8 flex items-center gap-6">
+              <div className="flex flex-col gap-2">
+                <label className="text-[14px] font-medium text-[var(--color-text-muted)]">Quantity</label>
+                <select
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  className="glass-input min-h-[44px] w-fit min-w-[100px] rounded-xl px-4 py-2 text-[17px] text-[var(--color-text)] focus:outline-none"
+                >
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[14px] font-medium text-[var(--color-text-muted)]">Total Amount</label>
+                <span className="text-xl font-bold text-[var(--color-accent)]">${total.toFixed(2)}</span>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-6 sm:gap-4">
-            <label className="text-[14px] font-medium text-[var(--color-text)]">Quantity</label>
-            <select
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              className="glass-input min-h-[44px] w-fit min-w-[80px] rounded-xl px-4 py-2.5 text-[16px] text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:text-[17px]"
-            >
-              {[1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-3">
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
             <button
               type="button"
               onClick={handleBuy}
-              disabled={!card.inStock || bought}
-              className="glass-cta min-h-[44px] w-full rounded-full px-8 py-3.5 text-[16px] font-medium text-white transition disabled:opacity-50 sm:w-auto sm:text-[17px]"
+              disabled={!card.inStock}
+              className="glass-cta flex min-h-[48px] flex-1 items-center justify-center rounded-full px-8 text-[17px] font-semibold text-white transition disabled:opacity-50"
             >
-              {bought ? 'Added to orders' : `Buy now — $${total.toFixed(2)}`}
+              Complete Purchase
             </button>
             <button
               type="button"
               onClick={() => toggle(card.id)}
-              className={`glass-btn touch-target flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-medium transition sm:w-auto ${
+              className={`glass-btn flex min-h-[48px] items-center justify-center gap-2 rounded-full px-8 text-[16px] font-medium transition ${
                 inWishlist
                   ? 'border-[var(--color-accent)] text-[var(--color-accent)]'
                   : 'text-[var(--color-text)]'
               }`}
-              aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
             >
-              {inWishlist ? (
-                <svg className="h-5 w-5 fill-current" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                </svg>
-              ) : (
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              )}
+              <svg className={`h-5 w-5 ${inWishlist ? 'fill-current' : 'fill-none stroke-current'}`} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
               {inWishlist ? 'Saved' : 'Wishlist'}
             </button>
           </div>
-
-          {bought && (
-            <p className="apple-body mt-4 text-[15px]">
-              Order recorded. View it in <Link to="/orders" className="apple-link">Your orders</Link>.
-            </p>
-          )}
         </div>
       </div>
     </div>
