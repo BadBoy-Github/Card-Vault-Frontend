@@ -13,8 +13,11 @@ import SearchPage from './pages/SearchPage'
 import PaymentTrafficPage from './pages/PaymentTrafficPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import ConstructionPage from './pages/ConstructionPage'
 
 import { Navigate, useLocation } from 'react-router-dom'
+
+const isConstruction = true // Set to true to display maintenance page
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth()
@@ -44,24 +47,30 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <Routes>
-            {/* Public Auth Routes (No Header/Footer) */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            {isConstruction ? (
+              <Route path="*" element={<ConstructionPage />} />
+            ) : (
+              <>
+                {/* Public Auth Routes (No Header/Footer) */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-            {/* Protected App Routes (With Header/Footer) */}
-            <Route
-              element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/" element={<Home />} />
-              <Route path="/product/:id" element={<ProductPage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/payment-traffic" element={<PaymentTrafficPage />} />
-            </Route>
+                {/* Protected App Routes (With Header/Footer) */}
+                <Route
+                  element={
+                    <ProtectedRoute>
+                      <Layout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route path="/" element={<Home />} />
+                  <Route path="/product/:id" element={<ProductPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="/payment-traffic" element={<PaymentTrafficPage />} />
+                </Route>
+              </>
+            )}
           </Routes>
         </AuthProvider>
       </ThemeProvider>
