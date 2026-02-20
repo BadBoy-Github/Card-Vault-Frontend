@@ -6,8 +6,8 @@ const displayedCards = giftCards.slice(0, DISPLAY_COUNT)
 
 export default function GiftCardGrid() {
   return (
-    <section id="gift-cards" className="flex flex-1 flex-col section-padding px-4 pb-16 sm:px-6 sm:pb-24 md:px-8">
-      <div className="mx-auto w-full max-w-[980px]">
+    <section id="gift-cards" className="flex flex-1 flex-col section-padding">
+      <div className="container-wide">
         <div className="mb-8 text-center sm:mb-10">
           <h2 className="apple-display text-[var(--color-text)]">
             Choose a gift card

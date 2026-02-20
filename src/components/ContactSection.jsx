@@ -27,47 +27,49 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="section-padding-lg px-4 sm:px-6 md:px-8" aria-labelledby="contact-heading">
-      <div className="mx-auto max-w-[600px]">
+    <section id="contact" className="section-padding-lg" aria-labelledby="contact-heading">
+      <div className="container-wide">
         <div className="glass-panel rounded-2xl p-6 sm:rounded-3xl sm:p-10 md:p-14">
           <div className="text-center">
             <h2 id="contact-heading" className="apple-display text-[var(--color-text)]">
-              Get in touch
+              Concierge Support
             </h2>
             <p className="apple-body mt-3 text-[15px] sm:mt-4 sm:text-[17px]">
-              Questions, feedback, or bulk orders? We&apos;d love to hear from you.
+              For specialized support, technical assistance, or account inquiries, our dedicated team is at your service.
             </p>
           </div>
           <form onSubmit={handleSubmit} className="mt-8 space-y-5 sm:mt-10 sm:space-y-6">
-            <div>
-              <label htmlFor="contact-name" className="block text-[14px] font-medium text-[var(--color-text)]">
-                Name
-              </label>
-              <input
-                id="contact-name"
-                name="name"
-                type="text"
-                value={form.name}
-                onChange={handleChange}
-                required
-                placeholder="Your name"
-                className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
-              />
-            </div>
-            <div>
-              <label htmlFor="contact-email" className="block text-[14px] font-medium text-[var(--color-text)]">
-                Email
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                placeholder="you@example.com"
-                className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
-              />
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
+              <div>
+                <label htmlFor="contact-name" className="block text-[14px] font-medium text-[var(--color-text)]">
+                  Name
+                </label>
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="Your name"
+                  className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
+                />
+              </div>
+              <div className="!mt-0">
+                <label htmlFor="contact-email" className="block text-[14px] font-medium text-[var(--color-text)]">
+                  Email
+                </label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="you@example.com"
+                  className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
+                />
+              </div>
             </div>
             <div>
               <label htmlFor="contact-message" className="block text-[14px] font-medium text-[var(--color-text)]">
