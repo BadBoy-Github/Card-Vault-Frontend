@@ -1,6 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { getGiftCardById } from '../data'
-import { useWishlist } from '../context/WishlistContext'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
 
@@ -8,10 +7,8 @@ export default function ProductPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const card = getGiftCardById(id)
-  const { has, toggle } = useWishlist()
   const { user } = useAuth()
   const [quantity, setQuantity] = useState(1)
-  const [bought, setBought] = useState(false)
 
   if (!card) {
     return (
@@ -26,7 +23,6 @@ export default function ProductPage() {
     )
   }
 
-  const inWishlist = has(card.id)
   const total = card.value * quantity
 
   const handleBuy = () => {
@@ -73,7 +69,18 @@ export default function ProductPage() {
 
             <div className="mt-6 flex items-center gap-4">
               <span className="text-3xl font-bold text-[var(--color-text)] sm:text-4xl">{card.denomination}</span>
-              <span className="text-[var(--color-text-muted)]">digital delivery</span>
+              <div className="flex flex-col">
+                <span className="text-[var(--color-text-muted)]">digital delivery</span>
+                {card.stock > 0 && card.stock <= 2 ? (
+                  <span className="text-sm font-bold text-red-500 animate-pulse">
+                    Only {card.stock} left in stock!
+                  </span>
+                ) : card.stock > 0 ? (
+                  <span className="text-sm font-medium text-green-500">In Stock</span>
+                ) : (
+                  <span className="text-sm font-bold text-red-500">Out of Stock</span>
+                )}
+              </div>
             </div>
 
             <div className="mt-8 flex items-center gap-6">
@@ -82,13 +89,15 @@ export default function ProductPage() {
                 <select
                   value={quantity}
                   onChange={(e) => setQuantity(Number(e.target.value))}
-                  className="glass-input min-h-[44px] w-fit min-w-[100px] rounded-xl px-4 py-2 text-[17px] text-[var(--color-text)] focus:outline-none"
+                  disabled={card.stock === 0}
+                  className="glass-input min-h-[44px] w-fit min-w-[100px] rounded-xl px-4 py-2 text-[17px] text-[var(--color-text)] focus:outline-none disabled:opacity-50"
                 >
-                  {[1, 2, 3, 4, 5].map((n) => (
+                  {Array.from({ length: Math.min(card.stock, 5) }, (_, i) => i + 1).map((n) => (
                     <option key={n} value={n}>
                       {n}
                     </option>
                   ))}
+                  {card.stock === 0 && <option value="0">0</option>}
                 </select>
               </div>
               <div className="flex flex-col gap-2">
@@ -102,24 +111,10 @@ export default function ProductPage() {
             <button
               type="button"
               onClick={handleBuy}
-              disabled={!card.inStock}
+              disabled={card.stock === 0}
               className="glass-cta flex min-h-[48px] flex-1 items-center justify-center rounded-full px-8 text-[17px] font-semibold text-white transition disabled:opacity-50"
             >
-              Complete Purchase
-            </button>
-            <button
-              type="button"
-              onClick={() => toggle(card.id)}
-              className={`glass-btn flex min-h-[48px] items-center justify-center gap-2 rounded-full px-8 text-[16px] font-medium transition ${
-                inWishlist
-                  ? 'border-[var(--color-accent)] text-[var(--color-accent)]'
-                  : 'text-[var(--color-text)]'
-              }`}
-            >
-              <svg className={`h-5 w-5 ${inWishlist ? 'fill-current' : 'fill-none stroke-current'}`} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-              {inWishlist ? 'Saved' : 'Wishlist'}
+              {card.stock > 0 ? 'Complete Purchase' : 'Out of Stock'}
             </button>
           </div>
         </div>

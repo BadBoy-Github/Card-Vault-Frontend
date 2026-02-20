@@ -15,12 +15,6 @@ export default function Layout() {
             <Link to="/" className="min-h-[44px] py-2 text-[12px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] sm:min-h-0 sm:py-0">
               Gift Cards
             </Link>
-            <Link to="/wishlist" className="min-h-[44px] py-2 text-[12px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] sm:min-h-0 sm:py-0">
-              Wishlist
-            </Link>
-            <Link to="/orders" className="min-h-[44px] py-2 text-[12px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] sm:min-h-0 sm:py-0">
-              Orders
-            </Link>
             <Link to="/cart" className="min-h-[44px] py-2 text-[12px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] sm:min-h-0 sm:py-0">
               Cart
             </Link>

@@ -2,12 +2,10 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
 import { useAuth } from '../context/AuthContext'
-import { useWishlist } from '../context/WishlistContext'
-import { HiCreditCard, HiHeart, HiShoppingCart, HiCollection } from 'react-icons/hi'
+import { HiCreditCard, HiShoppingCart, HiCollection } from 'react-icons/hi'
 
 export default function Header() {
   const { user, logout } = useAuth()
-  const { ids } = useWishlist()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
@@ -31,15 +29,6 @@ export default function Header() {
     <>
       <Link to="/" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
         <span>Gift Cards</span>
-      </Link>
-      <Link to="/wishlist" className="relative flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
-        <span>Wishlist</span>
-        <HiHeart className="h-5 w-5 shrink-0" />
-        {ids.length > 0 && (
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-accent)] text-[10px] font-semibold text-white">
-            {ids.length}
-          </span>
-        )}
       </Link>
       <Link to="/cart" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
         <span>Cart</span>
@@ -107,20 +96,6 @@ export default function Header() {
 
         {/* Mobile: right side icons + hamburger */}
         <div className="flex items-center gap-2 sm:gap-3 md:hidden">
-          <Link
-            to="/wishlist"
-            className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[var(--color-text-muted)] transition hover:bg-white/10 hover:text-[var(--color-text)]"
-            aria-label={`Wishlist${ids.length > 0 ? ` (${ids.length} items)` : ''}`}
-          >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            {ids.length > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-accent)] text-[10px] font-semibold text-white">
-                {ids.length}
-              </span>
-            )}
-          </Link>
           <ThemeToggle />
           <button
             type="button"
@@ -172,21 +147,6 @@ export default function Header() {
               >
                 <span>Gift Cards</span>
                 <HiCollection className="h-6 w-6 text-[var(--color-text-muted)]" />
-              </Link>
-              <Link
-                to="/wishlist"
-                className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
-                onClick={closeMobileMenu}
-              >
-                <div className="flex items-center gap-2">
-                  <span>Wishlist</span>
-                  {ids.length > 0 && (
-                    <span className="rounded-full bg-[var(--color-accent)] px-2 py-0.5 text-xs font-semibold text-white">
-                      {ids.length}
-                    </span>
-                  )}
-                </div>
-                <HiHeart className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
               <Link
                 to="/cart"
