@@ -12,18 +12,20 @@ import ContactSection from './components/ContactSection'
 import ProductPage from './pages/ProductPage'
 import OrderPage from './pages/OrderPage'
 import WishlistPage from './pages/WishlistPage'
+import CartPage from './pages/CartPage'
+import SearchPage from './pages/SearchPage'
+import PaymentTrafficPage from './pages/PaymentTrafficPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 
 function Home() {
   return (
-    <>
+    <div className="full-viewport">
       <Hero />
       <FeaturedSection />
       <GiftCardGrid />
-      <NewsletterSection />
       <ContactSection />
-    </>
+    </div>
   )
 }
 
@@ -40,6 +42,9 @@ function App() {
                   <Route path="/product/:id" element={<ProductPage />} />
                   <Route path="/orders" element={<OrderPage />} />
                   <Route path="/wishlist" element={<WishlistPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="/payment-traffic" element={<PaymentTrafficPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
                 </Route>

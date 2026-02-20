@@ -11,9 +11,9 @@ export default function OrderPage() {
     return (
       <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-24 md:px-8">
         <div className="glass-panel mx-auto max-w-md rounded-2xl p-10 text-center">
-          <h1 className="apple-display text-[var(--color-text)]">Your orders</h1>
+          <h1 className="apple-display text-[var(--color-text)]">Your Orders</h1>
           <p className="apple-body mt-4 text-[17px]">
-            Sign in to view your order history.
+            Please sign in to view your order history.
           </p>
           <Link
             to="/login"
@@ -27,18 +27,18 @@ export default function OrderPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-[980px] flex-1 flex-col px-4 py-16 sm:px-6 sm:py-24 md:px-8">
+    <div className="container-wide flex-1 flex flex-col py-16 sm:py-24">
       <div className="mb-10">
         <h1 className="apple-display text-[var(--color-text)]">Your orders</h1>
         <p className="apple-body mt-3 text-[17px]">Order history and details.</p>
       </div>
 
       {orders.length === 0 ? (
-        <div className="glass-panel flex flex-1 flex-col items-center justify-center rounded-2xl p-12 text-center">
-          <p className="apple-body text-[17px]">You haven&apos;t placed any orders yet.</p>
+        <div className="glass-panel flex flex-1 flex-col items-center justify-center rounded-3xl p-12 text-center">
+          <p className="apple-body text-[19px]">You haven&apos;t placed any orders yet.</p>
           <Link
             to="/"
-            className="glass-cta mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-[17px] font-medium text-white"
+            className="glass-cta mt-6 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-[17px] font-medium text-white"
           >
             Browse gift cards
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,9 +47,11 @@ export default function OrderPage() {
           </Link>
         </div>
       ) : (
-        <ul className="mt-6 flex-1 space-y-6">
-          {orders.map((order) => (
-            <li key={order.id} className="glass-card overflow-hidden rounded-2xl">
+        <ul className="mt-6 flex-1 space-y-8">
+          {orders.map((order) => {
+            if (!order || !order.items) return null;
+            return (
+              <li key={order.id} className="glass-card overflow-hidden rounded-3xl">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-glass-border)] p-6">
                 <div>
                   <span className="font-mono text-sm text-[var(--color-text-muted)]">{order.id}</span>
@@ -61,7 +63,7 @@ export default function OrderPage() {
                   </p>
                 </div>
                 <span className="text-xl font-bold text-[var(--color-text)]">
-                  ${order.total.toFixed(2)}
+                  ${(order.total || 0).toFixed(2)}
                 </span>
               </div>
               <ul className="divide-y divide-[var(--color-glass-border)] p-6">
@@ -94,7 +96,8 @@ export default function OrderPage() {
                 })}
               </ul>
             </li>
-          ))}
+            )
+          })}
         </ul>
       )}
     </div>

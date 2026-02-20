@@ -43,12 +43,12 @@ export default function GiftCard({ card }) {
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         </div>
-        <div className="flex flex-1 flex-col p-4 sm:p-5">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-[var(--color-text-muted)] sm:text-[12px]">
+        <div className="flex flex-1 flex-col p-4 sm:p-6">
+          <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--color-accent)] sm:text-[11px]">
             {brand}
           </p>
-          <h3 className="mt-1 text-[17px] font-semibold leading-snug text-[var(--color-text)] sm:text-[19px]">{name}</h3>
-          <p className="mt-2 line-clamp-2 flex-1 text-[14px] leading-normal text-[var(--color-text-muted)] sm:text-[15px]">
+          <h3 className="mt-1 text-[18px] font-semibold leading-tight text-[var(--color-text)] sm:text-[20px]">{name}</h3>
+          <p className="mt-2 line-clamp-2 flex-1 text-[13px] leading-relaxed text-[var(--color-text-muted)] sm:text-[14px]">
             {description}
           </p>
           <div className="mt-3 flex items-center justify-between gap-2 sm:mt-4">

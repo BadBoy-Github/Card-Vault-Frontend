@@ -36,15 +36,11 @@ export default function ProductPage() {
       navigate('/login', { state: { from: `/product/${card.id}` } })
       return
     }
-    addOrder(
-      [{ productId: card.id, name: card.name, denomination: card.denomination, quantity, value: card.value }],
-      total
-    )
-    setBought(true)
+    navigate('/payment-traffic')
   }
 
   return (
-    <div className="mx-auto flex max-w-[980px] flex-1 flex-col px-4 py-20 sm:px-6 sm:py-24 md:px-8 md:py-32">
+    <div className="container-wide flex-1 flex flex-col py-20 sm:py-24 md:py-32">
       <Link
         to="/"
         className="apple-link mb-6 inline-flex min-h-[44px] w-fit items-center gap-2 text-[15px] sm:mb-10 sm:text-[17px]"

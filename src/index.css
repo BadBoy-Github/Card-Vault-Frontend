@@ -36,21 +36,21 @@
 
 
 :root.dark {
-  --color-glass-bg: rgba(29, 29, 31, 0.72);
-  --color-glass-border: rgba(255, 255, 255, 0.08);
-  --color-glass-shadow: rgba(0, 0, 0, 0.25);
-  --color-glass-highlight: rgba(255, 255, 255, 0.04);
-  --color-surface: #1d1d1f;
-  --color-surface-elevated: #2d2d2d;
-  --color-text: #f5f5f7;
+  --color-glass-bg: rgba(29, 29, 31, 0.65);
+  --color-glass-border: rgba(255, 255, 255, 0.12);
+  --color-glass-shadow: rgba(0, 0, 0, 0.4);
+  --color-glass-highlight: rgba(255, 255, 255, 0.08);
+  --color-surface: #101012;
+  --color-surface-elevated: #1c1c1e;
+  --color-text: #ffffff;
   --color-text-muted: #a1a1a6;
   --color-accent: #2997ff;
   --color-accent-hover: #5eb3ff;
   --color-background: #000000;
   --color-section-bg: #000000;
-  --gradient-bg: #000000;
-  --blur-glass: 20px;
-  --blur-glass-strong: 36px;
+  --gradient-bg: radial-gradient(circle at 50% 0%, #1c1c1e 0%, #000000 100%);
+  --blur-glass: 30px;
+  --blur-glass-strong: 50px;
 }
 
 * {
@@ -65,7 +65,7 @@ html {
 
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   font-family: var(--font-body);
   font-size: var(--text-body);
   line-height: var(--leading-normal);
@@ -74,6 +74,8 @@ body {
   color: var(--color-text);
   transition: background 0.5s ease, color 0.3s ease;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Apple-style typography classes */
@@ -110,10 +112,18 @@ body {
 /* Liquid glass surfaces - refined for Apple look */
 .glass {
   background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--blur-glass)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  backdrop-filter: blur(var(--blur-glass)) saturate(200%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(200%);
   border: 1px solid var(--color-glass-border);
-  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 4px 24px var(--color-glass-shadow);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 8px 32px var(--color-glass-shadow);
+}
+
+.glass-strong {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--blur-glass-strong)) saturate(210%);
+  -webkit-backdrop-filter: blur(var(--blur-glass-strong)) saturate(210%);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 8px 32px var(--color-glass-shadow);
 }
 
 .glass-strong {
@@ -126,16 +136,16 @@ body {
 
 .glass-card {
   background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--blur-glass)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(180%);
+  backdrop-filter: blur(var(--blur-glass)) saturate(200%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(200%);
   border: 1px solid var(--color-glass-border);
-  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 2px 16px var(--color-glass-shadow);
-  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.35s ease;
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 4px 20px var(--color-glass-shadow);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
 }
 
 .glass-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 8px 32px var(--color-glass-shadow);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 0 0 1px var(--color-glass-highlight) inset, 0 12px 48px var(--color-glass-shadow);
 }
 
 .glass-input {
@@ -200,17 +210,49 @@ body {
   text-decoration: underline;
 }
 
+/* Glass Viewport - Full height support */
+.full-viewport {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-viewport {
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-wide {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .container-wide {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
 /* Section spacing - responsive */
 .section-padding {
   padding-top: 3rem;
   padding-bottom: 3rem;
 }
+
 @media (min-width: 640px) {
   .section-padding {
     padding-top: 4rem;
     padding-bottom: 4rem;
   }
 }
+
 @media (min-width: 768px) {
   .section-padding {
     padding-top: var(--section-padding);
@@ -222,12 +264,14 @@ body {
   padding-top: 3.5rem;
   padding-bottom: 3.5rem;
 }
+
 @media (min-width: 640px) {
   .section-padding-lg {
     padding-top: 4.5rem;
     padding-bottom: 4.5rem;
   }
 }
+
 @media (min-width: 768px) {
   .section-padding-lg {
     padding-top: var(--section-padding-lg);
@@ -240,6 +284,7 @@ body {
   .apple-hero {
     font-size: clamp(1.75rem, 8vw, 2.5rem);
   }
+
   .apple-display {
     font-size: clamp(1.5rem, 6vw, 2rem);
   }
@@ -258,6 +303,7 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
