@@ -31,7 +31,6 @@ export default function Header() {
     <>
       <Link to="/" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
         <span>Gift Cards</span>
-        <HiCollection className="h-5 w-5 shrink-0" />
       </Link>
       <Link to="/wishlist" className="relative flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
         <span>Wishlist</span>
