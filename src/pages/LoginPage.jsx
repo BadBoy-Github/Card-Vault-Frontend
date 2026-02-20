@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -6,10 +6,16 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const { login } = useAuth()
+  const { user, login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const from = location.state?.from ?? '/'
+  const from = location.state?.from?.pathname || '/'
+
+  useEffect(() => {
+    if (user) {
+      navigate('/', { replace: true })
+    }
+  }, [user, navigate])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -23,7 +29,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto flex flex-1 items-center justify-center px-4 py-16 sm:px-6 sm:py-24 md:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-section-bg)] px-4 py-12 sm:px-6 md:px-8">
       <div className="glass-panel w-full max-w-[400px] rounded-2xl p-6 sm:p-10 md:p-12">
         <h1 className="apple-display text-[var(--color-text)]">Sign in</h1>
         <p className="apple-body mt-3 text-[17px]">

@@ -27,9 +27,6 @@ export default function Header() {
 
   const navLinks = (
     <>
-      <Link to="/" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
-        <span>Gift Cards</span>
-      </Link>
       <Link to="/cart" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
         <span>Cart</span>
         <HiShoppingCart className="h-5 w-5 shrink-0" />
@@ -69,27 +66,30 @@ export default function Header() {
         <nav className="hidden items-center gap-6 md:flex lg:gap-8">
           {navLinks}
           {user ? (
-            <div className="flex items-center gap-3">
-              <span className="max-w-[100px] truncate text-[14px] text-[var(--color-text-muted)]">
-                {user.name}
-              </span>
+            <div className="flex items-center gap-4">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-[14px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
+                {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+              </div>
               <button
                 type="button"
-                onClick={logout}
-                className="text-[14px] text-[var(--color-accent)] transition hover:underline"
+                onClick={() => {
+                  logout()
+                  navigate('/login')
+                }}
+                className="glass-btn flex h-9 items-center justify-center rounded-full px-4 text-[14px] font-medium text-[var(--color-accent)] transition"
               >
                 Sign out
               </button>
             </div>
           ) : (
-            <>
-              <Link to="/login" className="text-[14px] text-[var(--color-accent)] transition hover:underline">
+            <div className="flex items-center gap-3">
+              <Link to="/login" className="glass-btn flex h-9 items-center justify-center rounded-full px-5 text-[14px] font-medium text-[var(--color-text)] transition">
                 Sign in
               </Link>
-              <Link to="/register" className="glass-cta rounded-full px-5 py-2 text-[14px] font-medium text-white">
+              <Link to="/register" className="glass-cta flex h-9 items-center justify-center rounded-full px-5 text-[14px] font-medium text-white transition">
                 Register
               </Link>
-            </>
+            </div>
           )}
           <ThemeToggle />
         </nav>
@@ -141,14 +141,6 @@ export default function Header() {
             </form>
             <nav className="flex flex-col gap-1">
               <Link
-                to="/"
-                className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
-                onClick={closeMobileMenu}
-              >
-                <span>Gift Cards</span>
-                <HiCollection className="h-6 w-6 text-[var(--color-text-muted)]" />
-              </Link>
-              <Link
                 to="/cart"
                 className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
                 onClick={closeMobileMenu}
@@ -159,34 +151,45 @@ export default function Header() {
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
               {user ? (
                 <>
-                  <div className="flex min-h-[44px] items-center px-4 text-[15px] text-[var(--color-text-muted)]">
-                    {user.name}
+                  <div className="flex items-center gap-3 px-4 py-2">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-[17px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
+                      {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                    <span className="truncate text-[15px] font-medium text-[var(--color-text)]">
+                      {user.name || user.email}
+                    </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => { logout(); closeMobileMenu(); }}
-                    className="flex min-h-[44px] items-center rounded-xl px-4 text-left text-[17px] text-[var(--color-accent)]"
-                  >
-                    Sign out
-                  </button>
+                  <div className="px-4 py-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout()
+                        closeMobileMenu()
+                        navigate('/login')
+                      }}
+                      className="glass-btn flex min-h-[44px] w-full items-center justify-center rounded-xl text-[17px] font-medium text-[var(--color-accent)]"
+                    >
+                      Sign out
+                    </button>
+                  </div>
                 </>
               ) : (
-                <>
+                <div className="flex flex-col gap-2 px-4 py-2">
                   <Link
                     to="/login"
-                    className="flex min-h-[44px] items-center rounded-xl px-4 text-[17px] text-[var(--color-accent)]"
+                    className="glass-btn flex min-h-[44px] items-center justify-center rounded-xl text-[17px] font-medium text-[var(--color-text)]"
                     onClick={closeMobileMenu}
                   >
                     Sign in
                   </Link>
                   <Link
                     to="/register"
-                    className="glass-cta mt-2 flex min-h-[44px] items-center justify-center rounded-full px-5 text-[17px] font-medium text-white"
+                    className="glass-cta flex min-h-[44px] items-center justify-center rounded-full text-[17px] font-medium text-white shadow-lg"
                     onClick={closeMobileMenu}
                   >
                     Register
                   </Link>
-                </>
+                </div>
               )}
             </nav>
           </div>

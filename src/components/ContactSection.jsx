@@ -35,39 +35,41 @@ export default function ContactSection() {
               Concierge Support
             </h2>
             <p className="apple-body mt-3 text-[15px] sm:mt-4 sm:text-[17px]">
-              For specialized inquiries, bulk institutional orders, or technical assistance, our team is at your service.
+              For specialized support, technical assistance, or account inquiries, our dedicated team is at your service.
             </p>
           </div>
           <form onSubmit={handleSubmit} className="mt-8 space-y-5 sm:mt-10 sm:space-y-6">
-            <div>
-              <label htmlFor="contact-name" className="block text-[14px] font-medium text-[var(--color-text)]">
-                Name
-              </label>
-              <input
-                id="contact-name"
-                name="name"
-                type="text"
-                value={form.name}
-                onChange={handleChange}
-                required
-                placeholder="Your name"
-                className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
-              />
-            </div>
-            <div>
-              <label htmlFor="contact-email" className="block text-[14px] font-medium text-[var(--color-text)]">
-                Email
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                placeholder="you@example.com"
-                className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
-              />
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
+              <div>
+                <label htmlFor="contact-name" className="block text-[14px] font-medium text-[var(--color-text)]">
+                  Name
+                </label>
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="Your name"
+                  className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
+                />
+              </div>
+              <div className="!mt-0">
+                <label htmlFor="contact-email" className="block text-[14px] font-medium text-[var(--color-text)]">
+                  Email
+                </label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="you@example.com"
+                  className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
+                />
+              </div>
             </div>
             <div>
               <label htmlFor="contact-message" className="block text-[14px] font-medium text-[var(--color-text)]">

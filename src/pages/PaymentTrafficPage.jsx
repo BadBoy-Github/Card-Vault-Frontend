@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { HiExclamationCircle } from 'react-icons/hi'
 
 export default function PaymentTrafficPage() {
-  const whatsappNumber = "+1234567890" // Placeholder, user should provide
+  const whatsappNumber = "+919842852121" // Placeholder, user should provide
   const whatsappMessage = encodeURIComponent("Hello, I would like to inquire about purchasing a gift card.")
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
 
