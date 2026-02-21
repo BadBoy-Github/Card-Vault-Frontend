@@ -25,7 +25,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container-wide flex  flex-col py-6 sm:py-10 mt-20">
+    <div className="container-wide flex  flex-col py-6 sm:py-10 ">
       <div className="mb-6 shrink-0 md:mb-10 mt-10 text-center">
         <h1 className="apple-display text-[var(--color-text)]">Your Cart</h1>
         <p className="apple-body mt-4 text-[17px]">Manage your items and prepare for checkout.</p>

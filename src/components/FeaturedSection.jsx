@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 const features = [
   {
     id: 'support',
-    title: 'Customer Assistance',
-    description: 'Expert support specialists available daily from 8:00 AM to 8:00 PM for all your inquiries.',
+    title: 'Customer Therapy',
+    description: 'Our specialists are here to listen to your problems from 8 AM to 8 PM. Mostly related to cards, hopefully.',
     icon: (
       <svg className="h-8 w-8 sm:h-9 sm:w-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5a5 5 0 100-10 5 5 0 000 10z" />
@@ -13,8 +13,8 @@ const features = [
   },
   {
     id: 'genuine',
-    title: 'Verified Products',
-    description: 'Official digital assets sourced directly from authorized global providers to guarantee quality.',
+    title: 'Genuinely Genuine',
+    description: 'Sourced from the most authorized of providers. No back-alley deals here, we promise.',
     icon: (
       <svg className="h-8 w-8 sm:h-9 sm:w-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -23,8 +23,8 @@ const features = [
   },
   {
     id: 'trust',
-    title: 'Security Management',
-    description: 'Advanced encryption and robust security protocols protecting your financial and personal data.',
+    title: 'Fort Knox Security',
+    description: 'Encryption so thick even we can\'t see what you\'re buying. Your secrets are safe in the vault.',
     icon: (
       <svg className="h-8 w-8 sm:h-9 sm:w-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -33,8 +33,8 @@ const features = [
   },
   {
     id: 'instant',
-    title: 'Immediate Delivery',
-    description: 'Instant code fulfillment delivered to your account immediately upon successful checkout.',
+    title: 'Faster Than Regret',
+    description: 'Delivered to your account before you can even think "should I have bought that?" Yes, you should.',
     icon: (
       <svg className="h-8 w-8 sm:h-9 sm:w-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -49,10 +49,10 @@ export default function FeaturedSection() {
       <div className="container-wide">
         <div className="mb-8 text-center sm:mb-12">
           <h2 id="featured-heading" className="apple-display text-[var(--color-text)]">
-            The Card Vault Standard
+            Why Trust the Vault?
           </h2>
           <p className="apple-body mx-auto mt-2 max-w-[600px] px-2 text-[15px] sm:mt-3 sm:text-[17px] md:text-[19px]">
-            We provide a premium experience for acquiring your digital gift cards, built on reliability and speed.
+            We provide a premium experience for people who value their time (and their gift cards).
           </p>
           <Link
             to="/#gift-cards"

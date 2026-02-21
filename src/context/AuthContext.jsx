@@ -4,6 +4,10 @@ const STORAGE_KEY = 'cardvault-user'
 
 const AuthContext = createContext(null)
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
@@ -22,30 +26,58 @@ export function AuthProvider({ children }) {
     }
   }, [user])
 
-  const login = (email, password) => {
-    // Demo: accept any email + non-empty password
+  const login = async (email, password) => {
     if (!email?.trim() || !password) return { ok: false, error: 'Email and password required' }
-    setUser({
-      id: `user-${Date.now()}`,
-      email: email.trim(),
-      name: email.trim().split('@')[0],
-    })
-    return { ok: true }
+    
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Check if this is the admin from .env (as requested)
+        const isAdmin = email.trim() === ADMIN_EMAIL && password === ADMIN_PASSWORD;
+        
+        setUser({
+          ...data,
+          isAdmin: isAdmin || data.role === 'admin'
+        });
+        return { ok: true };
+      } else {
+        return { ok: false, error: data.message || 'Login failed' };
+      }
+    } catch (err) {
+      return { ok: false, error: 'Connection to server failed' };
+    }
   }
 
-  const register = (name, email, password) => {
+  const register = async (name, email, password) => {
     if (!name?.trim() || !email?.trim() || !password) {
       return { ok: false, error: 'Name, email and password required' }
     }
-    if (password.length < 6) {
-      return { ok: false, error: 'Password must be at least 6 characters' }
+    
+    try {
+      const res = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setUser(data);
+        return { ok: true };
+      } else {
+        return { ok: false, error: data.message || 'Registration failed' };
+      }
+    } catch (err) {
+      return { ok: false, error: 'Connection to server failed' };
     }
-    setUser({
-      id: `user-${Date.now()}`,
-      email: email.trim(),
-      name: name.trim(),
-    })
-    return { ok: true }
   }
 
   const logout = () => setUser(null)

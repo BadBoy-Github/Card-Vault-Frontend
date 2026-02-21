@@ -32,10 +32,10 @@ export default function ContactSection() {
         <div className="glass-panel rounded-2xl p-6 sm:rounded-3xl sm:p-10 md:p-14">
           <div className="text-center">
             <h2 id="contact-heading" className="apple-display text-[var(--color-text)]">
-              Concierge Support
+              The Vault Concierge
             </h2>
             <p className="apple-body mt-3 text-[15px] sm:mt-4 sm:text-[17px]">
-              For specialized support, technical assistance, or account inquiries, our dedicated team is at your service.
+              Got a problem? Or just want to tell us how great we are? Either way, we&apos;re listening. (Probably).
             </p>
           </div>
           <form onSubmit={handleSubmit} className="mt-8 space-y-5 sm:mt-10 sm:space-y-6">

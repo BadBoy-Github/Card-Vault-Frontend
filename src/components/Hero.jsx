@@ -3,16 +3,16 @@ export default function Hero() {
     <section className="hero-viewport relative overflow-hidden">
       <div className="container-wide text-center">
         <h1 className="apple-hero mb-4 text-[var(--color-text)] sm:mb-5 md:mb-6">
-          Gift cards.{' '}
+          The Vault is Open.{' '}
           <span className="text-[var(--color-accent)]">
-            Delivered instantly.
+            Take what you want.
           </span>
         </h1>
         <p className="apple-body mx-auto max-w-[600px] px-1 text-[15px] sm:text-[17px] md:text-[19px]">
-          Premium digital gift cards from top brands. Secure, fast, and ready to use.
+          High-grade digital assets for the discerning spender. We provide the cards, you provide the excuse to buy another one.
         </p>
         <p className="apple-body mx-auto mt-2 max-w-[600px] px-1 text-[15px] sm:text-[17px] md:text-[19px]">
-          Pick a card and treat yourself or someone special.
+          Pick a card. Any card. We know you want to.
         </p>
         <a
           href="#gift-cards"

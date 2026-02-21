@@ -17,23 +17,23 @@ export default function LoginPage() {
     }
   }, [user, navigate])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    const result = login(email, password)
+    const result = await login(email, password)
     if (result.ok) {
       navigate(from, { replace: true })
     } else {
-      setError(result.error ?? 'Login failed')
+      setError(result.error ?? 'Login failed. Maybe try a password you actually remember?')
     }
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--color-section-bg)] px-4 py-12 sm:px-6 md:px-8">
       <div className="glass-panel w-full max-w-[400px] rounded-2xl p-6 sm:p-10 md:p-12">
-        <h1 className="apple-display text-[var(--color-text)]">Sign in</h1>
+        <h1 className="apple-display text-[var(--color-text)]">Welcome Back</h1>
         <p className="apple-body mt-3 text-[17px]">
-          Use your email to sign in. Demo: any email + any password.
+          Ready to spend those vault credits? Or just here to window-shop again?
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
@@ -44,7 +44,7 @@ export default function LoginPage() {
           )}
           <div>
             <label htmlFor="login-email" className="block text-[14px] font-medium text-[var(--color-text)]">
-              Email
+              Email Address
             </label>
             <input
               id="login-email"
@@ -59,7 +59,7 @@ export default function LoginPage() {
           </div>
           <div>
             <label htmlFor="login-password" className="block text-[14px] font-medium text-[var(--color-text)]">
-              Password
+              Secret Code
             </label>
             <input
               id="login-password"
@@ -76,14 +76,14 @@ export default function LoginPage() {
             type="submit"
             className="glass-cta min-h-[44px] w-full rounded-full py-3.5 text-[16px] font-medium text-white sm:text-[17px]"
           >
-            Sign in
+            Enter the Vault
           </button>
         </form>
 
         <p className="mt-6 text-center text-[15px] text-[var(--color-text-muted)]">
-          Don&apos;t have an account?{' '}
+          New around here?{' '}
           <Link to="/register" className="apple-link font-medium">
-            Create one
+            Join the inner circle
           </Link>
         </p>
       </div>

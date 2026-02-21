@@ -1,10 +1,40 @@
-import { giftCards } from '../data'
+import { useState, useEffect } from 'react'
 import GiftCard from './GiftCard'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 const DISPLAY_COUNT = 4
-const displayedCards = giftCards.slice(0, DISPLAY_COUNT)
 
 export default function GiftCardGrid() {
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${API_URL}/products`)
+        const data = await res.json()
+        if (res.ok) {
+          setProducts(data)
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProducts()
+  }, [])
+
+  const displayedCards = products.slice(0, DISPLAY_COUNT)
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-20">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-accent)] border-t-transparent"></div>
+      </div>
+    )
+  }
+
   return (
     <section id="gift-cards" className="flex flex-1 flex-col section-padding">
       <div className="container-wide">
@@ -19,7 +49,7 @@ export default function GiftCardGrid() {
 
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
           {displayedCards.map((card) => (
-            <GiftCard key={card.id} card={card} />
+            <GiftCard key={card.id || card._id} card={card} />
           ))}
         </div>
       </div>

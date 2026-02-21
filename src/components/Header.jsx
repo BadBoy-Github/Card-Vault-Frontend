@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
 import { useAuth } from '../context/AuthContext'
-import { HiCreditCard, HiShoppingCart, HiCollection } from 'react-icons/hi'
+import { HiCreditCard, HiShoppingCart, HiCollection, HiShieldCheck, HiUserCircle } from 'react-icons/hi'
 
 export default function Header() {
   const { user, logout } = useAuth()
@@ -31,6 +31,16 @@ export default function Header() {
         <span>Cart</span>
         <HiShoppingCart className="h-5 w-5 shrink-0" />
       </Link>
+      <Link to="/orders" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
+        <span>Orders</span>
+        <HiCollection className="h-5 w-5 shrink-0" />
+      </Link>
+      {user?.isAdmin && (
+        <Link to="/admin/dashboard" className="hidden lg:flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
+          <span>Dashboard</span>
+          <HiUserCircle className="h-5 w-5 shrink-0" />
+        </Link>
+      )}
     </>
   )
 
@@ -148,6 +158,24 @@ export default function Header() {
                 <span>Cart</span>
                 <HiShoppingCart className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
+              <Link
+                to="/orders"
+                className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                onClick={closeMobileMenu}
+              >
+                <span>Orders</span>
+                <HiCollection className="h-6 w-6 text-[var(--color-text-muted)]" />
+              </Link>
+              {user?.isAdmin && (
+                <Link
+                  to="/admin/dashboard"
+                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)] lg:hidden"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Dashboard</span>
+                  <HiUserCircle className="h-6 w-6 text-[var(--color-text-muted)]" />
+                </Link>
+              )}
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
               {user ? (
                 <>

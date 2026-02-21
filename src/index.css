@@ -59,8 +59,8 @@
 }
 
 html {
-  scroll-behavior: smooth;
   overflow-x: hidden;
+  height: 100%;
 }
 
 body {
@@ -76,6 +76,30 @@ body {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* Custom Thin Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-glass-border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-glass-border) transparent;
 }
 
 /* Apple-style typography classes */

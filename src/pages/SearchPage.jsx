@@ -1,27 +1,51 @@
 import { useLocation } from 'react-router-dom'
-import { giftCards } from '../data'
 import GiftCard from '../components/GiftCard'
 import { useEffect, useState } from 'react'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 export default function SearchPage() {
   const location = useLocation()
   const [results, setResults] = useState([])
+  const [loading, setLoading] = useState(true)
   const query = new URLSearchParams(location.search).get('q') || ''
 
   useEffect(() => {
-    if (query.trim()) {
-      const q = query.toLowerCase()
-      const filtered = giftCards.filter(card => 
-        card.name.toLowerCase().includes(q) || 
-        card.brand.toLowerCase().includes(q) ||
-        card.description.toLowerCase().includes(q) ||
-        card.category.toLowerCase().includes(q)
-      )
-      setResults(filtered)
-    } else {
-      setResults(giftCards)
+    const fetchResults = async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(`${API_URL}/products`)
+        const data = await res.json()
+        if (res.ok) {
+          const q = query.trim().toLowerCase()
+          if (q) {
+            const filtered = data.filter(card => 
+              card.name.toLowerCase().includes(q) || 
+              card.brand.toLowerCase().includes(q) ||
+              card.description.toLowerCase().includes(q) ||
+              card.category?.toLowerCase().includes(q)
+            )
+            setResults(filtered)
+          } else {
+            setResults(data)
+          }
+        }
+      } catch (err) {
+        console.error('Error searching products:', err)
+      } finally {
+        setLoading(false)
+      }
     }
+    fetchResults()
   }, [query])
+
+  if (loading) {
+    return (
+      <div className="flex flex-1 justify-center py-20">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-accent)] border-t-transparent"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="container-wide flex-1 py-20 sm:py-24 md:py-32">

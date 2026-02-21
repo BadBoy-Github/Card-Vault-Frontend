@@ -1,14 +1,41 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { getGiftCardById } from '../data'
 import { useAuth } from '../context/AuthContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 export default function ProductPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const card = getGiftCardById(id)
+  const [card, setCard] = useState(null)
+  const [loading, setLoading] = useState(true)
   const { user } = useAuth()
   const [quantity, setQuantity] = useState(1)
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`${API_URL}/products/${id}`)
+        const data = await res.json()
+        if (res.ok) {
+          setCard(data)
+        }
+      } catch (err) {
+        console.error('Error fetching product:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProduct()
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center py-20">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-accent)] border-t-transparent"></div>
+      </div>
+    )
+  }
 
   if (!card) {
     return (
@@ -34,10 +61,10 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="container-wide flex h-[calc(100vh-theme(spacing.16))] flex-col py-6 sm:h-[calc(100vh-theme(spacing.20))] sm:py-10">
+    <div className="container-wide py-6 sm:py-10">
       <Link
         to="/"
-        className="apple-link mb-4 inline-flex min-h-[44px] w-fit items-center gap-2 text-[15px] sm:mb-6 sm:text-[17px]"
+        className="apple-link mb-6 inline-flex min-h-[44px] w-fit items-center gap-2 text-[14px]"
       >
         <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -45,52 +72,79 @@ export default function ProductPage() {
         Back to gift cards
       </Link>
 
-      <div className="glass-card flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl md:flex-row">
-        <div className="relative h-48 w-full shrink-0 overflow-hidden bg-[var(--color-surface)] sm:h-64 md:h-full md:w-1/2">
-          <img
-            src={card.image}
-            alt={card.name}
-            className="h-full w-full object-cover"
-          />
-          {card.popular && (
-            <span className="glass-pill absolute right-4 top-4 rounded-full bg-[var(--color-accent)]/90 px-3 py-1 text-xs font-medium text-white">
-              Popular
-            </span>
-          )}
-        </div>
+      <div className="glass-card mx-auto max-w-4xl overflow-hidden rounded-2xl p-6 md:p-8">
+        <div className="flex flex-col gap-8 md:flex-row">
+          {/* Image Section - 16:9 Aspect Ratio */}
+          <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-xl bg-[var(--color-surface)] md:w-2/5">
+            <img
+              src={card.image}
+              alt={card.name}
+              className="h-full w-full object-cover"
+            />
+            {card.popular && (
+              <span className="glass-pill absolute right-3 top-3 rounded-full bg-[var(--color-accent)]/90 px-2.5 py-1 text-[11px] font-medium text-white">
+                Popular
+              </span>
+            )}
+          </div>
 
-        <div className="flex flex-1 flex-col overflow-y-auto p-6 md:p-10 custom-scrollbar">
+          {/* Details Section - Right to the Image */}
           <div className="flex flex-1 flex-col">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-[var(--color-text-muted)] sm:text-xs">
-              {card.brand}
-            </p>
-            <h1 className="apple-display mt-1 text-[var(--color-text)]">{card.name}</h1>
-            <p className="apple-body mt-4 text-[15px] leading-relaxed sm:text-[17px]">{card.description}</p>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
+                {card.brand}
+              </p>
+              <h1 className="apple-title mt-1 text-xl font-bold text-[var(--color-text)] sm:text-2xl">
+                {card.name}
+              </h1>
+              <p className="apple-body mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+                {card.description}
+              </p>
+            </div>
 
-            <div className="mt-6 flex items-center gap-4">
-              <span className="text-3xl font-bold text-[var(--color-text)] sm:text-4xl">{card.denomination}</span>
-              <div className="flex flex-col">
-                <span className="text-[var(--color-text-muted)]">digital delivery</span>
-                {card.stock > 0 && card.stock <= 2 ? (
-                  <span className="text-sm font-bold text-red-500 animate-pulse">
-                    Only {card.stock} left in stock!
+            <div className="mt-6 flex flex-col gap-4">
+              <div className="flex items-baseline gap-4">
+                <span className="text-2xl font-bold text-[var(--color-text)] sm:text-3xl">
+                  ₹{card.price}
+                </span>
+                <div className="flex flex-col">
+                  <span className="text-[11px] uppercase tracking-tight text-[var(--color-text-muted)]">
+                    Digital Delivery
                   </span>
-                ) : card.stock > 0 ? (
-                  <span className="text-sm font-medium text-green-500">In Stock</span>
-                ) : (
-                  <span className="text-sm font-bold text-red-500">Out of Stock</span>
+                  {card.stock > 0 ? (
+                    <span className={`text-[11px] font-semibold ${card.stock <= 2 ? 'text-red-500 animate-pulse' : 'text-green-500'}`}>
+                      {card.stock <= 2 ? `Only ${card.stock} left!` : 'In Stock'}
+                    </span>
+                  ) : (
+                    <span className="text-[11px] font-bold text-red-500">Out of Stock</span>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-3">
+                <div className="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5">
+                   <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Category:</span>
+                   <span className="text-[12px] font-medium text-[var(--color-text)] capitalize">{card.category}</span>
+                </div>
+                {card.validityEndDateTime && (
+                  <div className="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Valid Until:</span>
+                    <span className="text-[12px] font-medium text-[var(--color-text)]">
+                      {new Date(card.validityEndDateTime).toLocaleDateString()}
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
 
-            <div className="mt-8 flex items-center gap-6">
-              <div className="flex flex-col gap-2">
-                <label className="text-[14px] font-medium text-[var(--color-text-muted)]">Quantity</label>
+            <div className="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-[var(--color-glass-border)] pt-6">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-medium text-[var(--color-text-muted)]">Quantity</label>
                 <select
                   value={quantity}
                   onChange={(e) => setQuantity(Number(e.target.value))}
                   disabled={card.stock === 0}
-                  className="glass-input min-h-[44px] w-fit min-w-[100px] rounded-xl px-4 py-2 text-[17px] text-[var(--color-text)] focus:outline-none disabled:opacity-50"
+                  className="glass-input h-10 w-fit min-w-[80px] rounded-lg px-3 py-1.5 text-[15px] text-[var(--color-text)] focus:outline-none disabled:opacity-50"
                 >
                   {Array.from({ length: Math.min(card.stock, 5) }, (_, i) => i + 1).map((n) => (
                     <option key={n} value={n}>
@@ -100,22 +154,22 @@ export default function ProductPage() {
                   {card.stock === 0 && <option value="0">0</option>}
                 </select>
               </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[14px] font-medium text-[var(--color-text-muted)]">Total Amount</label>
-                <span className="text-xl font-bold text-[var(--color-accent)]">${total.toFixed(2)}</span>
+              
+              <div className="flex flex-col gap-0.5 text-right">
+                <label className="text-[11px] font-medium text-[var(--color-text-muted)] uppercase tracking-tight">Total Amount</label>
+                <span className="text-2xl font-bold text-[var(--color-accent)]">${total.toFixed(2)}</span>
               </div>
             </div>
-          </div>
-
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
-            <button
-              type="button"
-              onClick={handleBuy}
-              disabled={card.stock === 0}
-              className="glass-cta flex min-h-[48px] flex-1 items-center justify-center rounded-full px-8 text-[17px] font-semibold text-white transition disabled:opacity-50"
-            >
-              {card.stock > 0 ? 'Complete Purchase' : 'Out of Stock'}
-            </button>
+            <div className="mt-auto pt-8">
+              <button
+                type="button"
+                onClick={handleBuy}
+                disabled={card.stock === 0}
+                className="glass-cta flex min-h-[48px] w-full items-center justify-center rounded-xl px-8 text-[16px] font-bold text-white transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+              >
+                {card.stock > 0 ? 'Buy Now' : 'Out of Stock'}
+              </button>
+            </div>
           </div>
         </div>
       </div>

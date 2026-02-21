@@ -14,7 +14,9 @@ import PaymentTrafficPage from './pages/PaymentTrafficPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ConstructionPage from './pages/ConstructionPage'
-
+import AdminDashboard from './pages/AdminDashboard'
+import OrdersPage from './pages/OrdersPage'
+import ScrollToTop from './components/ScrollToTop'
 import { Navigate, useLocation } from 'react-router-dom'
 
 const isConstruction = false 
@@ -44,6 +46,7 @@ function Home() {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <ThemeProvider>
         <AuthProvider>
           <Routes>
@@ -56,19 +59,21 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
 
                 {/* Protected App Routes (With Header/Footer) */}
-                <Route
-                  element={
-                    <ProtectedRoute>
-                      <Layout />
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route path="/" element={<Home />} />
-                  <Route path="/product/:id" element={<ProductPage />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/search" element={<SearchPage />} />
-                  <Route path="/payment-traffic" element={<PaymentTrafficPage />} />
-                </Route>
+                  <Route
+                    element={
+                      <ProtectedRoute>
+                        <Layout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="/" element={<Home />} />
+                    <Route path="/product/:id" element={<ProductPage />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/payment-traffic" element={<PaymentTrafficPage />} />
+                    <Route path="/orders" element={<OrdersPage />} />
+                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                  </Route>
               </>
             )}
           </Routes>
