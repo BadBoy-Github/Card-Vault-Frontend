@@ -17,7 +17,7 @@ import ConstructionPage from './pages/ConstructionPage'
 
 import { Navigate, useLocation } from 'react-router-dom'
 
-const isConstruction = true // Set to true to display maintenance page
+const isConstruction = false 
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth()
