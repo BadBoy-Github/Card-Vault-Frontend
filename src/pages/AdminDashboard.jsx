@@ -12,6 +12,7 @@ import {
 } from "react-icons/hi";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const DEFAULT_ADMIN_EMAIL = import.meta.env.VITE_DEFAULT_ADMIN_EMAIL || "elayabarathiedison@gmail.com";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -771,17 +772,40 @@ export default function AdminDashboard() {
                 </div>
                 <div className="sm:col-span-2">
                   <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
-                    Image URL
+                    Product Image URL
                   </label>
-                  <input
-                    type="url"
-                    required
-                    value={formData.image}
-                    onChange={(e) =>
-                      setFormData({ ...formData, image: e.target.value })
-                    }
-                    className="glass-input w-full mt-1 rounded-xl px-4 py-2"
-                  />
+                  <div className="mt-2 space-y-3">
+                    {/* Image Preview */}
+                    {formData.image && (
+                      <div className="relative w-full h-40 rounded-xl overflow-hidden bg-[var(--color-glass)]">
+                        <img
+                          src={formData.image}
+                          alt="Product preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image: "" })}
+                          className="absolute top-2 right-2 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                        >
+                          <HiX className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
+                    <input
+                      type="url"
+                      required
+                      value={formData.image}
+                      onChange={(e) =>
+                        setFormData({ ...formData, image: e.target.value })
+                      }
+                      placeholder="https://example.com/image.jpg"
+                      className="glass-input w-full rounded-xl px-4 py-2"
+                    />
+                  </div>
                 </div>
                 <div className="sm:col-span-2">
                   <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
@@ -926,8 +950,8 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setUserFormData({ ...userFormData, role: e.target.value })
                   }
-                  disabled={selectedUser?.email === "admin@cardvault.com"}
-                  className={`glass-input w-full mt-1 rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-all ${selectedUser?.email === "admin@cardvault.com" ? "opacity-50 cursor-not-allowed" : ""}`}
+                  disabled={selectedUser?.email === DEFAULT_ADMIN_EMAIL}
+                  className={`glass-input w-full mt-1 rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-all ${selectedUser?.email === DEFAULT_ADMIN_EMAIL ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   <option value="user" className="bg-[var(--color-background)]">
                     User
@@ -939,7 +963,7 @@ export default function AdminDashboard() {
                     Admin
                   </option>
                 </select>
-                {selectedUser?.email === "admin@cardvault.com" && (
+                {selectedUser?.email === DEFAULT_ADMIN_EMAIL && (
                   <p className="mt-2 text-[11px] text-amber-500 flex items-center gap-1.5">
                     <HiExclamation className="h-3 w-3" />
                     Master Admin role is locked for security.
@@ -976,27 +1000,37 @@ export default function AdminDashboard() {
               <HiExclamation className="h-8 w-8" />
             </div>
             <h3 className="text-xl font-bold text-[var(--color-text)]">
-              Revoke Access?
+              {selectedUser?.email === DEFAULT_ADMIN_EMAIL ? "Cannot Remove Master Admin" : "Revoke Access?"}
             </h3>
             <p className="mt-4 text-[15px] text-[var(--color-text-muted)] leading-relaxed">
-              You are about to remove{" "}
-              <span className="font-bold text-[var(--color-text)]">
-                "{selectedUser?.name}"
-              </span>{" "}
-              from the vault. They will lose all access immediately.
+              {selectedUser?.email === DEFAULT_ADMIN_EMAIL ? (
+                <span className="text-amber-500">
+                  The master admin account cannot be deleted for security reasons.
+                </span>
+              ) : (
+                <>
+                  You are about to remove{" "}
+                  <span className="font-bold text-[var(--color-text)]">
+                    "{selectedUser?.name}"
+                  </span>{" "}
+                  from the vault. They will lose all access immediately.
+                </>
+              )}
             </p>
             <div className="mt-8 flex flex-col gap-3">
-              <button
-                onClick={confirmUserDelete}
-                className="w-full rounded-2xl bg-red-500 py-3.5 text-[16px] font-bold text-white hover:bg-red-600 transition-colors shadow-lg shadow-red-500/20"
-              >
-                Confirm Removal
-              </button>
+              {selectedUser?.email !== DEFAULT_ADMIN_EMAIL && (
+                <button
+                  onClick={confirmUserDelete}
+                  className="w-full rounded-2xl bg-red-500 py-3.5 text-[16px] font-bold text-white hover:bg-red-600 transition-colors shadow-lg shadow-red-500/20"
+                >
+                  Confirm Removal
+                </button>
+              )}
               <button
                 onClick={closeModals}
                 className="w-full rounded-2xl bg-white/5 py-3.5 text-[16px] font-medium text-[var(--color-text)] hover:bg-white/10 transition-colors"
               >
-                Keep Member
+                {selectedUser?.email === DEFAULT_ADMIN_EMAIL ? "Close" : "Keep Member"}
               </button>
             </div>
           </div>
