@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
 import ThemeToggle from './ThemeToggle'
 import { useAuth } from '../context/AuthContext'
-import { HiCreditCard, HiShoppingCart, HiCollection, HiShieldCheck, HiUserCircle } from 'react-icons/hi'
+import { HiCreditCard, HiShoppingCart, HiCollection, HiShieldCheck, HiUserCircle, HiChevronDown, HiLogout, HiPhone } from 'react-icons/hi'
 
 export default function Header() {
   const { user, logout } = useAuth()
@@ -25,20 +25,36 @@ export default function Header() {
     e.preventDefault()
   }
 
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
+  const location = useLocation()
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setUserDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   const navLinks = (
     <>
-      <Link to="/cart" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
-        <span>Cart</span>
-        <HiShoppingCart className="h-5 w-5 shrink-0" />
-      </Link>
-      <Link to="/orders" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
-        <span>Orders</span>
-        <HiCollection className="h-5 w-5 shrink-0" />
+      <Link 
+        to="/contact" 
+        className={`flex items-center gap-1.5 text-[14px] transition ${
+          location.pathname === '/contact' ? 'text-[var(--color-accent)] font-semibold' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
+        }`}
+        onClick={closeMobileMenu}
+      >
+        <span>Contact</span>
+        <HiPhone className="h-4 w-4 shrink-0" />
       </Link>
       {user?.isAdmin && (
         <Link to="/admin/dashboard" className="hidden lg:flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
           <span>Dashboard</span>
-          <HiUserCircle className="h-5 w-5 shrink-0" />
+          <HiShieldCheck className="h-5 w-5 shrink-0" />
         </Link>
       )}
     </>
@@ -49,11 +65,11 @@ export default function Header() {
       <div className="container-wide flex h-14 items-center justify-between gap-4 sm:h-16 lg:h-18">
         <Link
           to="/"
-          className="flex shrink-0 items-center gap-2 text-[19px] font-bold tracking-tight text-[var(--color-text)] sm:text-[21px]"
+          className="flex shrink-0 items-center gap-2 text-[19px] font-bold tracking-tight text-[var(--color-accent)] sm:text-[21px]"
           onClick={closeMobileMenu}
         >
-          <img src="/logo.png" alt="logo" className="h-8 w-8" />
-          <span className="truncate">Card Vault</span>
+          <HiCreditCard className="h-8 w-8" />
+          <span className="truncate text-[var(--color-text)]">Card Vault</span>
         </Link>
 
         {/* Desktop Search Bar */}
@@ -76,20 +92,53 @@ export default function Header() {
         <nav className="hidden items-center gap-6 md:flex lg:gap-8">
           {navLinks}
           {user ? (
-            <div className="flex items-center gap-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-[14px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
-                {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
-              </div>
+            <div className="relative" ref={dropdownRef}>
               <button
                 type="button"
-                onClick={() => {
-                  logout()
-                  navigate('/login')
-                }}
-                className="glass-btn flex h-9 items-center justify-center rounded-full px-4 text-[14px] font-medium text-[var(--color-accent)] transition"
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center gap-2 rounded-full p-1 transition hover:bg-white/10"
               >
-                Sign out
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-[14px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
+                  {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+                </div>
+                <HiChevronDown className={`h-4 w-4 text-[var(--color-text-muted)] transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
+
+              {userDropdownOpen && (
+                <div className="glass-strong absolute right-0 mt-2 w-48 origin-top-right rounded-2xl border border-[var(--color-glass-border)] p-2 shadow-xl animate-scale-in">
+                  <div className="px-3 py-2 border-b border-[var(--color-glass-border)] mb-2">
+                    <p className="text-[14px] font-semibold truncate text-[var(--color-text)]">{user.name}</p>
+                    <p className="text-[12px] text-[var(--color-text-muted)] truncate">{user.email}</p>
+                  </div>
+                  <Link
+                    to="/cart"
+                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
+                    onClick={() => setUserDropdownOpen(false)}
+                  >
+                    <HiShoppingCart className="h-4 w-4" />
+                    <span>My Cart</span>
+                  </Link>
+                  <Link
+                    to="/orders"
+                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
+                    onClick={() => setUserDropdownOpen(false)}
+                  >
+                    <HiCollection className="h-4 w-4" />
+                    <span>Orders History</span>
+                  </Link>
+                  <div className="my-2 border-t border-[var(--color-glass-border)]" />
+                  <button
+                    onClick={() => {
+                      logout()
+                      navigate('/login')
+                    }}
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-red-400 transition hover:bg-red-500/10"
+                  >
+                    <HiLogout className="h-4 w-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-3">

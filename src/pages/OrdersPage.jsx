@@ -38,7 +38,7 @@ export default function OrdersPage() {
     }
   }
 
-  const currentOrders = orders.filter(o => ['pending', 'processing', 'shipped'].includes(o.status))
+  const currentOrders = orders.filter(o => ['pending', 'processing'].includes(o.status))
   const previousOrders = orders.filter(o => ['delivered', 'cancelled'].includes(o.status))
 
   const displayOrders = activeTab === 'current' ? currentOrders : previousOrders
@@ -107,7 +107,7 @@ export default function OrdersPage() {
                       <img src={item.image} alt={item.name} className="h-12 w-12 rounded-lg object-cover" />
                       <div className="flex-1">
                         <p className="text-[15px] font-medium text-[var(--color-text)]">{item.brand} - {item.name}</p>
-                        <p className="text-[13px] text-[var(--color-text-muted)]">₹{item.price}</p>
+                        <p className="text-[13px] text-[var(--color-text-muted)]">₹{item.price} x {item.qty || 1}</p>
                       </div>
                     </div>
                   ))}
@@ -115,8 +115,22 @@ export default function OrdersPage() {
 
                 <div className="border-t border-[var(--color-glass-border)] pt-4 flex justify-between items-center">
                    <p className="text-[14px] text-[var(--color-text-muted)]">Placed on {new Date(order.createdAt).toLocaleDateString()}</p>
-                   <p className="text-[18px] font-bold text-[var(--color-text)]">Total: ₹{order.totalPrice}</p>
+                   <div className="text-right">
+                     <p className="text-[12px] text-[var(--color-text-muted)] mb-1">Quantity: {order.orderItems.reduce((acc, item) => acc + (item.qty || 1), 0)}</p>
+                     <p className="text-[18px] font-bold text-[var(--color-text)]">Total: ₹{order.totalPrice}</p>
+                   </div>
                 </div>
+                
+                {activeTab === 'previous' && (
+                  <div className="flex justify-end mt-2">
+                    <button 
+                      onClick={() => navigate('/queries')}
+                      className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl text-[14px] font-bold transition shadow-lg shadow-red-500/20"
+                    >
+                      For any Query?
+                    </button>
+                  </div>
+                )}
               </div>
             )) : (
               <div className="text-center py-20 glass-panel rounded-2xl">

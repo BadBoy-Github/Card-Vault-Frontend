@@ -6,13 +6,14 @@ import Hero from './components/Hero'
 import FeaturedSection from './components/FeaturedSection'
 import GiftCardGrid from './components/GiftCardGrid'
 import NewsletterSection from './components/NewsletterSection'
-import ContactSection from './components/ContactSection'
 import ProductPage from './pages/ProductPage'
 import CartPage from './pages/CartPage'
 import SearchPage from './pages/SearchPage'
 import PaymentTrafficPage from './pages/PaymentTrafficPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import ContactPage from './pages/ContactPage'
+import QueriesPage from './pages/QueriesPage'
 import ConstructionPage from './pages/ConstructionPage'
 import AdminDashboard from './pages/AdminDashboard'
 import OrdersPage from './pages/OrdersPage'
@@ -38,7 +39,6 @@ function Home() {
       <Hero />
       <FeaturedSection />
       <GiftCardGrid />
-      <ContactSection />
     </div>
   )
 }
@@ -72,6 +72,8 @@ function App() {
                     <Route path="/search" element={<SearchPage />} />
                     <Route path="/payment-traffic" element={<PaymentTrafficPage />} />
                     <Route path="/orders" element={<OrdersPage />} />
+                    <Route path="/queries" element={<QueriesPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
                   </Route>
               </>

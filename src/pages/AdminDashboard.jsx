@@ -29,6 +29,20 @@ export default function AdminDashboard() {
     validityEndDateTime: '', stock: 1, popular: false
   })
 
+  // Order Management states
+  const [showOrderModal, setShowOrderModal] = useState(false)
+  const [showOrderEditModal, setShowOrderEditModal] = useState(false)
+  const [showOrderDeleteModal, setShowOrderDeleteModal] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [orderFormData, setOrderFormData] = useState({
+    user: '',
+    productId: '',
+    productName: '',
+    productPrice: 0,
+    quantity: 1,
+    status: 'pending'
+  })
+
   // User Edit states
   const [showUserEditModal, setShowUserUserEditModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
@@ -45,16 +59,19 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      const endpoint = activeTab === 'products' ? 'products' : activeTab === 'users' ? 'users' : 'orders'
-      const res = await fetch(`${API_URL}/${endpoint}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
-      const data = await res.json()
-      if (res.ok) {
-        if (activeTab === 'products') setProducts(data)
-        else if (activeTab === 'users') setUsers(data)
-        else setOrders(data)
-      }
+      // Ensure we have products and users for order forms
+      const endpoints = ['products', 'users', 'orders']
+      const results = await Promise.all(
+        endpoints.map(e => 
+          fetch(`${API_URL}/${e}`, {
+            headers: { Authorization: `Bearer ${user.token}` },
+          }).then(res => res.json())
+        )
+      )
+      
+      setProducts(Array.isArray(results[0]) ? results[0] : [])
+      setUsers(Array.isArray(results[1]) ? results[1] : [])
+      setOrders(Array.isArray(results[2]) ? results[2] : [])
     } catch (err) {
       console.error(err)
     } finally {
@@ -204,14 +221,112 @@ export default function AdminDashboard() {
     setShowUserUserEditModal(true)
   }
 
+  const openOrderAdd = () => {
+    setOrderFormData({
+      user: '',
+      productId: '',
+      productName: '',
+      productPrice: 0,
+      quantity: 1,
+      status: 'pending'
+    })
+    setShowOrderModal(true)
+  }
+
+  const openOrderEdit = (order) => {
+    setSelectedOrder(order)
+    const item = order.orderItems[0]
+    setOrderFormData({
+      user: order.user?._id || '',
+      productId: item.product,
+      productName: item.name,
+      productPrice: item.price,
+      quantity: item.qty || 1,
+      status: order.status
+    })
+    setShowOrderEditModal(true)
+  }
+
+  const handleOrderFormSubmit = async (e) => {
+    e.preventDefault()
+    setFormLoading(true)
+    try {
+      const method = showOrderEditModal ? 'PUT' : 'POST'
+      const url = showOrderEditModal ? `${API_URL}/orders/${selectedOrder._id}` : `${API_URL}/orders`
+      
+      const product = products.find(p => p._id === orderFormData.productId || p.id === orderFormData.productId)
+      
+      const body = {
+        user: orderFormData.user,
+        orderItems: [{
+          name: orderFormData.productName,
+          brand: product?.brand || 'CardVault',
+          price: orderFormData.productPrice,
+          image: product?.image || '',
+          qty: orderFormData.quantity,
+          product: product?._id || orderFormData.productId
+        }],
+        totalPrice: orderFormData.productPrice * orderFormData.quantity,
+        status: orderFormData.status
+      }
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(body),
+      })
+      
+      if (res.ok) {
+        setMessage(showOrderEditModal ? 'Order updated!' : 'Order placed successfully!')
+        fetchData()
+        closeModals()
+        setTimeout(() => setMessage(''), 3000)
+      } else {
+        const error = await res.json()
+        alert(error.message || 'Something went wrong')
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setFormLoading(false)
+    }
+  }
+
+  const confirmOrderDelete = async () => {
+    try {
+      const res = await fetch(`${API_URL}/orders/${selectedOrder._id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
+      if (res.ok) {
+        setOrders(orders.filter((o) => o._id !== selectedOrder._id))
+        setMessage('Order removed from history.')
+        closeModals()
+        setTimeout(() => setMessage(''), 3000)
+      } else {
+        const error = await res.json()
+        alert(error.message || 'Failed to remove order')
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const closeModals = () => {
     setShowAddModal(false)
     setShowEditModal(false)
     setShowDeleteModal(false)
     setShowUserUserEditModal(false)
     setShowUserDeleteModal(false)
+    setShowOrderModal(false)
+    setShowOrderEditModal(false)
+    setShowOrderDeleteModal(false)
     setSelectedProduct(null)
     setSelectedUser(null)
+    setSelectedOrder(null)
   }
 
   const handleUpdateOrderStatus = async (id, status) => {
@@ -274,6 +389,15 @@ export default function AdminDashboard() {
             >
               <HiPlus className="h-4 w-4" />
               Add Card to Vault
+            </button>
+          )}
+          {activeTab === 'orders' && (
+            <button 
+              onClick={openOrderAdd}
+              className="glass-cta flex items-center gap-2 rounded-full px-5 py-2 text-[14px] font-semibold text-white shadow-lg shadow-[var(--color-accent)]/20"
+            >
+              <HiPlus className="h-4 w-4" />
+              Add New Order
             </button>
           )}
         </div>
@@ -422,13 +546,25 @@ export default function AdminDashboard() {
                            >
                              <option value="pending" className="bg-[var(--color-background)]">Pending</option>
                              <option value="processing" className="bg-[var(--color-background)]">Processing</option>
-                             <option value="shipped" className="bg-[var(--color-background)]">Shipped</option>
                              <option value="delivered" className="bg-[var(--color-background)]">Delivered</option>
                              <option value="cancelled" className="bg-[var(--color-background)]">Cancelled</option>
                            </select>
                         </td>
-                        <td className="px-6 py-4 text-right">
-                          <button className="text-[var(--color-accent)] hover:underline">Details</button>
+                        <td className="px-6 py-4 text-right space-x-3">
+                          <button 
+                            onClick={() => openOrderEdit(o)}
+                            className="p-2 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition"
+                            title="Edit Order"
+                          >
+                            <HiPencil className="h-4 w-4" />
+                          </button>
+                          <button 
+                            onClick={() => { setSelectedOrder(o); setShowOrderDeleteModal(true); }}
+                            className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
+                            title="Delete Order"
+                          >
+                            <HiTrash className="h-4 w-4" />
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -682,6 +818,157 @@ export default function AdminDashboard() {
                   No, Keep It
                 </button>
              </div>
+          </div>
+        </div>
+      )}
+      {/* Order Add/Edit Modal */}
+      {(showOrderModal || showOrderEditModal) && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="glass-strong w-full max-w-lg rounded-[24px] overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
+                <h2 className="text-xl font-bold text-[var(--color-text)]">
+                  {showOrderEditModal ? 'Edit Order Details' : 'Forge New Order'}
+                </h2>
+                <button onClick={closeModals} className="p-2 rounded-full hover:bg-white/10 transition">
+                  <HiX className="h-5 w-5" />
+                </button>
+            </div>
+            <form onSubmit={handleOrderFormSubmit} className="p-6 space-y-4">
+                <div className="max-h-[60vh] overflow-y-auto px-1 space-y-4">
+                  <div>
+                    <label className="text-[12px] font-medium text-[var(--color-text-muted)]">Customer</label>
+                    <select 
+                      required
+                      value={orderFormData.user}
+                      onChange={e => setOrderFormData({...orderFormData, user: e.target.value})}
+                      className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                    >
+                      <option value="">Select a Customer</option>
+                      {users.map(u => (
+                        <option key={u._id} value={u._id} className="bg-[var(--color-background)]">{u.name} ({u.email})</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[12px] font-medium text-[var(--color-text-muted)]">Select Product</label>
+                    <select 
+                      required
+                      value={orderFormData.productId}
+                      onChange={e => {
+                        const p = products.find(prod => prod._id === e.target.value || prod.id === e.target.value)
+                        setOrderFormData({
+                          ...orderFormData, 
+                          productId: e.target.value,
+                          productName: p?.name || '',
+                          productPrice: p?.price || 0
+                        })
+                      }}
+                      className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                    >
+                      <option value="">Select a Product</option>
+                      {products.map(p => (
+                        <option key={p._id} value={p._id} className="bg-[var(--color-background)]">{p.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[12px] font-medium text-[var(--color-text-muted)]">Product ID</label>
+                      <input type="text" readOnly value={orderFormData.productId} className="glass-input w-full mt-1 rounded-xl px-4 py-2 opacity-50" />
+                    </div>
+                     <div>
+                      <label className="text-[12px] font-medium text-[var(--color-text-muted)]">Quantity</label>
+                      <div className="flex flex-col gap-1">
+                        <select 
+                          required
+                          value={orderFormData.quantity}
+                          onChange={e => setOrderFormData({...orderFormData, quantity: Number(e.target.value)})}
+                          className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                        >
+                          {(() => {
+                            const p = products.find(prod => prod._id === orderFormData.productId || prod.id === orderFormData.productId);
+                            const currentQty = selectedOrder ? (selectedOrder.orderItems.find(i => i.product === (p?._id || p?.id))?.qty || 0) : 0;
+                            const max = p ? Math.min(5, p.stock + currentQty) : 1;
+                            return Array.from({ length: max }, (_, i) => i + 1).map(n => (
+                              <option key={n} value={n} className="bg-[var(--color-background)]">{n}</option>
+                            ));
+                          })()}
+                        </select>
+                        {(() => {
+                          const p = products.find(prod => prod._id === orderFormData.productId || prod.id === orderFormData.productId);
+                          if (!p) return null;
+                          const currentQty = selectedOrder ? (selectedOrder.orderItems.find(i => i.product === (p?._id || p?.id))?.qty || 0) : 0;
+                          const available = p.stock + currentQty;
+                          if (available === 0) return <span className="text-[11px] text-red-500 font-bold">Out of Stock</span>;
+                          if (available <= 2) return <span className="text-[11px] text-orange-500 font-bold">Low Stock ({available})</span>;
+                          return <span className="text-[11px] text-green-500 font-medium">Available: {available}</span>;
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[12px] font-medium text-[var(--color-text-muted)]">Total Order Price</label>
+                      <div className="glass-input w-full mt-1 rounded-xl px-4 py-2 font-bold text-[var(--color-accent)]">
+                        ₹{orderFormData.productPrice * orderFormData.quantity}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[12px] font-medium text-[var(--color-text-muted)]">Order Status</label>
+                      <select 
+                        value={orderFormData.status}
+                        onChange={e => setOrderFormData({...orderFormData, status: e.target.value})}
+                        className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                      >
+                        <option value="pending" className="bg-[var(--color-background)]">Pending</option>
+                        <option value="processing" className="bg-[var(--color-background)]">Processing</option>
+                        <option value="delivered" className="bg-[var(--color-background)]">Delivered</option>
+                        <option value="cancelled" className="bg-[var(--color-background)]">Cancelled</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6 flex gap-4">
+                  <button type="button" onClick={closeModals} className="flex-1 glass-btn rounded-xl py-3 font-medium">Cancel</button>
+                  <button 
+                    type="submit" 
+                    disabled={formLoading}
+                    className="flex-1 glass-cta rounded-xl py-3 font-bold text-white shadow-lg shadow-[var(--color-accent)]/20"
+                  >
+                    {formLoading ? 'Working...' : showOrderEditModal ? 'Update Order' : 'Create Order'}
+                  </button>
+                </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Order Delete Confirmation Modal */}
+      {showOrderDeleteModal && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-sm rounded-[32px] p-8 text-center animate-scale-in border-red-500/30">
+              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 text-red-500">
+                <HiTrash className="h-8 w-8" />
+              </div>
+              <h3 className="text-xl font-bold text-[var(--color-text)]">Erase this Order?</h3>
+              <p className="mt-4 text-[15px] text-[var(--color-text-muted)] leading-relaxed">
+                Deleting this order will return its products to the vault. This action cannot be undone.
+              </p>
+              <div className="mt-8 flex flex-col gap-3">
+                <button 
+                  onClick={confirmOrderDelete}
+                  className="w-full rounded-2xl bg-red-500 py-3.5 text-[16px] font-bold text-white hover:bg-red-600 transition-colors"
+                >
+                  Yes, Delete it
+                </button>
+                <button 
+                  onClick={closeModals}
+                  className="w-full rounded-2xl bg-white/5 py-3.5 text-[16px] font-medium text-[var(--color-text)]"
+                >
+                  No, Keep it
+                </button>
+              </div>
           </div>
         </div>
       )}
