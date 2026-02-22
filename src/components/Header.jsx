@@ -48,6 +48,13 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Clear search query when leaving search page
+  useEffect(() => {
+    if (!location.pathname.includes('/search')) {
+      setSearchQuery("");
+    }
+  }, [location]);
+
   const navLinks = (
     <>
       <Link

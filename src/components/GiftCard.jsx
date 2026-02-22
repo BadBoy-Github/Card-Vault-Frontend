@@ -4,7 +4,7 @@ import { useWishlist } from "../context/WishlistContext";
 import { HiHeart } from "react-icons/hi";
 import { useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 export default function GiftCard({
   card,
@@ -28,7 +28,7 @@ export default function GiftCard({
 
     try {
       await toggleWishlist(card._id || card.id);
-      setNotification(wishlisted ? "Removed from wishlist" : "Added to wishlist");
+      setNotification(wishlisted ? "Removed from your wishlist – we'll miss it!" : "Added to your wishlist! ✨");
       if (onWishlistChange) {
         onWishlistChange(card._id || card.id, !wishlisted);
       }
@@ -43,12 +43,12 @@ export default function GiftCard({
     <Link to={`/product/${card.id || card._id}`} className="block rounded-2xl">
       {/* Notification */}
       {notification && (
-        <div className="fixed top-20 right-4 z-50 animate-scale-in">
+        <div className="fixed top-20 right-4 z-50 animate-scale-in overflow-hidden">
           <div
-            className={`glass-panel rounded-xl px-4 py-2 border ${wishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
+            className={`glass-panel rounded-xl px-4 py-2 border transition-all duration-300 ${wishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
           >
             <p
-              className={`text-[14px] font-medium ${wishlisted ? "text-green-500" : "text-red-500"}`}
+              className={`text-[14px] font-medium transition-all duration-300 ${wishlisted ? "text-green-500" : "text-red-500"}`}
             >
               {notification}
             </p>
@@ -83,27 +83,27 @@ export default function GiftCard({
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         </div>
-        <div className="flex flex-1 flex-col p-4 sm:p-6">
-          <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--color-accent)] sm:text-[11px]">
+        <div className="flex flex-1 flex-col p-3 sm:p-4">
+          <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--color-accent)] sm:text-[10px]">
             {brand}
           </p>
-          <h3 className="mt-1 text-[18px] font-semibold leading-tight text-[var(--color-text)] sm:text-[20px]">
+          <h3 className="mt-0.5 text-[16px] font-semibold leading-tight text-[var(--color-text)] sm:text-[18px]">
             {name}
           </h3>
-          <p className="mt-2 line-clamp-2 flex-1 text-[13px] leading-relaxed text-[var(--color-text-muted)] sm:text-[14px]">
+          <p className="mt-1 line-clamp-2 flex-1 text-[12px] leading-relaxed text-[var(--color-text-muted)] sm:text-[13px]">
             {description}
           </p>
-          <div className="mt-3 flex items-center justify-between gap-2 sm:mt-4">
-            <span className="text-[20px] font-semibold text-[var(--color-text)] sm:text-[22px]">
+          <div className="mt-2 flex items-center justify-between gap-2 sm:mt-3">
+            <span className="text-[18px] font-semibold text-[var(--color-text)] sm:text-[20px]">
               {denomination || `₹${card.price}`}
             </span>
             <div className="flex flex-col items-end">
               {card.stock > 0 && card.stock <= 2 ? (
-                <span className="text-[12px] font-bold text-red-500 animate-pulse">
+                <span className="text-[11px] font-bold text-red-500 animate-pulse">
                   Only {card.stock} left
                 </span>
               ) : null}
-              <span className="text-[14px] font-medium text-[var(--color-accent)] sm:text-[15px]">
+              <span className="text-[13px] font-medium text-[var(--color-accent)] sm:text-[14px]">
                 {card.stock > 0 ? "View Details" : "Out of stock"}
               </span>
             </div>

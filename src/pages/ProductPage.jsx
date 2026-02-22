@@ -88,7 +88,7 @@ export default function ProductPage() {
 
     try {
       await toggleWishlist(card._id);
-      setNotification(currentWishlistState ? "Removed from wishlist" : "Added to wishlist");
+      setNotification(currentWishlistState ? "Removed from your wishlist – we'll miss it!" : "Added to your wishlist! ✨");
     } catch (err) {
       console.error(err);
     }
@@ -97,15 +97,15 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="container-wide py-6 sm:py-10">
+    <div className="container-wide py-4 sm:py-6 h-full overflow-hidden">
       {/* Notification */}
       {notification && (
-        <div className="fixed top-20 right-4 z-50 animate-scale-in">
+        <div className="fixed top-20 right-4 z-50 animate-scale-in overflow-hidden">
           <div
-            className={`glass-panel rounded-xl px-4 py-2 border ${isWishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
+            className={`glass-panel rounded-xl px-4 py-2 border transition-all duration-300 ${isWishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
           >
             <p
-              className={`text-[14px] font-medium ${isWishlisted ? "text-green-500" : "text-red-500"}`}
+              className={`text-[14px] font-medium transition-all duration-300 ${isWishlisted ? "text-green-500" : "text-red-500"}`}
             >
               {notification}
             </p>
