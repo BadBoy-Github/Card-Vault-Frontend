@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { WishlistProvider } from "./context/WishlistContext";
 import Layout from "./components/Layout";
 import Hero from "./components/Hero";
 import FeaturedSection from "./components/FeaturedSection";
@@ -50,7 +51,8 @@ function App() {
       <ScrollToTop />
       <ThemeProvider>
         <AuthProvider>
-          <Routes>
+          <WishlistProvider>
+            <Routes>
             {isConstruction ? (
               <Route path="*" element={<ConstructionPage />} />
             ) : (
@@ -83,7 +85,8 @@ function App() {
                 </Route>
               </>
             )}
-          </Routes>
+            </Routes>
+          </WishlistProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

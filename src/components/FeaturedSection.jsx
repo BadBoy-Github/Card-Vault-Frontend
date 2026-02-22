@@ -54,15 +54,6 @@ export default function FeaturedSection() {
           <p className="apple-body mx-auto mt-2 max-w-[600px] px-2 text-[15px] sm:mt-3 sm:text-[17px] md:text-[19px]">
             We provide a premium experience for people who value their time (and their gift cards).
           </p>
-          <Link
-            to="/#gift-cards"
-            className="apple-link mt-5 inline-flex min-h-[44px] items-center gap-1.5 text-[15px] font-medium sm:mt-6 sm:text-[17px]"
-          >
-            Browse gift cards
-            <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature) => (

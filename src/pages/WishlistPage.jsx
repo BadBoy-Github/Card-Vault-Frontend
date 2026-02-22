@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 import { useState, useEffect } from "react";
 import { HiHeart, HiTrash } from "react-icons/hi";
 
@@ -8,8 +9,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 export default function WishlistPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [wishlist, setWishlist] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { wishlist, removeFromWishlist, loading } = useWishlist();
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
@@ -17,40 +17,12 @@ export default function WishlistPage() {
       navigate("/login");
       return;
     }
-    fetchWishlist();
   }, [user, navigate]);
 
-  const fetchWishlist = async () => {
+  const handleRemoveFromWishlist = async (productId) => {
     try {
-      const res = await fetch(`${API_URL}/wishlist`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setWishlist(data.products || []);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeFromWishlist = async (productId) => {
-    try {
-      const res = await fetch(`${API_URL}/wishlist/remove/${productId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setWishlist(data.products || []);
-        showNotification("Removed from wishlist");
-      }
+      await removeFromWishlist(productId);
+      showNotification("Removed from wishlist");
     } catch (err) {
       console.error(err);
     }
@@ -141,7 +113,7 @@ export default function WishlistPage() {
                         <button
                           onClick={(e) => {
                             e.preventDefault();
-                            removeFromWishlist(item.product._id);
+                            handleRemoveFromWishlist(item.product._id);
                           }}
                           className="absolute right-3 top-3 z-10 rounded-full bg-red-500 p-2 text-white transition hover:bg-red-600"
                         >

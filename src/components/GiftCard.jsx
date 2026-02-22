@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 import { HiHeart } from "react-icons/hi";
 import { useState } from "react";
 
@@ -7,18 +8,18 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export default function GiftCard({
   card,
-  isInWishlist = false,
   onWishlistChange,
 }) {
   const { name, brand, denomination, description, image, popular, inStock } =
     card;
   const { user } = useAuth();
-  const [wishlisted, setWishlisted] = useState(isInWishlist);
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [notification, setNotification] = useState(null);
 
-  const toggleWishlist = async (e) => {
+  const wishlisted = isInWishlist(card._id || card.id);
+
+  const handleToggleWishlist = async (e) => {
     e.preventDefault();
-    e.stopPropagation();
     e.stopPropagation();
 
     if (!user) {
@@ -26,35 +27,10 @@ export default function GiftCard({
     }
 
     try {
-      if (wishlisted) {
-        const res = await fetch(
-          `${API_URL}/wishlist/remove/${card._id || card.id}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          },
-        );
-        if (res.ok) {
-          setWishlisted(false);
-          setNotification("Removed from wishlist");
-          if (onWishlistChange) onWishlistChange(card._id || card.id, false);
-        }
-      } else {
-        const res = await fetch(`${API_URL}/wishlist/add`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-          body: JSON.stringify({ productId: card._id || card.id }),
-        });
-        if (res.ok) {
-          setWishlisted(true);
-          setNotification("Added to wishlist");
-          if (onWishlistChange) onWishlistChange(card._id || card.id, true);
-        }
+      await toggleWishlist(card._id || card.id);
+      setNotification(wishlisted ? "Removed from wishlist" : "Added to wishlist");
+      if (onWishlistChange) {
+        onWishlistChange(card._id || card.id, !wishlisted);
       }
     } catch (err) {
       console.error(err);
@@ -69,10 +45,10 @@ export default function GiftCard({
       {notification && (
         <div className="fixed top-20 right-4 z-50 animate-scale-in">
           <div
-            className={`glass-panel rounded-xl px-4 py-2 border ${wishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
+            className={`glass-panel rounded-xl px-4 py-2 border ${wishlisted ? "border-red-500/30 bg-red-500/10" : "border-green-500/30 bg-green-500/10"}`}
           >
             <p
-              className={`text-[14px] font-medium ${wishlisted ? "text-green-500" : "text-red-500"}`}
+              className={`text-[14px] font-medium ${wishlisted ? "text-red-500" : "text-green-500"}`}
             >
               {notification}
             </p>
@@ -89,7 +65,7 @@ export default function GiftCard({
 
         {/* Heart Button */}
         <button
-          onClick={toggleWishlist}
+          onClick={handleToggleWishlist}
           className={`absolute left-3 top-3 z-10 rounded-full p-2 transition ${
             wishlisted
               ? "bg-red-500 text-white hover:bg-red-600"

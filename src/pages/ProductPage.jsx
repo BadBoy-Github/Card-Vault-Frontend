@@ -1,5 +1,6 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useWishlist } from "../context/WishlistContext";
 import { useState, useEffect } from "react";
 import { HiHeart } from "react-icons/hi";
 
@@ -11,9 +12,11 @@ export default function ProductPage() {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [notification, setNotification] = useState(null);
+
+  const isWishlisted = isInWishlist(id);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,26 +34,6 @@ export default function ProductPage() {
     };
     fetchProduct();
   }, [id]);
-
-  useEffect(() => {
-    const checkWishlist = async () => {
-      if (!user) return;
-      try {
-        const res = await fetch(`${API_URL}/wishlist/check/${id}`, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setIsWishlisted(data.isInWishlist);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    checkWishlist();
-  }, [user, id]);
 
   if (loading) {
     return (
@@ -88,7 +71,7 @@ export default function ProductPage() {
     navigate("/payment-traffic");
   };
 
-  const toggleWishlist = async (e) => {
+  const handleToggleWishlist = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -97,32 +80,11 @@ export default function ProductPage() {
       return;
     }
 
+    if (!card || !card._id) return;
+
     try {
-      if (isWishlisted) {
-        const res = await fetch(`${API_URL}/wishlist/remove/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        if (res.ok) {
-          setIsWishlisted(false);
-          setNotification("Removed from wishlist");
-        }
-      } else {
-        const res = await fetch(`${API_URL}/wishlist/add`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-          body: JSON.stringify({ productId: id }),
-        });
-        if (res.ok) {
-          setIsWishlisted(true);
-          setNotification("Added to wishlist");
-        }
-      }
+      await toggleWishlist(card._id);
+      setNotification(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
     } catch (err) {
       console.error(err);
     }
@@ -136,10 +98,10 @@ export default function ProductPage() {
       {notification && (
         <div className="fixed top-20 right-4 z-50 animate-scale-in">
           <div
-            className={`glass-panel rounded-xl px-4 py-2 border ${isWishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
+            className={`glass-panel rounded-xl px-4 py-2 border ${isWishlisted ? "border-red-500/30 bg-red-500/10" : "border-green-500/30 bg-green-500/10"}`}
           >
             <p
-              className={`text-[14px] font-medium ${isWishlisted ? "text-green-500" : "text-red-500"}`}
+              className={`text-[14px] font-medium ${isWishlisted ? "text-red-500" : "text-green-500"}`}
             >
               {notification}
             </p>
@@ -183,7 +145,7 @@ export default function ProductPage() {
             )}
             {/* Heart Button */}
             <button
-              onClick={(e) => toggleWishlist(e)}
+              onClick={(e) => handleToggleWishlist(e)}
               className={`absolute left-3 top-3 rounded-full p-2 transition-all duration-300 cursor-pointer ${
                 isWishlisted
                   ? "bg-red-500 text-white hover:bg-red-600"
