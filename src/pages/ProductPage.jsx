@@ -12,11 +12,13 @@ export default function ProductPage() {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  const { isInWishlist, toggleWishlist } = useWishlist();
+  const { wishlist, isInWishlist, toggleWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
   const [notification, setNotification] = useState(null);
 
-  const isWishlisted = isInWishlist(id);
+  // Get the latest wishlist state to re-evaluate isWishlisted
+  // Use card._id which is the MongoDB ObjectId that matches what's stored in wishlist
+  const isWishlisted = card?._id ? isInWishlist(card._id) : false;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -82,9 +84,11 @@ export default function ProductPage() {
 
     if (!card || !card._id) return;
 
+    const currentWishlistState = isWishlisted;
+
     try {
       await toggleWishlist(card._id);
-      setNotification(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
+      setNotification(currentWishlistState ? "Removed from wishlist" : "Added to wishlist");
     } catch (err) {
       console.error(err);
     }
@@ -98,10 +102,10 @@ export default function ProductPage() {
       {notification && (
         <div className="fixed top-20 right-4 z-50 animate-scale-in">
           <div
-            className={`glass-panel rounded-xl px-4 py-2 border ${isWishlisted ? "border-red-500/30 bg-red-500/10" : "border-green-500/30 bg-green-500/10"}`}
+            className={`glass-panel rounded-xl px-4 py-2 border ${isWishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
           >
             <p
-              className={`text-[14px] font-medium ${isWishlisted ? "text-red-500" : "text-green-500"}`}
+              className={`text-[14px] font-medium ${isWishlisted ? "text-green-500" : "text-red-500"}`}
             >
               {notification}
             </p>

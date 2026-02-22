@@ -4,7 +4,7 @@ import { useWishlist } from "../context/WishlistContext";
 import { HiHeart } from "react-icons/hi";
 import { useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function GiftCard({
   card,
@@ -45,10 +45,10 @@ export default function GiftCard({
       {notification && (
         <div className="fixed top-20 right-4 z-50 animate-scale-in">
           <div
-            className={`glass-panel rounded-xl px-4 py-2 border ${wishlisted ? "border-red-500/30 bg-red-500/10" : "border-green-500/30 bg-green-500/10"}`}
+            className={`glass-panel rounded-xl px-4 py-2 border ${wishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
           >
             <p
-              className={`text-[14px] font-medium ${wishlisted ? "text-red-500" : "text-green-500"}`}
+              className={`text-[14px] font-medium ${wishlisted ? "text-green-500" : "text-red-500"}`}
             >
               {notification}
             </p>

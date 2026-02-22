@@ -39,7 +39,10 @@ export function WishlistProvider({ children }) {
   }
 
   const isInWishlist = (productId) => {
-    return wishlist.some(item => (item.product._id || item.product) == productId)
+    return wishlist.some(item => {
+      const storedProductId = item.product._id || item.product;
+      return String(storedProductId) === String(productId);
+    });
   }
 
   const addToWishlist = async (productId) => {
