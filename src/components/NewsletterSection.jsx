@@ -52,10 +52,10 @@ export default function NewsletterSection() {
       <div className="mx-auto max-w-[600px]">
         <div className="glass-panel rounded-2xl p-6 text-center sm:rounded-3xl sm:p-10 md:p-14">
           <h2 id="newsletter-heading" className="apple-display text-[var(--color-text)]">
-            Get notified on new cards
+            Don't Miss Out (Again)
           </h2>
           <p className="apple-body mt-3 text-[15px] sm:mt-4 sm:text-[17px]">
-            Subscribe to our newsletter. We&apos;ll email you when we add new gift cards to the collection.
+            Join the inner circle before we realize we&apos;re giving away too many secrets. We&apos;ll only bug you when there&apos;s something worth spending your money on.
           </p>
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
             <label htmlFor="newsletter-email" className="sr-only">

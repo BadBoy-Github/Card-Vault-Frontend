@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { HiEye, HiEyeOff } from 'react-icons/hi'
 
 export default function RegisterPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const { user, register } = useAuth()
   const navigate = useNavigate()
@@ -16,23 +18,23 @@ export default function RegisterPage() {
     }
   }, [user, navigate])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    const result = register(name, email, password)
+    const result = await register(name, email, password)
     if (result.ok) {
       navigate('/')
     } else {
-      setError(result.error ?? 'Registration failed')
+      setError(result.error ?? 'Registration failed. Maybe yours is already in our vault?')
     }
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--color-section-bg)] px-4 py-12 sm:px-6 md:px-8">
       <div className="glass-panel w-full max-w-[400px] rounded-2xl p-6 sm:p-10 md:p-12">
-        <h1 className="apple-display text-[var(--color-text)]">Create account</h1>
+        <h1 className="apple-display text-[var(--color-text)]">Join the Vault</h1>
         <p className="apple-body mt-3 text-[17px]">
-          Sign up to place orders and manage your wishlist.
+          Create an account to start your journey into digital treasure hoarding.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
@@ -43,7 +45,7 @@ export default function RegisterPage() {
           )}
           <div>
             <label htmlFor="reg-name" className="block text-[14px] font-medium text-[var(--color-text)]">
-              Name
+              Human Name
             </label>
             <input
               id="reg-name"
@@ -58,7 +60,7 @@ export default function RegisterPage() {
           </div>
           <div>
             <label htmlFor="reg-email" className="block text-[14px] font-medium text-[var(--color-text)]">
-              Email
+              Email Address
             </label>
             <input
               id="reg-email"
@@ -73,32 +75,41 @@ export default function RegisterPage() {
           </div>
           <div>
             <label htmlFor="reg-password" className="block text-[14px] font-medium text-[var(--color-text)]">
-              Password
+              Master Password
             </label>
-            <input
-              id="reg-password"
-              type="password"
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
-              placeholder="At least 6 characters"
-            />
+            <div className="relative">
+              <input
+                id="reg-password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 pr-12 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
+                placeholder="At least 6 characters of wisdom"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors mt-1"
+              >
+                {showPassword ? <HiEyeOff className="h-5 w-5" /> : <HiEye className="h-5 w-5" />}
+              </button>
+            </div>
           </div>
           <button
             type="submit"
             className="glass-cta min-h-[44px] w-full rounded-full py-3.5 text-[16px] font-medium text-white sm:text-[17px]"
           >
-            Create account
+            Claim My Spot
           </button>
         </form>
 
         <p className="mt-6 text-center text-[15px] text-[var(--color-text-muted)]">
-          Already have an account?{' '}
+          Already one of us?{' '}
           <Link to="/login" className="apple-link font-medium">
-            Sign in
+            Sign in here
           </Link>
         </p>
       </div>

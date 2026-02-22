@@ -12,8 +12,8 @@ export default function ThemeToggle() {
       className="glass relative h-8 w-14 rounded-full p-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-background)]"
     >
       <span
-        className="absolute top-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-white/20 transition-all duration-300"
-        style={{ left: isDark ? '1.75rem' : '0.25rem' }}
+        className="absolute top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-white/20 transition-all duration-300 backdrop-blur-md shadow-sm"
+        style={{ left: isDark ? 'calc(100% - 1.75rem - 0.25rem)' : '0.25rem' }}
       >
         {isDark ? (
           <svg className="h-4 w-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20">

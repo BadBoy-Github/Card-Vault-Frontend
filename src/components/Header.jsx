@@ -1,53 +1,104 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import ThemeToggle from './ThemeToggle'
-import { useAuth } from '../context/AuthContext'
-import { HiCreditCard, HiShoppingCart, HiCollection } from 'react-icons/hi'
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import ThemeToggle from "./ThemeToggle";
+import { useAuth } from "../context/AuthContext";
+import {
+  HiCreditCard,
+  HiCollection,
+  HiUserCircle,
+  HiChevronDown,
+  HiLogout,
+  HiPhone,
+  HiHeart,
+  HiLockClosed,
+} from "react-icons/hi";
 
 export default function Header() {
-  const { user, logout } = useAuth()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const navigate = useNavigate()
+  const { user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
-  const closeMobileMenu = () => setMobileMenuOpen(false)
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   const handleSearchChange = (value) => {
-    setSearchQuery(value)
+    setSearchQuery(value);
     if (value.trim()) {
-      navigate(`/search?q=${encodeURIComponent(value.trim())}`)
+      navigate(`/search?q=${encodeURIComponent(value.trim())}`);
     } else {
-      navigate('/')
+      navigate("/");
     }
-  }
+  };
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault()
-  }
+    e.preventDefault();
+  };
+
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Clear search query when leaving search page
+  useEffect(() => {
+    if (!location.pathname.includes('/search')) {
+      setSearchQuery("");
+    }
+  }, [location]);
 
   const navLinks = (
     <>
-      <Link to="/cart" className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]" onClick={closeMobileMenu}>
-        <span>Cart</span>
-        <HiShoppingCart className="h-5 w-5 shrink-0" />
+      <Link
+        to="/contact"
+        className={`flex items-center gap-1.5 text-[14px] transition ${
+          location.pathname === "/contact"
+            ? "text-[var(--color-accent)] font-semibold"
+            : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+        }`}
+        onClick={closeMobileMenu}
+      >
+        <span>Contact</span>
+        <HiPhone className="h-4 w-4 shrink-0" />
       </Link>
+      {user?.isAdmin && (
+        <Link
+          to="/admin/dashboard"
+          className="hidden lg:flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
+          onClick={closeMobileMenu}
+        >
+          <span>Dashboard</span>
+          <HiLockClosed className="h-5 w-5 shrink-0" />
+        </Link>
+      )}
     </>
-  )
+  );
 
   return (
     <header className="glass-strong fixed left-0 right-0 top-0 z-50 border-b border-[var(--color-glass-border)]/80">
       <div className="container-wide flex h-14 items-center justify-between gap-4 sm:h-16 lg:h-18">
         <Link
           to="/"
-          className="flex shrink-0 items-center gap-2 text-[19px] font-bold tracking-tight text-[var(--color-text)] sm:text-[21px]"
+          className="flex shrink-0 items-center gap-2 text-[19px] font-bold tracking-tight text-[var(--color-accent)] sm:text-[21px]"
           onClick={closeMobileMenu}
         >
-          <HiCreditCard className="text-2xl text-[var(--color-accent)]" />
-          <span className="truncate">Card Vault</span>
+          <HiCreditCard className="h-8 w-8" />
+          <span className="truncate text-[var(--color-text)]">Card Vault</span>
         </Link>
 
         {/* Desktop Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="hidden flex-1 max-w-md mx-4 md:block">
+        <form
+          onSubmit={handleSearchSubmit}
+          className="hidden flex-1 max-w-md mx-4 md:block"
+        >
           <div className="relative group">
             <input
               type="text"
@@ -56,8 +107,18 @@ export default function Header() {
               onChange={(e) => handleSearchChange(e.target.value)}
               className="glass-input w-full rounded-full py-2 pl-10 pr-4 text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all"
             />
-            <svg className="absolute left-3.5 top-2.5 h-4 w-4 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              className="absolute left-3.5 top-2.5 h-4 w-4 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-accent)]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           </div>
         </form>
@@ -66,27 +127,87 @@ export default function Header() {
         <nav className="hidden items-center gap-6 md:flex lg:gap-8">
           {navLinks}
           {user ? (
-            <div className="flex items-center gap-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-[14px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
-                {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
-              </div>
+            <div className="relative" ref={dropdownRef}>
               <button
                 type="button"
-                onClick={() => {
-                  logout()
-                  navigate('/login')
-                }}
-                className="glass-btn flex h-9 items-center justify-center rounded-full px-4 text-[14px] font-medium text-[var(--color-accent)] transition"
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center gap-2 rounded-full p-1 transition hover:bg-white/10"
               >
-                Sign out
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-[14px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
+                  {user.name?.charAt(0).toUpperCase() ||
+                    user.email?.charAt(0).toUpperCase() ||
+                    "U"}
+                </div>
+                <HiChevronDown
+                  className={`h-4 w-4 text-[var(--color-text-muted)] transition-transform duration-200 ${userDropdownOpen ? "rotate-180" : ""}`}
+                />
               </button>
+
+              {userDropdownOpen && (
+                <div className="glass-strong absolute right-0 mt-2 w-48 origin-top-right rounded-2xl border border-[var(--color-glass-border)] p-2 shadow-xl animate-scale-in">
+                  <div className="px-3 py-2 border-b border-[var(--color-glass-border)] mb-2">
+                    <p className="text-[14px] font-semibold truncate text-[var(--color-text)]">
+                      {user.name}
+                    </p>
+                    <p className="text-[12px] text-[var(--color-text-muted)] truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                  {user?.isAdmin ? (
+                    <Link
+                      to="/wishlist"
+                      className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      <HiHeart className="h-4 w-4" />
+                      <span>My Wishlist</span>
+                    </Link>
+                  ) : (
+                    <>
+                      <Link
+                        to="/wishlist"
+                        className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
+                        onClick={() => setUserDropdownOpen(false)}
+                      >
+                        <HiHeart className="h-4 w-4" />
+                        <span>My Wishlist</span>
+                      </Link>
+                    </>
+                  )}
+                  <Link
+                    to="/orders"
+                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
+                    onClick={() => setUserDropdownOpen(false)}
+                  >
+                    <HiCollection className="h-4 w-4" />
+                    <span>Orders History</span>
+                  </Link>
+                  <div className="my-2 border-t border-[var(--color-glass-border)]" />
+                  <button
+                    onClick={() => {
+                      logout();
+                      navigate("/login");
+                    }}
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-red-400 transition hover:bg-red-500/10"
+                  >
+                    <HiLogout className="h-4 w-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link to="/login" className="glass-btn flex h-9 items-center justify-center rounded-full px-5 text-[14px] font-medium text-[var(--color-text)] transition">
+              <Link
+                to="/login"
+                className="glass-btn flex h-9 items-center justify-center rounded-full px-5 text-[14px] font-medium text-[var(--color-text)] transition"
+              >
                 Sign in
               </Link>
-              <Link to="/register" className="glass-cta flex h-9 items-center justify-center rounded-full px-5 text-[14px] font-medium text-white transition">
+              <Link
+                to="/register"
+                className="glass-cta flex h-9 items-center justify-center rounded-full px-5 text-[14px] font-medium text-white transition"
+              >
                 Register
               </Link>
             </div>
@@ -101,16 +222,36 @@ export default function Header() {
             type="button"
             onClick={() => setMobileMenuOpen((o) => !o)}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[var(--color-text)] transition hover:bg-white/10"
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? (
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             ) : (
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             )}
           </button>
@@ -134,8 +275,18 @@ export default function Header() {
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className="glass-input w-full rounded-full py-2.5 pl-10 pr-4 text-[16px] focus:outline-none"
                 />
-                <svg className="absolute left-3.5 top-3 h-5 w-5 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="absolute left-3.5 top-3 h-5 w-5 text-[var(--color-text-muted)]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
             </form>
@@ -148,12 +299,32 @@ export default function Header() {
                 <span>Cart</span>
                 <HiShoppingCart className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
+              <Link
+                to="/orders"
+                className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                onClick={closeMobileMenu}
+              >
+                <span>Orders</span>
+                <HiCollection className="h-6 w-6 text-[var(--color-text-muted)]" />
+              </Link>
+              {user?.isAdmin && (
+                <Link
+                  to="/admin/dashboard"
+                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)] lg:hidden"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Dashboard</span>
+                  <HiLockClosed className="h-6 w-6 text-[var(--color-text-muted)]" />
+                </Link>
+              )}
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
               {user ? (
                 <>
                   <div className="flex items-center gap-3 px-4 py-2">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-[17px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
-                      {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+                      {user.name?.charAt(0).toUpperCase() ||
+                        user.email?.charAt(0).toUpperCase() ||
+                        "U"}
                     </div>
                     <span className="truncate text-[15px] font-medium text-[var(--color-text)]">
                       {user.name || user.email}
@@ -163,9 +334,9 @@ export default function Header() {
                     <button
                       type="button"
                       onClick={() => {
-                        logout()
-                        closeMobileMenu()
-                        navigate('/login')
+                        logout();
+                        closeMobileMenu();
+                        navigate("/login");
                       }}
                       className="glass-btn flex min-h-[44px] w-full items-center justify-center rounded-xl text-[17px] font-medium text-[var(--color-accent)]"
                     >
@@ -196,5 +367,5 @@ export default function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }
