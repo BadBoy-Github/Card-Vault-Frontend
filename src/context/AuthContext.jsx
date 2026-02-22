@@ -5,8 +5,6 @@ const STORAGE_KEY = 'cardvault-user'
 const AuthContext = createContext(null)
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -39,12 +37,10 @@ export function AuthProvider({ children }) {
       const data = await res.json();
 
       if (res.ok) {
-        // Check if this is the admin from .env (as requested)
-        const isAdmin = email.trim() === ADMIN_EMAIL && password === ADMIN_PASSWORD;
-        
+        // Admin status is determined by the database role field
         setUser({
           ...data,
-          isAdmin: isAdmin || data.role === 'admin'
+          isAdmin: data.role === 'admin'
         });
         return { ok: true };
       } else {
