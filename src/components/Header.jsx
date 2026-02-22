@@ -4,13 +4,13 @@ import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
 import {
   HiCreditCard,
-  HiShoppingCart,
   HiCollection,
   HiUserCircle,
   HiChevronDown,
   HiLogout,
   HiPhone,
   HiHeart,
+  HiLockClosed,
 } from "react-icons/hi";
 
 export default function Header() {
@@ -68,8 +68,8 @@ export default function Header() {
           className="hidden lg:flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
           onClick={closeMobileMenu}
         >
-          <span>Admin</span>
-          <HiUserCircle className="h-5 w-5 shrink-0" />
+          <span>Dashboard</span>
+          <HiLockClosed className="h-5 w-5 shrink-0" />
         </Link>
       )}
     </>
@@ -157,14 +157,6 @@ export default function Header() {
                     </Link>
                   ) : (
                     <>
-                      <Link
-                        to="/cart"
-                        className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
-                        onClick={() => setUserDropdownOpen(false)}
-                      >
-                        <HiShoppingCart className="h-4 w-4" />
-                        <span>My Cart</span>
-                      </Link>
                       <Link
                         to="/wishlist"
                         className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
@@ -314,8 +306,8 @@ export default function Header() {
                   className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)] lg:hidden"
                   onClick={closeMobileMenu}
                 >
-                  <span>Admin</span>
-                  <HiUserCircle className="h-6 w-6 text-[var(--color-text-muted)]" />
+                  <span>Dashboard</span>
+                  <HiLockClosed className="h-6 w-6 text-[var(--color-text-muted)]" />
                 </Link>
               )}
               <div className="my-2 border-t border-[var(--color-glass-border)]" />

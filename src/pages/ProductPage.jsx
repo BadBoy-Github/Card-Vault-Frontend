@@ -88,7 +88,10 @@ export default function ProductPage() {
     navigate("/payment-traffic");
   };
 
-  const toggleWishlist = async () => {
+  const toggleWishlist = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!user) {
       navigate("/login");
       return;
@@ -180,8 +183,8 @@ export default function ProductPage() {
             )}
             {/* Heart Button */}
             <button
-              onClick={toggleWishlist}
-              className={`absolute left-3 top-3 rounded-full p-2 transition ${
+              onClick={(e) => toggleWishlist(e)}
+              className={`absolute left-3 top-3 rounded-full p-2 transition-all duration-300 cursor-pointer ${
                 isWishlisted
                   ? "bg-red-500 text-white hover:bg-red-600"
                   : "bg-white/20 backdrop-blur-sm text-white/70 hover:text-red-500 hover:bg-white/30"

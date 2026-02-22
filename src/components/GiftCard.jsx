@@ -19,6 +19,7 @@ export default function GiftCard({
   const toggleWishlist = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.stopPropagation();
 
     if (!user) {
       return;
@@ -63,10 +64,7 @@ export default function GiftCard({
   };
 
   return (
-    <Link
-      to={`/product/${card.id || card._id}`}
-      className="block rounded-2xl focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[var(--color-background)]"
-    >
+    <Link to={`/product/${card.id || card._id}`} className="block rounded-2xl">
       {/* Notification */}
       {notification && (
         <div className="fixed top-20 right-4 z-50 animate-scale-in">
@@ -82,7 +80,7 @@ export default function GiftCard({
         </div>
       )}
 
-      <article className="glass-card group relative flex flex-col overflow-hidden rounded-2xl">
+      <article className="glass-card group relative flex flex-col overflow-hidden rounded-2xl h-full">
         {popular && (
           <span className="absolute right-3 top-3 z-10 rounded-full bg-[var(--color-accent)] px-2.5 py-1 text-[11px] font-medium text-white sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[12px]">
             Popular
