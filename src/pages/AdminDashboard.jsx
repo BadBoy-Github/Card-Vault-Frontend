@@ -235,7 +235,7 @@ export default function AdminDashboard() {
     setShowEditModal(true);
   };
 
-  const openAdd = () => {
+  const openAdd = async () => {
     setFormData({
       id: "",
       brand: "",
@@ -249,6 +249,19 @@ export default function AdminDashboard() {
       popular: false,
     });
     setShowAddModal(true);
+    
+    // Fetch auto-generated product ID from backend
+    try {
+      const res = await fetch(`${API_URL}/products?generateId=true`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setFormData(prev => ({ ...prev, id: data.id }));
+      }
+    } catch (err) {
+      console.error("Failed to generate product ID:", err);
+    }
   };
 
   const openUserEdit = (u) => {
@@ -715,18 +728,19 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-[60vh] overflow-y-auto px-1">
                 <div>
                   <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
-                    Product ID (Unique)
+                    Product ID (Auto-generated)
                   </label>
                   <input
                     type="text"
                     required
                     value={formData.id}
-                    onChange={(e) =>
-                      setFormData({ ...formData, id: e.target.value })
-                    }
-                    disabled={showEditModal}
-                    className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                    disabled
+                    className="glass-input w-full mt-1 rounded-xl px-4 py-2 bg-white/5 cursor-not-allowed opacity-70"
+                    placeholder="Generating..."
                   />
+                  <p className="text-[10px] text-[var(--color-text-muted)] mt-1">
+                    This ID is auto-generated and cannot be changed
+                  </p>
                 </div>
                 <div>
                   <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
