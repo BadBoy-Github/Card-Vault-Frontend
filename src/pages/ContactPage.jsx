@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom'
-import { HiChatAlt2 } from 'react-icons/hi'
+import { Link } from "react-router-dom";
+import { HiChatAlt2 } from "react-icons/hi";
 
 export default function ContactPage() {
-  const whatsappNumber = "+919842852121" 
-  const whatsappMessage = encodeURIComponent("Hello, I have a question regarding Card Vault.")
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+  const whatsappNumber = "+919842852121";
+  const whatsappMessage = encodeURIComponent(
+    "Hello, I have a question regarding Card Vault.",
+  );
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
     <div className="container-wide flex flex-col py-6 sm:py-8 mt-20">
@@ -15,12 +17,15 @@ export default function ContactPage() {
             <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-[var(--color-accent)] animate-ping" />
           </div>
         </div>
-        
-        <h1 className="apple-display mb-3 text-[var(--color-text)] sm:mb-5">Contact Us</h1>
-        
+
+        <h1 className="apple-display mb-3 text-[var(--color-text)] sm:mb-5">
+          Contact Us
+        </h1>
+
         <div className="max-w-lg mx-auto">
           <p className="apple-body mb-4 text-[16px] leading-relaxed sm:text-[18px]">
-            For any questions, queries, or suggestions, please connect with our team through our direct WhatsApp channel.
+            For any questions, queries, or suggestions, please connect with our
+            team through our direct WhatsApp channel.
           </p>
         </div>
 
@@ -35,11 +40,14 @@ export default function ContactPage() {
           </svg>
           Chat on WhatsApp
         </a>
-        
-        <Link to="/" className="apple-link mt-5 inline-block text-[15px] sm:mt-7">
-          Return to Vault
+
+        <Link
+          to="/"
+          className="apple-link mt-5 inline-block text-[15px] sm:mt-7"
+        >
+          Go to Vault
         </Link>
       </div>
     </div>
-  )
+  );
 }

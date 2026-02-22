@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom'
-import { HiExclamationCircle } from 'react-icons/hi'
+import { Link } from "react-router-dom";
+import { HiExclamationCircle } from "react-icons/hi";
 
 export default function PaymentTrafficPage() {
-  const whatsappNumber = "+919842852121" // Placeholder, user should provide
-  const whatsappMessage = encodeURIComponent("Hello, I would like to inquire about purchasing a gift card.")
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+  const whatsappNumber = "+919842852121"; // Placeholder, user should provide
+  const whatsappMessage = encodeURIComponent(
+    "Hello, I would like to inquire about purchasing a gift card.",
+  );
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
     <div className=" container-wide flex flex-col py-6 sm:py-8 mt-20">
@@ -15,12 +17,18 @@ export default function PaymentTrafficPage() {
             <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-500 animate-ping" />
           </div>
         </div>
-        
-        <h1 className="apple-display mb-3 text-[var(--color-text)] sm:mb-5">Direct Concierge Only</h1>
-        
+
+        <h1 className="apple-display mb-3 text-[var(--color-text)] sm:mb-5">
+          Direct Concierge Only
+        </h1>
+
         <div className="max-w-lg mx-auto">
           <p className="apple-body mb-4 text-[16px] leading-relaxed sm:text-[18px]">
-            We are currently processing payments through our <span className="font-semibold text-[var(--color-text)]">direct concierge channel</span> to handle extraordinary volume safely.
+            We are currently processing payments through our{" "}
+            <span className="font-semibold text-[var(--color-text)]">
+              direct concierge channel
+            </span>{" "}
+            to handle extraordinary volume safely.
           </p>
         </div>
 
@@ -35,11 +43,14 @@ export default function PaymentTrafficPage() {
           </svg>
           Chat on WhatsApp
         </a>
-        
-        <Link to="/" className="apple-link mt-5 inline-block text-[15px] sm:mt-7">
-          Return to Vault
+
+        <Link
+          to="/"
+          className="apple-link mt-5 inline-block text-[15px] sm:mt-7"
+        >
+          Go to Vault
         </Link>
       </div>
     </div>
-  )
+  );
 }

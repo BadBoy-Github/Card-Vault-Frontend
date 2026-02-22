@@ -1,26 +1,31 @@
-import { Link } from 'react-router-dom'
-import { HiQuestionMarkCircle } from 'react-icons/hi'
+import { Link } from "react-router-dom";
+import { HiChatAlt2 } from "react-icons/hi";
 
 export default function QueriesPage() {
-  const whatsappNumber = "+919842852121" 
-  const whatsappMessage = encodeURIComponent("Hello, I have a query regarding my order in Card Vault.")
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
+  const whatsappNumber = "+919842852121";
+  const whatsappMessage = encodeURIComponent(
+    "Hello, I have a query regarding my order in Card Vault.",
+  );
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
     <div className="container-wide flex flex-col py-6 sm:py-8 mt-20">
       <div className="glass-panel mx-auto flex w-full max-w-5xl flex-col items-center justify-center rounded-[40px] p-6 text-center">
         <div className="mb-4 flex justify-center sm:mb-6">
           <div className="relative">
-            <HiQuestionMarkCircle className="text-5xl sm:text-7xl text-amber-500 animate-pulse" />
-            <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-amber-500 animate-ping" />
+            <HiChatAlt2 className="text-5xl sm:text-7xl text-[var(--color-accent)] animate-pulse" />
+            <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-[var(--color-accent)] animate-ping" />
           </div>
         </div>
-        
-        <h1 className="apple-display mb-3 text-[var(--color-text)] sm:mb-5">Order Queries</h1>
-        
+
+        <h1 className="apple-display mb-3 text-[var(--color-text)] sm:mb-5">
+          Order Queries
+        </h1>
+
         <div className="max-w-lg mx-auto">
           <p className="apple-body mb-4 text-[16px] leading-relaxed sm:text-[18px]">
-            Have a question about your order? Contact us through WhatsApp for instant support.
+            For any problem, query, suggestion, any problem in ordering, or any
+            payment problem, please contact us through WhatsApp.
           </p>
         </div>
 
@@ -35,11 +40,14 @@ export default function QueriesPage() {
           </svg>
           Chat on WhatsApp
         </a>
-        
-        <Link to="/" className="apple-link mt-5 inline-block text-[15px] sm:mt-7">
-          Return to Vault
+
+        <Link
+          to="/orders"
+          className="apple-link mt-5 inline-block text-[15px] sm:mt-7"
+        >
+          Back to Orders
         </Link>
       </div>
     </div>
-  )
+  );
 }
