@@ -133,7 +133,7 @@ export default function ProductPage() {
         Back to Vault
       </Link>
 
-      <div className="glass-card mx-auto max-w-4xl overflow-hidden rounded-2xl p-6 md:p-8">
+      <div className="glass-card mx-auto max-w-4xl overflow-hidden rounded-2xl p-6">
         <div className="flex flex-col gap-8 md:flex-row">
           {/* Image Section - 16:9 Aspect Ratio */}
           <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-xl bg-[var(--color-surface)] md:w-2/5">
@@ -170,14 +170,16 @@ export default function ProductPage() {
               <h1 className="apple-title mt-1 text-xl font-bold text-[var(--color-text)] sm:text-2xl">
                 {card.name}
               </h1>
+              <p className="text-sm text-[var(--color-accent)]">{card.category}</p>
               <p className="apple-body mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
                 {card.description}
               </p>
             </div>
 
             <div className="mt-6 flex flex-col gap-4">
-              <div className="flex items-baseline gap-4">
-                <span className="text-2xl font-bold text-[var(--color-text)] sm:text-3xl">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                <span className="text-3xl font-bold text-[var(--color-text)] sm:text-4xl">
                   ₹{card.price}
                 </span>
                 <div className="flex flex-col">
@@ -198,17 +200,8 @@ export default function ProductPage() {
                     </span>
                   )}
                 </div>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <div className="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
-                    Category:
-                  </span>
-                  <span className="text-[12px] font-medium text-[var(--color-text)] capitalize">
-                    {card.category}
-                  </span>
                 </div>
+                <div className="flex flex-wrap gap-3 justify-end">
                 {card.validityEndDateTime && (
                   <div className="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5">
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
@@ -220,6 +213,9 @@ export default function ProductPage() {
                   </div>
                 )}
               </div>
+              </div>
+
+              
             </div>
 
             <div className="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-[var(--color-glass-border)] pt-6">

@@ -131,7 +131,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2 rounded-full p-1 transition hover:bg-white/10"
+                className="flex items-center gap-2 rounded-full p-1 transition cursor-pointer hover:bg-white/10"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-[14px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
                   {user.name?.charAt(0).toUpperCase() ||
@@ -144,7 +144,7 @@ export default function Header() {
               </button>
 
               {userDropdownOpen && (
-                <div className="glass-strong absolute right-0 mt-2 w-48 origin-top-right rounded-2xl border border-[var(--color-glass-border)] p-2 shadow-xl animate-scale-in">
+                <div className="glass-strong absolute right-0 mt-5 w-56 origin-top-right rounded-2xl border border-[var(--color-glass-border)] p-2 shadow-xl animate-scale-in">
                   <div className="px-3 py-2 border-b border-[var(--color-glass-border)] mb-2">
                     <p className="text-[14px] font-semibold truncate text-[var(--color-text)]">
                       {user.name}
