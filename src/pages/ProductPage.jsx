@@ -170,7 +170,9 @@ export default function ProductPage() {
               <h1 className="apple-title mt-1 text-xl font-bold text-[var(--color-text)] sm:text-2xl">
                 {card.name}
               </h1>
-              <p className="text-sm text-[var(--color-accent)]">{card.category}</p>
+              <p className="text-sm text-[var(--color-accent)]">
+                {card.category}
+              </p>
               <p className="apple-body mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
                 {card.description}
               </p>
@@ -179,43 +181,43 @@ export default function ProductPage() {
             <div className="mt-6 flex flex-col gap-4">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                <span className="text-3xl font-bold text-[var(--color-text)] sm:text-4xl">
-                  ₹{card.price}
-                </span>
-                <div className="flex flex-col">
-                  <span className="text-[11px] uppercase tracking-tight text-[var(--color-text-muted)]">
-                    Digital Delivery
+                  <span className="text-3xl font-bold text-[var(--color-text)] sm:text-4xl">
+                    ₹{card.price}
                   </span>
-                  {card.stock > 0 ? (
-                    <span
-                      className={`text-[11px] font-semibold ${card.stock <= 2 ? "text-red-500 animate-pulse" : "text-green-500"}`}
-                    >
-                      {card.stock <= 2
-                        ? `Only ${card.stock} left!`
-                        : "In Stock"}
+                  <div className="flex flex-col">
+                    <span className="text-[11px] uppercase tracking-tight text-[var(--color-text-muted)]">
+                      Digital Delivery
                     </span>
-                  ) : (
-                    <span className="text-[11px] font-bold text-red-500">
-                      Out of Stock
-                    </span>
-                  )}
-                </div>
+                    {card.stock > 0 ? (
+                      <span
+                        className={`text-[11px] font-semibold ${card.stock <= 2 ? "text-red-500 animate-pulse" : "text-green-500"}`}
+                      >
+                        {card.stock <= 2
+                          ? `Only ${card.stock} left!`
+                          : "In Stock"}
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-bold text-red-500">
+                        Out of Stock
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-3 justify-end">
-                {card.validityEndDateTime && (
-                  <div className="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
-                      Valid Until:
-                    </span>
-                    <span className="text-[12px] font-medium text-[var(--color-text)]">
-                      {new Date(card.validityEndDateTime).toLocaleDateString()}
-                    </span>
-                  </div>
-                )}
+                  {card.validityEndDateTime && (
+                    <div className="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+                        Valid Until:
+                      </span>
+                      <span className="text-[12px] font-medium text-[var(--color-text)]">
+                        {new Date(card.validityEndDateTime).toLocaleDateString(
+                          "en-IN",
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-              </div>
-
-              
             </div>
 
             <div className="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-[var(--color-glass-border)] pt-6">

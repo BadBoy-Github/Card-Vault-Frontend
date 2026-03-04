@@ -90,7 +90,7 @@ export default function Header() {
           className="flex shrink-0 items-center gap-2 text-[19px] font-bold tracking-tight text-[var(--color-accent)] sm:text-[21px]"
           onClick={closeMobileMenu}
         >
-          <HiCreditCard className="h-8 w-8" />
+          <img src="/logo.png" alt="" className="h-10 w-10" />
           <span className="truncate text-[var(--color-text)]">Card Vault</span>
         </Link>
 
