@@ -432,7 +432,7 @@ export default function AdminDashboard() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 text-[15px] font-medium transition-all ${
+                className={`px-6 py-2 text-[15px] font-medium cursor-pointer transition-all ${
                   activeTab === tab
                     ? "text-[var(--color-accent)] border-b-2 border-[var(--color-accent)]"
                     : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
@@ -511,7 +511,7 @@ export default function AdminDashboard() {
                               onChange={(e) =>
                                 handleUpdateStock(p.id, e.target.value)
                               }
-                              className="bg-white/5 border border-[var(--color-glass-border)] rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                              className="bg-white/5 cursor-pointer border border-[var(--color-glass-border)] rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
                             >
                               {[0, 1, 2, 3, 4, 5].map((n) => (
                                 <option
@@ -533,7 +533,7 @@ export default function AdminDashboard() {
                         <td className="px-6 py-4 text-right space-x-3">
                           <button
                             onClick={() => openEdit(p)}
-                            className="p-2 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition"
+                            className="p-2 rounded-lg bg-blue-500/10 text-blue-400 cursor-pointer hover:bg-blue-500/20 transition"
                             title="Edit"
                           >
                             <HiPencil className="h-4 w-4" />
@@ -543,7 +543,7 @@ export default function AdminDashboard() {
                               setSelectedProduct(p);
                               setShowDeleteModal(true);
                             }}
-                            className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
+                            className="p-2 rounded-lg bg-red-500/10 text-red-400 cursor-pointer hover:bg-red-500/20 transition"
                             title="Delete"
                           >
                             <HiTrash className="h-4 w-4" />
@@ -590,7 +590,7 @@ export default function AdminDashboard() {
                         <td className="px-6 py-4 text-right space-x-3">
                           <button
                             onClick={() => openUserEdit(u)}
-                            className="p-2 rounded-lg bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition"
+                            className="p-2 rounded-lg bg-[var(--color-accent)]/10 text-[var(--color-accent)] cursor-pointer hover:bg-[var(--color-accent)]/20 transition"
                             title="Edit User"
                           >
                             <HiPencil className="h-4 w-4" />
@@ -601,7 +601,7 @@ export default function AdminDashboard() {
                               setShowUserDeleteModal(true);
                             }}
                             disabled={u.email === "admin@cardvault.com"}
-                            className={`p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition ${u.email === "admin@cardvault.com" ? "opacity-30 cursor-not-allowed" : ""}`}
+                            className={`p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 cursor-pointer transition ${u.email === "admin@cardvault.com" ? "opacity-30 cursor-not-allowed" : ""}`}
                             title={
                               u.email === "admin@cardvault.com"
                                 ? "Master Admin Locked"
@@ -719,7 +719,7 @@ export default function AdminDashboard() {
               </h2>
               <button
                 onClick={closeModals}
-                className="p-2 rounded-full hover:bg-white/10 transition"
+                className="p-2 rounded-full hover:bg-red-500/50 cursor-pointer transition"
               >
                 <HiX className="h-5 w-5" />
               </button>
@@ -803,7 +803,7 @@ export default function AdminDashboard() {
                         <button
                           type="button"
                           onClick={() => setFormData({ ...formData, image: "" })}
-                          className="absolute top-2 right-2 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                          className="absolute top-2 right-2 p-1.5 rounded-full bg-black/50 text-white hover:bg-red-500/80 cursor-pointer transition-colors"
                         >
                           <HiX className="h-4 w-4" />
                         </button>
