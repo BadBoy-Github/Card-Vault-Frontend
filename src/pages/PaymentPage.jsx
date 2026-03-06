@@ -102,9 +102,15 @@ export default function PaymentPage() {
     if (!paymentConfig || !amount || qrGenerated) return;
 
     const generateQR = async () => {
-      // Use config values
-      const upiId = paymentConfig.upiId || "elayabarathiedison-1@okhdfcbank";
+      // Use config values from backend (UPI_ID from backend .env)
+      const upiId = paymentConfig.upiId;
       const merchantName = paymentConfig.merchantName || "CardVault";
+
+      if (!upiId) {
+        console.error("No UPI ID configured");
+        setQrError(true);
+        return;
+      }
 
       // Create UPI payment URL with all required parameters
       const transactionNote = orderId ? `Order_${orderId}` : `NewOrder`;
@@ -166,6 +172,16 @@ export default function PaymentPage() {
       setMessage({
         type: "error",
         text: "Please enter the UTR/Transaction ID",
+      });
+      return;
+    }
+
+    // Validate UTR format (12-16 digits)
+    const utrRegex = /^\d{12,16}$/;
+    if (!utrRegex.test(utrNumber.trim())) {
+      setMessage({
+        type: "error",
+        text: "UTR must be 12-16 digits",
       });
       return;
     }
@@ -347,7 +363,7 @@ export default function PaymentPage() {
                 />
               </div>
               <p className="mb-2 text-[12px] font-semibold text-blue-400 rounded-3xl sm:rounded-5xl bg-blue-500/10 px-3 py-1">
-                Elayabarathi M V
+                {paymentConfig?.merchantName || "CardVault"}
               </p>
               <p className="text-center text-xs sm:text-[14px] text-[var(--color-text-muted)] px-2 mb-2">
                 Scan with any UPI app (GPay, PhonePe, Paytm)
@@ -359,7 +375,7 @@ export default function PaymentPage() {
                   Or pay manually to this UPI ID:
                 </p>
                 <p className="text-[16px] font-bold text-center text-[var(--color-accent)]">
-                  {paymentConfig?.upiId || "elayabarathiedison-1@okhdfcbank"}
+                  {paymentConfig?.upiId || "UPI ID not available"}
                 </p>
                 <p className="text-[14px] text-center text-[var(--color-text)] mt-1">
                   Amount: <span className="font-bold">₹{amount}</span>
@@ -411,17 +427,19 @@ export default function PaymentPage() {
             <form onSubmit={handleSubmitUTR}>
               <div className="mb-3 sm:mb-4">
                 <label className="mb-2 block text-[13px] sm:text-[14px] font-medium text-[var(--color-text)]">
-                  Enter UTR/Transaction ID
+                  Enter UTR/Transaction ID{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={utrNumber}
                   onChange={(e) => setUtrNumber(e.target.value)}
-                  placeholder="e.g., 123456789012"
+                  placeholder="12-16 digit UTR number"
                   className="w-full rounded-xl sm:rounded-2xl border border-[var(--color-glass-border)] bg-[var(--color-glass)] px-3 sm:px-4 py-2.5 sm:py-3 text-[14px] sm:text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent)] focus:outline-none"
                 />
                 <p className="mt-1 text-[11px] sm:text-[12px] text-[var(--color-text-muted)]">
-                  Find this in your payment app's transaction history
+                  Find this in your payment app's transaction history (12-16
+                  digits)
                 </p>
               </div>
 

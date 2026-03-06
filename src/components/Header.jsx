@@ -6,12 +6,12 @@ import {
   HiCreditCard,
   HiCollection,
   HiUserCircle,
+  HiUser,
   HiChevronDown,
   HiLogout,
   HiPhone,
   HiHeart,
   HiLockClosed,
-  HiShoppingCart,
 } from "react-icons/hi";
 
 export default function Header() {
@@ -19,25 +19,25 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   const handleSearchChange = (value) => {
     setSearchQuery(value);
-    if (value.trim()) {
-      navigate(`/search?q=${encodeURIComponent(value.trim())}`);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     } else {
       navigate("/");
     }
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-  };
-
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -78,11 +78,21 @@ export default function Header() {
       {user?.isAdmin && (
         <Link
           to="/admin/dashboard"
-          className="hidden lg:flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
+          className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
           onClick={closeMobileMenu}
         >
           <span>Dashboard</span>
           <HiLockClosed className="h-5 w-5 shrink-0" />
+        </Link>
+      )}
+      {user && (
+        <Link
+          to="/profile"
+          className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
+          onClick={closeMobileMenu}
+        >
+          <span>Profile</span>
+          <HiUser className="h-5 w-5 shrink-0" />
         </Link>
       )}
     </>
@@ -313,6 +323,36 @@ export default function Header() {
                 <span>Orders</span>
                 <HiCollection className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
+              {user?.isAdmin && (
+                <Link
+                  to="/admin/dashboard"
+                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Dashboard</span>
+                  <HiLockClosed className="h-6 w-6 text-[var(--color-text-muted)]" />
+                </Link>
+              )}
+              {user && (
+                <Link
+                  to="/profile"
+                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Profile</span>
+                  <HiUserCircle className="h-6 w-6 text-[var(--color-text-muted)]" />
+                </Link>
+              )}
+              {user && (
+                <Link
+                  to="/wishlist"
+                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Wishlist</span>
+                  <HiHeart className="h-6 w-6 text-[var(--color-text-muted)]" />
+                </Link>
+              )}
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
               {user ? (
                 <>
