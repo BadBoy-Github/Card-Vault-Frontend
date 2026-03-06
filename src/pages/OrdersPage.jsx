@@ -38,11 +38,20 @@ export default function OrdersPage() {
     }
   };
 
-  const currentOrders = orders.filter((o) =>
-    ["pending", "processing"].includes(o.status),
+  const currentOrders = orders.filter(
+    (o) =>
+      o.paymentStatus &&
+      o.paymentStatus !== "pending" &&
+      (["pending", "processing"].includes(o.status) ||
+        o.paymentStatus === "awaiting_verification"),
   );
-  const previousOrders = orders.filter((o) =>
-    ["delivered", "cancelled"].includes(o.status),
+  const previousOrders = orders.filter(
+    (o) =>
+      o.paymentStatus &&
+      o.paymentStatus !== "pending" &&
+      (["delivered", "cancelled"].includes(o.status) ||
+        o.paymentStatus === "verified" ||
+        o.paymentStatus === "failed"),
   );
 
   const displayOrders =
@@ -117,7 +126,7 @@ export default function OrdersPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-[12px] text-[var(--color-text-muted)] uppercase tracking-wider">
-                        Status
+                        Order Status
                       </p>
                       <p
                         className={`text-[14px] font-medium capitalize ${
@@ -132,6 +141,42 @@ export default function OrdersPage() {
                       </p>
                     </div>
                   </div>
+
+                  {/* Payment Status */}
+                  {order.paymentStatus && order.paymentStatus !== "pending" && (
+                    <div className="bg-[var(--color-glass)] rounded-xl p-3 flex justify-between items-center">
+                      <div>
+                        <p className="text-[12px] text-[var(--color-text-muted)] uppercase tracking-wider">
+                          Payment Status
+                        </p>
+                        <p
+                          className={`text-[14px] font-medium capitalize ${
+                            order.paymentStatus === "verified"
+                              ? "text-green-400"
+                              : order.paymentStatus === "awaiting_verification"
+                                ? "text-yellow-400"
+                                : order.paymentStatus === "failed"
+                                  ? "text-red-400"
+                                  : "text-gray-400"
+                          }`}
+                        >
+                          {order.paymentStatus === "awaiting_verification"
+                            ? "Awaiting Verification"
+                            : order.paymentStatus}
+                        </p>
+                      </div>
+                      {order.utrNumber && (
+                        <div className="text-right">
+                          <p className="text-[12px] text-[var(--color-text-muted)] uppercase tracking-wider">
+                            UTR
+                          </p>
+                          <p className="font-mono text-[12px] text-[var(--color-text)]">
+                            {order.utrNumber}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex flex-col gap-3">
                     {order.orderItems.map((item, idx) => (

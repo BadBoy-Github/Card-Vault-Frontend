@@ -11,6 +11,7 @@ import {
   HiPhone,
   HiHeart,
   HiLockClosed,
+  HiShoppingCart,
 } from "react-icons/hi";
 
 export default function Header() {
@@ -48,9 +49,14 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location]);
+
   // Clear search query when leaving search page
   useEffect(() => {
-    if (!location.pathname.includes('/search')) {
+    if (!location.pathname.includes("/search")) {
       setSearchQuery("");
     }
   }, [location]);
@@ -292,12 +298,12 @@ export default function Header() {
             </form>
             <nav className="flex flex-col gap-1">
               <Link
-                to="/cart"
+                to="/contact"
                 className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
                 onClick={closeMobileMenu}
               >
-                <span>Cart</span>
-                <HiShoppingCart className="h-6 w-6 text-[var(--color-text-muted)]" />
+                <span>Contact</span>
+                <HiPhone className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
               <Link
                 to="/orders"
@@ -307,16 +313,6 @@ export default function Header() {
                 <span>Orders</span>
                 <HiCollection className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
-              {user?.isAdmin && (
-                <Link
-                  to="/admin/dashboard"
-                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)] lg:hidden"
-                  onClick={closeMobileMenu}
-                >
-                  <span>Dashboard</span>
-                  <HiLockClosed className="h-6 w-6 text-[var(--color-text-muted)]" />
-                </Link>
-              )}
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
               {user ? (
                 <>

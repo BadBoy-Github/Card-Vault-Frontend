@@ -10,6 +10,7 @@ import NewsletterSection from "./components/NewsletterSection";
 import ProductPage from "./pages/ProductPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentTrafficPage from "./pages/PaymentTrafficPage";
+import PaymentPage from "./pages/PaymentPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ContactPage from "./pages/ContactPage";
@@ -53,38 +54,42 @@ function App() {
         <AuthProvider>
           <WishlistProvider>
             <Routes>
-            {isConstruction ? (
-              <Route path="*" element={<ConstructionPage />} />
-            ) : (
-              <>
-                {/* Public Auth Routes (No Header/Footer) */}
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+              {isConstruction ? (
+                <Route path="*" element={<ConstructionPage />} />
+              ) : (
+                <>
+                  {/* Public Auth Routes (No Header/Footer) */}
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
 
-                {/* Protected App Routes (With Header/Footer) */}
-                <Route
-                  element={
-                    <ProtectedRoute>
-                      <Layout />
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route path="/" element={<Home />} />
-                  <Route path="/product/:id" element={<ProductPage />} />
-                  <Route path="/search" element={<SearchPage />} />
+                  {/* Protected App Routes (With Header/Footer) */}
                   <Route
-                    path="/payment-traffic"
-                    element={<PaymentTrafficPage />}
-                  />
-                  <Route path="/orders" element={<OrdersPage />} />
-                  <Route path="/queries" element={<QueriesPage />} />
-                  <Route path="/contact" element={<ContactPage />} />
-                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                  <Route path="/wishlist" element={<WishlistPage />} />
-                  <Route path="*" element={<NotFoundPage />} />
-                </Route>
-              </>
-            )}
+                    element={
+                      <ProtectedRoute>
+                        <Layout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="/" element={<Home />} />
+                    <Route path="/product/:id" element={<ProductPage />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route
+                      path="/payment-traffic"
+                      element={<PaymentTrafficPage />}
+                    />
+                    <Route path="/payment" element={<PaymentPage />} />
+                    <Route path="/orders" element={<OrdersPage />} />
+                    <Route path="/queries" element={<QueriesPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
+                    <Route
+                      path="/admin/dashboard"
+                      element={<AdminDashboard />}
+                    />
+                    <Route path="/wishlist" element={<WishlistPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Route>
+                </>
+              )}
             </Routes>
           </WishlistProvider>
         </AuthProvider>
