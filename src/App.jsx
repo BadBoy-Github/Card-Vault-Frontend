@@ -22,6 +22,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import { Navigate, useLocation } from "react-router-dom";
 import WishlistPage from "./pages/WishlistPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const isConstruction = false;
 
@@ -79,6 +80,7 @@ function App() {
                     />
                     <Route path="/payment" element={<PaymentPage />} />
                     <Route path="/orders" element={<OrdersPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/queries" element={<QueriesPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                     <Route

@@ -25,18 +25,6 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Check if on mobile screen
-  useEffect(() => {
-    const checkScreenSize = () => {
-      if (window.innerWidth < 1024) {
-        navigate("/");
-      }
-    };
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, [navigate]);
-
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
