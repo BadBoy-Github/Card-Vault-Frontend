@@ -313,6 +313,16 @@ export default function Header() {
                 <span>Orders</span>
                 <HiCollection className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
+              {user && (
+                <Link
+                  to="/wishlist"
+                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Wishlist</span>
+                  <HiHeart className="h-6 w-6 text-[var(--color-text-muted)]" />
+                </Link>
+              )}
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
               {user ? (
                 <>
