@@ -1,7 +1,7 @@
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
-import { useState, useEffect } from "react";
 import { HiHeart } from "react-icons/hi";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -63,14 +63,36 @@ export default function ProductPage() {
     );
   }
 
-  const total = card.value * quantity;
+  const total = card.price * quantity;
 
-  const handleBuy = () => {
+  const handleBuy = async () => {
     if (!user) {
       navigate("/login", { state: { from: `/product/${card.id}` } });
       return;
     }
-    navigate("/payment-traffic");
+
+    // Instead of creating order, redirect directly to payment page with product info
+    // Order will be created after UTR is submitted
+    const orderItem = {
+      name: card.name,
+      brand: card.brand,
+      price: card.price,
+      image: card.image,
+      qty: quantity,
+      product: card._id,
+    };
+
+    // Store order item in sessionStorage to create order after payment
+    sessionStorage.setItem(
+      "pendingOrder",
+      JSON.stringify({
+        orderItems: [orderItem],
+        totalPrice: total,
+      }),
+    );
+
+    // Redirect to payment page - order will be created there after UTR submission
+    navigate(`/payment?amount=${total}`);
   };
 
   const handleToggleWishlist = async (e) => {
@@ -88,7 +110,11 @@ export default function ProductPage() {
 
     try {
       await toggleWishlist(card._id);
-      setNotification(currentWishlistState ? "Removed from your wishlist – we'll miss it!" : "Added to your wishlist! ✨");
+      setNotification(
+        currentWishlistState
+          ? "Removed from your wishlist – we'll miss it!"
+          : "Added to your wishlist! ✨",
+      );
     } catch (err) {
       console.error(err);
     }

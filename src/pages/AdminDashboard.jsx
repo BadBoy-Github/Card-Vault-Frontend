@@ -12,7 +12,8 @@ import {
 } from "react-icons/hi";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-const DEFAULT_ADMIN_EMAIL = import.meta.env.VITE_DEFAULT_ADMIN_EMAIL || "elayabarathiedison@gmail.com";
+const DEFAULT_ADMIN_EMAIL =
+  import.meta.env.VITE_DEFAULT_ADMIN_EMAIL || "elayabarathiedison@gmail.com";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -23,6 +24,18 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  // Check if on mobile screen
+  useEffect(() => {
+    const checkScreenSize = () => {
+      if (window.innerWidth < 1024) {
+        navigate("/");
+      }
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, [navigate]);
 
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
@@ -87,7 +100,9 @@ export default function AdminDashboard() {
 
       setProducts(Array.isArray(results[0]) ? results[0] : []);
       setUsers(Array.isArray(results[1]) ? results[1] : []);
-      setOrders(Array.isArray(results[2]) ? results[2] : []);
+      // Show all orders including pending ones
+      const allOrders = Array.isArray(results[2]) ? results[2] : [];
+      setOrders(allOrders);
     } catch (err) {
       console.error(err);
     } finally {
@@ -249,7 +264,7 @@ export default function AdminDashboard() {
       popular: false,
     });
     setShowAddModal(true);
-    
+
     // Fetch auto-generated product ID from backend
     try {
       const res = await fetch(`${API_URL}/products?generateId=true`, {
@@ -257,7 +272,7 @@ export default function AdminDashboard() {
       });
       if (res.ok) {
         const data = await res.json();
-        setFormData(prev => ({ ...prev, id: data.id }));
+        setFormData((prev) => ({ ...prev, id: data.id }));
       }
     } catch (err) {
       console.error("Failed to generate product ID:", err);
@@ -400,6 +415,55 @@ export default function AdminDashboard() {
       if (res.ok) {
         setOrders(orders.map((o) => (o._id === id ? { ...o, status } : o)));
         setMessage(`Order is now ${status}.`);
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpdatePaymentStatus = async (id, paymentStatus) => {
+    try {
+      const res = await fetch(`${API_URL}/orders/${id}/verify-payment`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          verified: paymentStatus === "verified",
+          paymentStatus: paymentStatus,
+        }),
+      });
+      if (res.ok) {
+        const updatedOrder = await res.json();
+        setOrders(orders.map((o) => (o._id === id ? updatedOrder : o)));
+        setMessage(`Payment status updated to ${paymentStatus}.`);
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleVerifyPayment = async (id, verified) => {
+    try {
+      const res = await fetch(`${API_URL}/orders/${id}/verify-payment`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ verified }),
+      });
+      if (res.ok) {
+        const updatedOrder = await res.json();
+        setOrders(orders.map((o) => (o._id === id ? updatedOrder : o)));
+        setMessage(
+          verified
+            ? "Payment verified successfully!"
+            : "Payment marked as failed.",
+        );
         setTimeout(() => setMessage(""), 3000);
       }
     } catch (err) {
@@ -625,6 +689,8 @@ export default function AdminDashboard() {
                       <th className="px-6 py-4">User</th>
                       <th className="px-6 py-4">Items</th>
                       <th className="px-6 py-4">Total</th>
+                      <th className="px-6 py-4">Payment</th>
+                      <th className="px-6 py-4">UTR</th>
                       <th className="px-6 py-4">Status</th>
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
@@ -646,6 +712,55 @@ export default function AdminDashboard() {
                           items
                         </td>
                         <td className="px-6 py-4 font-bold">₹{o.totalPrice}</td>
+                        <td className="px-6 py-4">
+                          <select
+                            value={o.paymentStatus || "pending"}
+                            onChange={(e) =>
+                              handleUpdatePaymentStatus(o._id, e.target.value)
+                            }
+                            className={`bg-transparent border border-[var(--color-glass-border)] rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] text-xs font-medium ${
+                              o.paymentStatus === "verified"
+                                ? "text-green-400"
+                                : o.paymentStatus === "awaiting_verification"
+                                  ? "text-yellow-400"
+                                  : o.paymentStatus === "failed"
+                                    ? "text-red-400"
+                                    : "text-gray-400"
+                            }`}
+                          >
+                            <option
+                              value="pending"
+                              className="bg-[var(--color-background)]"
+                            >
+                              No Payment
+                            </option>
+                            <option
+                              value="awaiting_verification"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Pending Verify
+                            </option>
+                            <option
+                              value="verified"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Verified
+                            </option>
+                            <option
+                              value="failed"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Failed
+                            </option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4">
+                          {o.utrNumber && (
+                            <span className="font-mono text-xs text-[var(--color-text-muted)]">
+                              {o.utrNumber.substring(0, 10)}...
+                            </span>
+                          )}
+                        </td>
                         <td className="px-6 py-4">
                           <select
                             value={o.status}
@@ -797,12 +912,14 @@ export default function AdminDashboard() {
                           alt="Product preview"
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.target.style.display = 'none';
+                            e.target.style.display = "none";
                           }}
                         />
                         <button
                           type="button"
-                          onClick={() => setFormData({ ...formData, image: "" })}
+                          onClick={() =>
+                            setFormData({ ...formData, image: "" })
+                          }
                           className="absolute top-2 right-2 p-1.5 rounded-full bg-black/50 text-white hover:bg-red-500/80 cursor-pointer transition-colors"
                         >
                           <HiX className="h-4 w-4" />
@@ -1014,12 +1131,15 @@ export default function AdminDashboard() {
               <HiExclamation className="h-8 w-8" />
             </div>
             <h3 className="text-xl font-bold text-[var(--color-text)]">
-              {selectedUser?.email === DEFAULT_ADMIN_EMAIL ? "Cannot Remove Master Admin" : "Revoke Access?"}
+              {selectedUser?.email === DEFAULT_ADMIN_EMAIL
+                ? "Cannot Remove Master Admin"
+                : "Revoke Access?"}
             </h3>
             <p className="mt-4 text-[15px] text-[var(--color-text-muted)] leading-relaxed">
               {selectedUser?.email === DEFAULT_ADMIN_EMAIL ? (
                 <span className="text-amber-500">
-                  The master admin account cannot be deleted for security reasons.
+                  The master admin account cannot be deleted for security
+                  reasons.
                 </span>
               ) : (
                 <>
@@ -1044,7 +1164,9 @@ export default function AdminDashboard() {
                 onClick={closeModals}
                 className="w-full rounded-2xl bg-white/5 py-3.5 text-[16px] font-medium text-[var(--color-text)] hover:bg-white/10 transition-colors"
               >
-                {selectedUser?.email === DEFAULT_ADMIN_EMAIL ? "Close" : "Keep Member"}
+                {selectedUser?.email === DEFAULT_ADMIN_EMAIL
+                  ? "Close"
+                  : "Keep Member"}
               </button>
             </div>
           </div>
@@ -1270,46 +1392,6 @@ export default function AdminDashboard() {
                     <div className="glass-input w-full mt-1 rounded-xl px-4 py-2 font-bold text-[var(--color-accent)]">
                       ₹{orderFormData.productPrice * orderFormData.quantity}
                     </div>
-                  </div>
-                  <div>
-                    <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
-                      Order Status
-                    </label>
-                    <select
-                      value={orderFormData.status}
-                      onChange={(e) =>
-                        setOrderFormData({
-                          ...orderFormData,
-                          status: e.target.value,
-                        })
-                      }
-                      className="glass-input w-full mt-1 rounded-xl px-4 py-2"
-                    >
-                      <option
-                        value="pending"
-                        className="bg-[var(--color-background)]"
-                      >
-                        Pending
-                      </option>
-                      <option
-                        value="processing"
-                        className="bg-[var(--color-background)]"
-                      >
-                        Processing
-                      </option>
-                      <option
-                        value="delivered"
-                        className="bg-[var(--color-background)]"
-                      >
-                        Delivered
-                      </option>
-                      <option
-                        value="cancelled"
-                        className="bg-[var(--color-background)]"
-                      >
-                        Cancelled
-                      </option>
-                    </select>
                   </div>
                 </div>
               </div>
