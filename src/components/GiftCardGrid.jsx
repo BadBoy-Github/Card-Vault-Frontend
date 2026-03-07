@@ -44,9 +44,71 @@ export default function GiftCardGrid() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-accent)] border-t-transparent"></div>
-      </div>
+      <section id="gift-cards" className="flex flex-1 flex-col section-padding">
+        <div className="container-wide">
+          <div className="mb-8 text-center sm:mb-10">
+            <div className="animate-pulse h-10 w-64 bg-[var(--color-surface)] rounded-lg mx-auto" />
+            <div className="animate-pulse h-5 w-96 bg-[var(--color-surface)] rounded mt-3 mx-auto" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="glass-card rounded-2xl overflow-hidden">
+                <div className="animate-pulse aspect-video bg-[var(--color-surface)]" />
+                <div className="p-5 space-y-3">
+                  <div className="animate-pulse h-3 w-16 bg-[var(--color-surface)] rounded" />
+                  <div className="animate-pulse h-5 w-3/4 bg-[var(--color-surface)] rounded" />
+                  <div className="animate-pulse h-4 w-20 bg-[var(--color-surface)] rounded" />
+                  <div className="flex justify-between items-center pt-2">
+                    <div className="animate-pulse h-6 w-24 bg-[var(--color-surface)] rounded" />
+                    <div className="animate-pulse h-10 w-28 bg-[var(--color-surface)] rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section id="gift-cards" className="flex flex-1 flex-col section-padding">
+        <div className="container-wide">
+          <div className="mb-8 text-center sm:mb-10">
+            <h2 className="apple-display text-[var(--color-text)]">
+              Choose a gift card
+            </h2>
+            <p className="apple-body mt-2 px-2 text-[15px] sm:mt-3 sm:text-[17px] md:text-[19px]">
+              All cards are delivered digitally. Pick one and go.
+            </p>
+          </div>
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="glass-panel rounded-full p-8 mb-6">
+              <svg
+                className="h-16 w-16 text-[var(--color-text-muted)]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                />
+              </svg>
+            </div>
+            <h3 className="apple-title text-[var(--color-text)] mb-2">
+              No cards in the vault
+            </h3>
+            <p className="apple-body max-w-md">
+              We couldn't find any gift cards at the moment. Check back soon for
+              fresh additions!
+            </p>
+          </div>
+        </div>
+      </section>
     );
   }
 

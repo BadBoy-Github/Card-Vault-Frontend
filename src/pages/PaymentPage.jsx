@@ -9,6 +9,8 @@ import {
   HiArrowRight,
   HiPhone,
   HiClipboard,
+  HiShieldCheck,
+  HiLightningBolt,
 } from "react-icons/hi";
 import QRCode from "qrcode";
 
@@ -406,6 +408,34 @@ export default function PaymentPage() {
               <li>Copy the UTR/Transaction ID from payment confirmation</li>
               <li>Enter the UTR below and submit</li>
             </ol>
+
+            {/* Trust Badges */}
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="glass-pill flex items-center gap-2 rounded-xl px-3 py-2.5">
+                <HiShieldCheck className="h-5 w-5 text-green-500" />
+                <span className="text-[12px] font-medium text-[var(--color-text)]">
+                  Secured
+                </span>
+              </div>
+              <div className="glass-pill flex items-center gap-2 rounded-xl px-3 py-2.5">
+                <HiLightningBolt className="h-5 w-5 text-amber-500" />
+                <span className="text-[12px] font-medium text-[var(--color-text)]">
+                  Instant Delivery
+                </span>
+              </div>
+              <div className="glass-pill flex items-center gap-2 rounded-xl px-3 py-2.5 col-span-2 sm:col-span-1">
+                <svg
+                  className="h-5 w-5 text-blue-500"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                <span className="text-[12px] font-medium text-[var(--color-text)]">
+                  100% Authentic
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Message Alert */}

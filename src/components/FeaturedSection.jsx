@@ -45,14 +45,21 @@ const features = [
 
 export default function FeaturedSection() {
   return (
-    <section className="section-padding-lg" aria-labelledby="featured-heading">
+    <section
+      className="section-padding-lg "
+      aria-labelledby="featured-heading"
+    >
       <div className="container-wide">
         <div className="mb-8 text-center sm:mb-12">
-          <h2 id="featured-heading" className="apple-display text-[var(--color-text)]">
+          <h2
+            id="featured-heading"
+            className="apple-display text-[var(--color-text)]"
+          >
             Why Trust the Vault?
           </h2>
           <p className="apple-body mx-auto mt-2 max-w-[600px] px-2 text-[15px] sm:mt-3 sm:text-[17px] md:text-[19px]">
-            We provide a premium experience for people who value their time (and their gift cards).
+            We provide a premium experience for people who value their time (and
+            their gift cards).
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -75,5 +82,5 @@ export default function FeaturedSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
