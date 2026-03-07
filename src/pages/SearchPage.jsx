@@ -39,8 +39,14 @@ export default function SearchPage() {
         const res = await fetch(`${API_URL}/products?${params.toString()}`);
         const data = await res.json();
         if (res.ok) {
-          setResults(data.products || []);
-          setTotalPages(data.pages || 1);
+          // Handle both array response and object with products/pages
+          if (Array.isArray(data)) {
+            setResults(data || []);
+            setTotalPages(1);
+          } else {
+            setResults(data.products || data || []);
+            setTotalPages(data.pages || 1);
+          }
         }
       } catch (err) {
         console.error("Error searching products:", err);

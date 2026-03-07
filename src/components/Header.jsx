@@ -104,9 +104,9 @@ export default function Header() {
         {/* Desktop Search Bar */}
         <form
           onSubmit={handleSearchSubmit}
-          className="hidden flex-1 max-w-md mx-4 md:block"
+          className="hidden flex-1 max-w-md mx-4 md:flex items-center gap-2"
         >
-          <div className="relative group">
+          <div className="relative flex-1 group">
             <input
               type="text"
               placeholder="Search gift cards..."
@@ -128,6 +128,25 @@ export default function Header() {
               />
             </svg>
           </div>
+          <button
+            type="submit"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)] text-white hover:opacity-90 transition"
+            aria-label="Search"
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </button>
         </form>
 
         {/* Desktop nav */}
@@ -280,8 +299,11 @@ export default function Header() {
           aria-label="Navigation menu"
         >
           <div className="container-wide py-4 sm:py-6">
-            <form onSubmit={handleSearchSubmit} className="mb-4 px-4">
-              <div className="relative">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="mb-4 px-4 flex gap-2"
+            >
+              <div className="relative flex-1">
                 <input
                   type="text"
                   placeholder="Search gift cards..."
@@ -303,6 +325,25 @@ export default function Header() {
                   />
                 </svg>
               </div>
+              <button
+                type="submit"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent)] text-white hover:opacity-90 transition"
+                aria-label="Search"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
             </form>
             <nav className="flex flex-col gap-1">
               <Link

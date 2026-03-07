@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
+import Footer from "./Footer";
 
 export default function Layout() {
   return (
@@ -9,6 +10,7 @@ export default function Layout() {
       <main className="mt-14 flex flex-1 flex-col sm:mt-16 lg:mt-18">
         <Outlet />
       </main>
+      <Footer />
     </div>
   );
 }
