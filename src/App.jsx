@@ -9,12 +9,10 @@ import GiftCardGrid from "./components/GiftCardGrid";
 import NewsletterSection from "./components/NewsletterSection";
 import ProductPage from "./pages/ProductPage";
 import SearchPage from "./pages/SearchPage";
-import PaymentTrafficPage from "./pages/PaymentTrafficPage";
 import PaymentPage from "./pages/PaymentPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ContactPage from "./pages/ContactPage";
-import QueriesPage from "./pages/QueriesPage";
 import ConstructionPage from "./pages/ConstructionPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import OrdersPage from "./pages/OrdersPage";
@@ -23,6 +21,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import WishlistPage from "./pages/WishlistPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
+import TermsPage from "./pages/TermsPage";
 
 const isConstruction = false;
 
@@ -62,6 +61,7 @@ function App() {
                   {/* Public Auth Routes (No Header/Footer) */}
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
 
                   {/* Protected App Routes (With Header/Footer) */}
                   <Route
@@ -74,14 +74,9 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/product/:id" element={<ProductPage />} />
                     <Route path="/search" element={<SearchPage />} />
-                    <Route
-                      path="/payment-traffic"
-                      element={<PaymentTrafficPage />}
-                    />
                     <Route path="/payment" element={<PaymentPage />} />
                     <Route path="/orders" element={<OrdersPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/queries" element={<QueriesPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                     <Route
                       path="/admin/dashboard"

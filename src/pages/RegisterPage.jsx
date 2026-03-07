@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [emailValid, setEmailValid] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const { user, register, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -177,7 +178,7 @@ export default function RegisterPage() {
                 required
                 minLength={6}
                 className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 pr-24 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
-                placeholder="At least 8 characters with mixed case, numbers & symbols"
+                placeholder="Strong_password_here"
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 mt-1">
                 {isVeryStrong && password && (
@@ -286,9 +287,34 @@ export default function RegisterPage() {
               </p>
             )}
           </div>
+
+          {/* Terms and Conditions Checkbox */}
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="accept-terms"
+              checked={acceptTerms}
+              onChange={(e) => setAcceptTerms(e.target.checked)}
+              className="mt-1 w-5 h-5 rounded border-[var(--color-glass-border)] bg-[var(--color-section-bg)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] focus:ring-offset-0 cursor-pointer"
+            />
+            <label
+              htmlFor="accept-terms"
+              className="text-[14px] text-[var(--color-text-muted)] cursor-pointer"
+            >
+              I agree to the{" "}
+              <Link
+                to="/terms"
+                className="apple-link font-medium"
+                target="_blank"
+              >
+                Terms & Conditions
+              </Link>{" "}
+            </label>
+          </div>
+
           <button
             type="submit"
-            disabled={loading || !emailValid || !isVeryStrong}
+            disabled={loading || !emailValid || !isVeryStrong || !acceptTerms}
             className="glass-cta min-h-[44px] w-full rounded-full py-3.5 text-[16px] font-medium text-white sm:text-[17px] disabled:opacity-70"
           >
             {loading ? (
