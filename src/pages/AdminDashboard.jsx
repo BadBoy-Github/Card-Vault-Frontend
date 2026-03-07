@@ -630,6 +630,7 @@ export default function AdminDashboard() {
                 <table className="w-full text-left text-[14px]">
                   <thead className="bg-white/5 text-[var(--color-text-muted)]">
                     <tr>
+                      <th className="px-6 py-4">User ID</th>
                       <th className="px-6 py-4">Name</th>
                       <th className="px-6 py-4">Email</th>
                       <th className="px-6 py-4">Role</th>
@@ -639,6 +640,7 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-[var(--color-glass-border)]">
                     {users.map((u) => (
                       <tr key={u._id} className="hover:bg-white/5 transition">
+                        <td className="px-6 py-4 font-mono text-xs">{u._id}</td>
                         <td className="px-6 py-4">{u.name}</td>
                         <td className="px-6 py-4">{u.email}</td>
                         <td className="px-6 py-4">
@@ -1472,50 +1474,102 @@ export default function AdminDashboard() {
                 </h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">User Name</p>
-                    <p className="font-medium text-[var(--color-text)]">{selectedOrder.user?.name || 'N/A'}</p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      User Name
+                    </p>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedOrder.user?.name || "N/A"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">User Email</p>
-                    <p className="font-medium text-[var(--color-text)] break-all">{selectedOrder.user?.email || 'N/A'}</p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      User Email
+                    </p>
+                    <p className="font-medium text-[var(--color-text)] break-all">
+                      {selectedOrder.user?.email || "N/A"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">Account ID</p>
-                    <p className="font-mono text-[var(--color-text)] text-xs">{selectedOrder.user?._id || selectedOrder.user?.id || 'N/A'}</p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Account ID
+                    </p>
+                    <p className="font-mono text-[var(--color-text)] text-xs">
+                      {selectedOrder.user?._id ||
+                        selectedOrder.user?.id ||
+                        "N/A"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">Order ID</p>
-                    <p className="font-mono text-[var(--color-text)] text-xs">{selectedOrder._id}</p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Order ID
+                    </p>
+                    <p className="font-mono text-[var(--color-text)] text-xs">
+                      {selectedOrder._id}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">UTR Number</p>
-                    <p className="font-mono font-bold text-[var(--color-accent)]">{selectedOrder.utrNumber || 'Not Submitted'}</p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      UTR Number
+                    </p>
+                    <p className="font-mono font-bold text-[var(--color-accent)]">
+                      {selectedOrder.utrNumber || "Not Submitted"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">Payment Mode</p>
-                    <p className="font-medium text-[var(--color-text)]">{selectedOrder.paymentMethod || 'UPI'}</p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Payment Mode
+                    </p>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedOrder.paymentMethod || "UPI"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">Payment Amount</p>
-                    <p className="font-bold text-green-400">₹{selectedOrder.paymentAmount || selectedOrder.totalPrice || 0}</p>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Payment Amount
+                    </p>
+                    <p className="font-bold text-green-400">
+                      ₹
+                      {selectedOrder.paymentAmount ||
+                        selectedOrder.totalPrice ||
+                        0}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">Payment Status</p>
-                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
-                      selectedOrder.paymentStatus === 'verified' ? 'bg-green-500/20 text-green-400' :
-                      selectedOrder.paymentStatus === 'awaiting_verification' ? 'bg-yellow-500/20 text-yellow-400' :
-                      selectedOrder.paymentStatus === 'failed' ? 'bg-red-500/20 text-red-400' :
-                      'bg-gray-500/20 text-gray-400'
-                    }`}>
-                      {selectedOrder.paymentStatus === 'verified' ? 'Verified' :
-                       selectedOrder.paymentStatus === 'awaiting_verification' ? 'Awaiting Verification' :
-                       selectedOrder.paymentStatus === 'failed' ? 'Failed' : 'No Payment'}
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Payment Status
+                    </p>
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                        selectedOrder.paymentStatus === "verified"
+                          ? "bg-green-500/20 text-green-400"
+                          : selectedOrder.paymentStatus ===
+                              "awaiting_verification"
+                            ? "bg-yellow-500/20 text-yellow-400"
+                            : selectedOrder.paymentStatus === "failed"
+                              ? "bg-red-500/20 text-red-400"
+                              : "bg-gray-500/20 text-gray-400"
+                      }`}
+                    >
+                      {selectedOrder.paymentStatus === "verified"
+                        ? "Verified"
+                        : selectedOrder.paymentStatus ===
+                            "awaiting_verification"
+                          ? "Awaiting Verification"
+                          : selectedOrder.paymentStatus === "failed"
+                            ? "Failed"
+                            : "No Payment"}
                     </span>
                   </div>
                   {selectedOrder.paymentSubmittedAt && (
                     <div className="col-span-2">
-                      <p className="text-[11px] text-[var(--color-text-muted)]">Payment Submitted At</p>
-                      <p className="font-medium text-[var(--color-text)]">{new Date(selectedOrder.paymentSubmittedAt).toLocaleString()}</p>
+                      <p className="text-[11px] text-[var(--color-text-muted)]">
+                        Payment Submitted At
+                      </p>
+                      <p className="font-medium text-[var(--color-text)]">
+                        {new Date(
+                          selectedOrder.paymentSubmittedAt,
+                        ).toLocaleString()}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -1527,23 +1581,32 @@ export default function AdminDashboard() {
                   Product Details
                 </h3>
                 <div className="flex gap-4">
-                  {selectedOrder.orderItems && selectedOrder.orderItems.map((item, idx) => (
-                    <div key={idx} className="flex gap-3">
-                      {item.image && (
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-16 h-16 rounded-xl object-cover"
-                        />
-                      )}
-                      <div>
-                        <p className="font-medium text-[var(--color-text)]">{item.name}</p>
-                        <p className="text-[12px] text-[var(--color-text-muted)]">{item.brand}</p>
-                        <p className="text-[12px] text-[var(--color-text-muted)]">Qty: {item.qty || 1}</p>
-                        <p className="text-sm font-bold text-[var(--color-accent)]">₹{item.price}</p>
+                  {selectedOrder.orderItems &&
+                    selectedOrder.orderItems.map((item, idx) => (
+                      <div key={idx} className="flex gap-3">
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-16 h-16 rounded-xl object-cover"
+                          />
+                        )}
+                        <div>
+                          <p className="font-medium text-[var(--color-text)]">
+                            {item.name}
+                          </p>
+                          <p className="text-[12px] text-[var(--color-text-muted)]">
+                            {item.brand}
+                          </p>
+                          <p className="text-[12px] text-[var(--color-text-muted)]">
+                            Qty: {item.qty || 1}
+                          </p>
+                          <p className="text-sm font-bold text-[var(--color-accent)]">
+                            ₹{item.price}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
 
@@ -1555,10 +1618,10 @@ export default function AdminDashboard() {
                 >
                   Close
                 </button>
-                {selectedOrder.paymentStatus === 'awaiting_verification' && (
+                {selectedOrder.paymentStatus === "awaiting_verification" && (
                   <button
                     onClick={() => {
-                      handleUpdatePaymentStatus(selectedOrder._id, 'verified');
+                      handleUpdatePaymentStatus(selectedOrder._id, "verified");
                       closeModals();
                     }}
                     className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 font-bold transition-colors"

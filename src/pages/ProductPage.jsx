@@ -304,6 +304,93 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
+
+      {/* How to Use Section */}
+      <div className="glass-card mx-auto mt-6 max-w-4xl overflow-hidden rounded-2xl p-6">
+        <h2 className="apple-title text-lg font-bold text-[var(--color-text)] mb-4">
+          How to Redeem Your Gift Card
+        </h2>
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-4 items-start">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white font-bold text-sm">
+              1
+            </div>
+            <div>
+              <p className="font-medium text-[var(--color-text)]">
+                Complete Your Purchase
+              </p>
+              <p className="text-sm text-[var(--color-text-muted)]">
+                Buy the gift card and note down your order details.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4 items-start">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white font-bold text-sm">
+              2
+            </div>
+            <div>
+              <p className="font-medium text-[var(--color-text)]">
+                Receive Your Gift Card Details
+              </p>
+              <p className="text-sm text-[var(--color-text-muted)]">
+                Your gift card will be delivered to your registered email with a
+                Gift Card ID, PIN number, and expiry date.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4 items-start">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white font-bold text-sm">
+              3
+            </div>
+            <div>
+              <p className="font-medium text-[var(--color-text)]">
+                Visit the Brand Website
+              </p>
+              <p className="text-sm text-[var(--color-text-muted)]">
+                Go to the official {card.brand} website or app where you want to
+                use the gift card.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4 items-start">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white font-bold text-sm">
+              4
+            </div>
+            <div>
+              <p className="font-medium text-[var(--color-text)]">
+                Enter Your Gift Card Details
+              </p>
+              <p className="text-sm text-[var(--color-text-muted)]">
+                During checkout, enter your Gift Card ID and PIN in the "Gift
+                Card" or "Voucher" field.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4 items-start">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white font-bold text-sm">
+              5
+            </div>
+            <div>
+              <p className="font-medium text-[var(--color-text)]">
+                Enjoy Your Purchase
+              </p>
+              <p className="text-sm text-[var(--color-text-muted)]">
+                Your balance will be applied instantly. Start using your
+                credited balance right away!
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Note */}
+        <div className="mt-6 rounded-xl bg-blue-500/10 border border-blue-500/30 p-4">
+          <p className="text-sm text-blue-400">
+            <span className="font-semibold">Note:</span> For specific and more
+            detailed redemption steps, please visit the official {card.brand}{" "}
+            website. Steps may vary depending on the brand.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
