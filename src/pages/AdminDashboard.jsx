@@ -9,6 +9,7 @@ import {
   HiX,
   HiExclamation,
   HiUserCircle,
+  HiEye,
 } from "react-icons/hi";
 
 const API_URL =
@@ -51,6 +52,7 @@ export default function AdminDashboard() {
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showOrderEditModal, setShowOrderEditModal] = useState(false);
   const [showOrderDeleteModal, setShowOrderDeleteModal] = useState(false);
+  const [showViewOrderModal, setShowViewOrderModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderFormData, setOrderFormData] = useState({
     user: "",
@@ -300,6 +302,11 @@ export default function AdminDashboard() {
     setShowOrderEditModal(true);
   };
 
+  const openViewOrder = (order) => {
+    setSelectedOrder(order);
+    setShowViewOrderModal(true);
+  };
+
   const handleOrderFormSubmit = async (e) => {
     e.preventDefault();
     setFormLoading(true);
@@ -386,6 +393,7 @@ export default function AdminDashboard() {
     setShowOrderModal(false);
     setShowOrderEditModal(false);
     setShowOrderDeleteModal(false);
+    setShowViewOrderModal(false);
     setSelectedProduct(null);
     setSelectedUser(null);
     setSelectedOrder(null);
@@ -679,7 +687,6 @@ export default function AdminDashboard() {
                       <th className="px-6 py-4">Items</th>
                       <th className="px-6 py-4">Total</th>
                       <th className="px-6 py-4">Payment</th>
-                      <th className="px-6 py-4">UTR</th>
                       <th className="px-6 py-4">Status</th>
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
@@ -744,13 +751,6 @@ export default function AdminDashboard() {
                           </select>
                         </td>
                         <td className="px-6 py-4">
-                          {o.utrNumber && (
-                            <span className="font-mono text-xs text-[var(--color-text-muted)]">
-                              {o.utrNumber.substring(0, 10)}...
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4">
                           <select
                             value={o.status}
                             onChange={(e) =>
@@ -785,6 +785,13 @@ export default function AdminDashboard() {
                           </select>
                         </td>
                         <td className="px-6 py-4 text-right space-x-3">
+                          <button
+                            onClick={() => openViewOrder(o)}
+                            className="p-2 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition"
+                            title="View UTR Details"
+                          >
+                            <HiEye className="h-4 w-4" />
+                          </button>
                           <button
                             onClick={() => openOrderEdit(o)}
                             className="p-2 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition"
@@ -1437,6 +1444,129 @@ export default function AdminDashboard() {
               >
                 No, Keep it
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Order UTR Details Modal */}
+      {showViewOrderModal && selectedOrder && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-lg rounded-[32px] overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
+              <h2 className="text-xl font-bold text-[var(--color-text)]">
+                Payment & Order Details
+              </h2>
+              <button
+                onClick={closeModals}
+                className="p-2 rounded-full hover:bg-red-500/50 cursor-pointer transition"
+              >
+                <HiX className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6">
+              {/* User & Payment Details - Top Section */}
+              <div className="bg-[var(--color-glass)] rounded-2xl p-4 mb-4">
+                <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+                  User & Payment Information
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">User Name</p>
+                    <p className="font-medium text-[var(--color-text)]">{selectedOrder.user?.name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">User Email</p>
+                    <p className="font-medium text-[var(--color-text)] break-all">{selectedOrder.user?.email || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">Account ID</p>
+                    <p className="font-mono text-[var(--color-text)] text-xs">{selectedOrder.user?._id || selectedOrder.user?.id || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">Order ID</p>
+                    <p className="font-mono text-[var(--color-text)] text-xs">{selectedOrder._id}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">UTR Number</p>
+                    <p className="font-mono font-bold text-[var(--color-accent)]">{selectedOrder.utrNumber || 'Not Submitted'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">Payment Mode</p>
+                    <p className="font-medium text-[var(--color-text)]">{selectedOrder.paymentMethod || 'UPI'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">Payment Amount</p>
+                    <p className="font-bold text-green-400">₹{selectedOrder.paymentAmount || selectedOrder.totalPrice || 0}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">Payment Status</p>
+                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                      selectedOrder.paymentStatus === 'verified' ? 'bg-green-500/20 text-green-400' :
+                      selectedOrder.paymentStatus === 'awaiting_verification' ? 'bg-yellow-500/20 text-yellow-400' :
+                      selectedOrder.paymentStatus === 'failed' ? 'bg-red-500/20 text-red-400' :
+                      'bg-gray-500/20 text-gray-400'
+                    }`}>
+                      {selectedOrder.paymentStatus === 'verified' ? 'Verified' :
+                       selectedOrder.paymentStatus === 'awaiting_verification' ? 'Awaiting Verification' :
+                       selectedOrder.paymentStatus === 'failed' ? 'Failed' : 'No Payment'}
+                    </span>
+                  </div>
+                  {selectedOrder.paymentSubmittedAt && (
+                    <div className="col-span-2">
+                      <p className="text-[11px] text-[var(--color-text-muted)]">Payment Submitted At</p>
+                      <p className="font-medium text-[var(--color-text)]">{new Date(selectedOrder.paymentSubmittedAt).toLocaleString()}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Product Details - Below Section */}
+              <div className="bg-[var(--color-glass)] rounded-2xl p-4">
+                <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+                  Product Details
+                </h3>
+                <div className="flex gap-4">
+                  {selectedOrder.orderItems && selectedOrder.orderItems.map((item, idx) => (
+                    <div key={idx} className="flex gap-3">
+                      {item.image && (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-16 h-16 rounded-xl object-cover"
+                        />
+                      )}
+                      <div>
+                        <p className="font-medium text-[var(--color-text)]">{item.name}</p>
+                        <p className="text-[12px] text-[var(--color-text-muted)]">{item.brand}</p>
+                        <p className="text-[12px] text-[var(--color-text-muted)]">Qty: {item.qty || 1}</p>
+                        <p className="text-sm font-bold text-[var(--color-accent)]">₹{item.price}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={closeModals}
+                  className="flex-1 glass-btn rounded-xl py-3 font-medium text-[var(--color-text)]"
+                >
+                  Close
+                </button>
+                {selectedOrder.paymentStatus === 'awaiting_verification' && (
+                  <button
+                    onClick={() => {
+                      handleUpdatePaymentStatus(selectedOrder._id, 'verified');
+                      closeModals();
+                    }}
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 font-bold transition-colors"
+                  >
+                    Verify Payment
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
