@@ -4,43 +4,51 @@ import { useWishlist } from "../context/WishlistContext";
 import { HiHeart } from "react-icons/hi";
 import { useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
-export default function GiftCard({
-  card,
-  onWishlistChange,
-}) {
-  const { name, brand, denomination, description, image, popular, inStock } =
-    card;
+export default function GiftCard({ card, onWishlistChange }) {
+  const { name, brand, denomination, description, image, popular } = card;
   const { user } = useAuth();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [notification, setNotification] = useState(null);
 
-  const wishlisted = isInWishlist(card._id || card.id);
+  const productId = card._id || card.id;
+  const productUrlId = card.id || card._id;
+  const wishlisted = isInWishlist(productId);
 
   const handleToggleWishlist = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!user) {
+      setNotification("Please login to add to wishlist");
+      setTimeout(() => setNotification(null), 3000);
       return;
     }
 
+    const wasInWishlist = wishlisted;
+
     try {
-      await toggleWishlist(card._id || card.id);
-      setNotification(wishlisted ? "Removed from your wishlist – we'll miss it!" : "Added to your wishlist! ✨");
+      await toggleWishlist(productId);
+      setNotification(
+        wasInWishlist
+          ? "Removed from your wishlist – we'll miss it!"
+          : "Added to your wishlist! ✨",
+      );
       if (onWishlistChange) {
-        onWishlistChange(card._id || card.id, !wishlisted);
+        onWishlistChange(productId, !wasInWishlist);
       }
     } catch (err) {
       console.error(err);
+      setNotification("Failed to update wishlist. Please try again.");
     }
 
     setTimeout(() => setNotification(null), 3000);
   };
 
   return (
-    <Link to={`/product/${card.id || card._id}`} className="block rounded-2xl">
+    <Link to={`/product/${productUrlId}`} className="block rounded-2xl">
       {/* Notification */}
       {notification && (
         <div className="fixed top-20 right-4 z-50 animate-scale-in overflow-hidden">

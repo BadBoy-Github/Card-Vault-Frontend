@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import GiftCard from "./GiftCard";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 export default function GiftCardGrid() {
   const [products, setProducts] = useState([]);
@@ -16,8 +17,14 @@ export default function GiftCardGrid() {
         const res = await fetch(`${API_URL}/products?page=${page}&limit=8`);
         const data = await res.json();
         if (res.ok) {
-          setProducts(data.products || []);
-          setTotalPages(data.pages || 1);
+          // Handle both array response and object with products/pages
+          if (Array.isArray(data)) {
+            setProducts(data || []);
+            setTotalPages(1);
+          } else {
+            setProducts(data.products || data || []);
+            setTotalPages(data.pages || 1);
+          }
         }
       } catch (err) {
         console.error("Error fetching products:", err);

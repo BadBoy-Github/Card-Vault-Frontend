@@ -4,7 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import { HiHeart } from "react-icons/hi";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -23,9 +24,21 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`${API_URL}/products/${id}`);
-        const data = await res.json();
-        if (res.ok) {
+        // Try fetching by the 9-char id first (e.g., yx6glrhQG)
+        let res = await fetch(`${API_URL}/products/${id}`);
+        let data = await res.json();
+
+        // If not found by id, try by _id (MongoDB ObjectId)
+        if (!res.ok || !data) {
+          res = await fetch(`${API_URL}/products?id=${id}`);
+          data = await res.json();
+          // If it's an array, get the first match
+          if (res.ok && Array.isArray(data) && data.length > 0) {
+            data = data[0];
+          }
+        }
+
+        if (res.ok && data) {
           setCard(data);
         }
       } catch (err) {
