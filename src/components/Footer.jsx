@@ -61,7 +61,7 @@ export default function Footer() {
                 <HiMail className="h-5 w-5" />
               </a>
               <a
-                href="https://wa.me/919999999999"
+                href="https://wa.me/919842852121"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-[var(--color-text-muted)] hover:bg-[var(--color-accent)] hover:text-white transition"
@@ -76,7 +76,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://instagram.com/cardvault"
+                href="https://www.instagram.com/elayabarathimv"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-[var(--color-text-muted)] hover:bg-[var(--color-accent)] hover:text-white transition"
