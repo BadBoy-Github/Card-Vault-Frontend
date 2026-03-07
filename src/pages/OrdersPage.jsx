@@ -67,7 +67,7 @@ export default function OrdersPage() {
           </h1>
           <div className="flex gap-3">
             <button
-              onClick={() => navigate("/queries")}
+              onClick={() => navigate("/contact")}
               className="glass-btn px-4 py-2 rounded-full text-[14px] text-red-500 border border-red-500 hover:bg-red-500 hover:text-white transition"
             >
               Raise Query

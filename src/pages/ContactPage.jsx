@@ -79,7 +79,6 @@ export default function ContactPage() {
         subject: formData.subject,
         message: formData.message,
       };
-      // Replace these with your actual EmailJS service ID, template ID, and public key
       await emailjs.send(
         "service_30qcbki", // Your EmailJS service ID
         "template_vsyw61l", // Your EmailJS template ID
