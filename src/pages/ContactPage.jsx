@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import emailjs from "@emailjs/browser";
-import { HiMail, HiUser, HiPaperAirplane, HiChatAlt2 } from "react-icons/hi";
+import {
+  HiMail,
+  HiUser,
+  HiPaperAirplane,
+  HiChatAlt2,
+  HiCheck,
+} from "react-icons/hi";
 
 const CATEGORIES = [
   { value: "", label: "Select a category" },
@@ -23,26 +29,64 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+
+  // Custom validation states
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [notification, setNotification] = useState(null);
   const [isSending, setIsSending] = useState(false);
 
-  // Prepopulate user data from auth context
-  useEffect(() => {
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        name: user.name || "",
-        email: user.email || "",
-      }));
+  // Validate individual fields
+  const validateField = (name, value) => {
+    switch (name) {
+      case "category":
+        return value ? "" : "Please select a category";
+      case "subject":
+        if (!value.trim()) return "Please enter a subject";
+        if (value.trim().length < 5)
+          return "Subject must be at least 5 characters";
+        return "";
+      case "message":
+        if (!value.trim()) return "Please enter your message";
+        if (value.trim().length < 20)
+          return "Message must be at least 20 characters";
+        return "";
+      default:
+        return "";
     }
-  }, [user]);
+  };
 
+  // Validate all fields
+  const validateForm = () => {
+    const newErrors = {
+      category: validateField("category", formData.category),
+      subject: validateField("subject", formData.subject),
+      message: validateField("message", formData.message),
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error !== "");
+  };
+
+  // Handle field blur (when user leaves a field)
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    const error = validateField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const showNotification = (message, isSuccess = true) => {
@@ -53,16 +97,16 @@ export default function ContactPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.category) {
-      showNotification("Please select a category", false);
-      return;
-    }
-    if (!formData.subject.trim()) {
-      showNotification("Please enter a subject", false);
-      return;
-    }
-    if (!formData.message.trim()) {
-      showNotification("Please enter your message", false);
+    // Mark all fields as touched
+    setTouched({
+      category: true,
+      subject: true,
+      message: true,
+    });
+
+    // Validate form
+    if (!validateForm()) {
+      showNotification("Please fix the errors before submitting", false);
       return;
     }
 
@@ -98,6 +142,8 @@ export default function ContactPage() {
         subject: "",
         message: "",
       }));
+      setTouched({});
+      setErrors({});
     } catch (error) {
       console.error("Error sending email:", error);
       showNotification(
@@ -108,6 +154,17 @@ export default function ContactPage() {
       setIsSending(false);
     }
   };
+
+  // Prepopulate user data from auth context
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.name || "",
+        email: user.email || "",
+      }));
+    }
+  }, [user]);
 
   return (
     <div className="container-wide py-6 sm:py-8 mt-20">
@@ -197,7 +254,12 @@ export default function ContactPage() {
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full rounded-xl border border-blue-500/50 bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              onBlur={handleBlur}
+              className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
+                touched.category && errors.category
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-blue-500/50 focus:border-blue-500"
+              }`}
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat.value} value={cat.value}>
@@ -205,6 +267,11 @@ export default function ContactPage() {
                 </option>
               ))}
             </select>
+            {touched.category && errors.category && (
+              <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
+                {errors.category}
+              </p>
+            )}
           </div>
 
           {/* Subject Field */}
@@ -217,10 +284,24 @@ export default function ContactPage() {
               name="subject"
               value={formData.subject}
               onChange={handleChange}
-              className="w-full rounded-xl border border-blue-500/50 bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-secondary)] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              onBlur={handleBlur}
+              className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
+                touched.subject && errors.subject
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-blue-500/50 focus:border-blue-500"
+              }`}
               placeholder="Brief description of your inquiry"
-              required
             />
+            {touched.subject && errors.subject && (
+              <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
+                {errors.subject}
+              </p>
+            )}
+            {touched.subject && !errors.subject && formData.subject && (
+              <p className="mt-1.5 text-[13px] text-green-400 flex items-center gap-1">
+                <HiCheck className="h-4 w-4" /> Valid
+              </p>
+            )}
           </div>
 
           {/* Message Field */}
@@ -232,11 +313,25 @@ export default function ContactPage() {
               name="message"
               value={formData.message}
               onChange={handleChange}
+              onBlur={handleBlur}
               rows={5}
-              className="w-full rounded-xl border border-blue-500/50 bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-secondary)] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none"
+              className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none ${
+                touched.message && errors.message
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-blue-500/50 focus:border-blue-500"
+              }`}
               placeholder="Tell us more about your inquiry..."
-              required
             />
+            {touched.message && errors.message && (
+              <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
+                {errors.message}
+              </p>
+            )}
+            {touched.message && !errors.message && formData.message && (
+              <p className="mt-1.5 text-[13px] text-green-400 flex items-center gap-1">
+                <HiCheck className="h-4 w-4" /> Valid
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}
