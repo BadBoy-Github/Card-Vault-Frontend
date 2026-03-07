@@ -12,6 +12,7 @@ import {
   HiPhone,
   HiHeart,
   HiLockClosed,
+  HiCog,
 } from "react-icons/hi";
 
 export default function Header() {
@@ -85,16 +86,6 @@ export default function Header() {
           <HiLockClosed className="h-5 w-5 shrink-0" />
         </Link>
       )}
-      {user && (
-        <Link
-          to="/profile"
-          className="flex items-center gap-1.5 text-[14px] text-[var(--color-text-muted)] transition hover:text-[var(--color-text)]"
-          onClick={closeMobileMenu}
-        >
-          <span>Profile</span>
-          <HiUser className="h-5 w-5 shrink-0" />
-        </Link>
-      )}
     </>
   );
 
@@ -161,14 +152,21 @@ export default function Header() {
 
               {userDropdownOpen && (
                 <div className="glass-strong absolute right-0 mt-5 w-56 origin-top-right rounded-2xl border border-[var(--color-glass-border)] p-2 shadow-xl animate-scale-in">
-                  <div className="px-3 py-2 border-b border-[var(--color-glass-border)] mb-2">
-                    <p className="text-[14px] font-semibold truncate text-[var(--color-text)]">
-                      {user.name}
-                    </p>
-                    <p className="text-[12px] text-[var(--color-text-muted)] truncate">
-                      {user.email}
-                    </p>
-                  </div>
+                  <Link
+                    to="/profile"
+                    className="flex items-center justify-between px-3 py-2 border-b border-[var(--color-glass-border)] mb-2 hover:bg-white/5 rounded-xl transition"
+                    onClick={() => setUserDropdownOpen(false)}
+                  >
+                    <div>
+                      <p className="text-[14px] font-semibold truncate text-[var(--color-text)]">
+                        {user.name}
+                      </p>
+                      <p className="text-[12px] text-[var(--color-text-muted)] truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                    <HiCog className="h-5 w-5 text-[var(--color-text-muted)] hover:text-[var(--color-text)]" />
+                  </Link>
                   {user?.isAdmin ? (
                     <Link
                       to="/wishlist"
@@ -335,16 +333,6 @@ export default function Header() {
               )}
               {user && (
                 <Link
-                  to="/profile"
-                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
-                  onClick={closeMobileMenu}
-                >
-                  <span>Profile</span>
-                  <HiUserCircle className="h-6 w-6 text-[var(--color-text-muted)]" />
-                </Link>
-              )}
-              {user && (
-                <Link
                   to="/wishlist"
                   className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
                   onClick={closeMobileMenu}
@@ -356,16 +344,21 @@ export default function Header() {
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
               {user ? (
                 <>
-                  <div className="flex items-center gap-3 px-4 py-2">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-[17px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
-                      {user.name?.charAt(0).toUpperCase() ||
-                        user.email?.charAt(0).toUpperCase() ||
-                        "U"}
+                  <Link
+                    to="/profile"
+                    className="flex items-center justify-between px-4 py-3 hover:bg-white/5 rounded-xl transition"
+                    onClick={closeMobileMenu}
+                  >
+                    <div>
+                      <p className="text-[15px] font-semibold truncate text-[var(--color-text)]">
+                        {user.name}
+                      </p>
+                      <p className="text-[13px] text-[var(--color-text-muted)] truncate">
+                        {user.email}
+                      </p>
                     </div>
-                    <span className="truncate text-[15px] font-medium text-[var(--color-text)]">
-                      {user.name || user.email}
-                    </span>
-                  </div>
+                    <HiCog className="h-6 w-6 text-[var(--color-text-muted)] hover:text-[var(--color-text)]" />
+                  </Link>
                   <div className="px-4 py-2">
                     <button
                       type="button"

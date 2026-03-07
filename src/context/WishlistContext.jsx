@@ -59,6 +59,8 @@ export function WishlistProvider({ children }) {
       const data = await res.json();
       if (res.ok) {
         setWishlist(data.products || []);
+      } else {
+        console.error("Wishlist add failed:", data.message);
       }
     } catch (err) {
       console.error("Error adding to wishlist:", err);

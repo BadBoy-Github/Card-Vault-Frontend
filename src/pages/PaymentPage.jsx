@@ -100,70 +100,72 @@ export default function PaymentPage() {
 
   // Generate UPI QR Code
   useEffect(() => {
-    if (!paymentConfig || !amount || qrGenerated) return;
+    if (!paymentConfig || !amount) return;
+    if (qrGenerated) return;
 
-    const generateQR = async () => {
-      // Use config values from backend (UPI_ID from backend .env)
-      const upiId = paymentConfig.upiId;
-      const merchantName = paymentConfig.merchantName || "CardVault";
-
-      if (!upiId) {
-        console.error("No UPI ID configured");
-        setQrError(true);
-        return;
+    // Wait for component to mount and canvas to be available
+    const timer = setTimeout(() => {
+      if (!canvasRef.current) {
+        console.error("Canvas ref not available - will retry");
+        return; // Just return, don't set error - the canvas will appear
       }
 
-      // Create UPI payment URL with all required parameters
-      const transactionNote = orderId ? `Order_${orderId}` : `NewOrder`;
-      const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&tn=${encodeURIComponent(transactionNote)}&cu=INR`;
+      const generateQR = async () => {
+        // Use config values from backend (UPI_ID from backend .env)
+        const upiId = paymentConfig.upiId;
+        const merchantName = paymentConfig.merchantName || "CardVault";
 
-      console.log("Generating QR for UPI URL:", upiUrl);
-
-      try {
-        // Wait for canvas to be available
-        await new Promise((resolve) => setTimeout(resolve, 200));
-
-        if (!canvasRef.current) {
-          console.error("Canvas ref not available");
+        if (!upiId) {
+          console.error("No UPI ID configured");
           setQrError(true);
           return;
         }
 
-        // Generate QR as data URL first
-        const dataUrl = await QRCode.toDataURL(upiUrl, {
-          width: 250,
-          margin: 2,
-          color: {
-            dark: "#000000",
-            light: "#ffffff",
-          },
-        });
+        // Create UPI payment URL with all required parameters
+        const transactionNote = orderId ? `Order_${orderId}` : `NewOrder`;
+        const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${amount}&tn=${encodeURIComponent(transactionNote)}&cu=INR`;
 
-        // Load image and draw to canvas
-        const ctx = canvasRef.current.getContext("2d");
-        canvasRef.current.width = 250;
-        canvasRef.current.height = 250;
+        console.log("Generating QR for UPI URL:", upiUrl);
 
-        const img = new Image();
-        img.onload = () => {
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, 250, 250);
-          ctx.drawImage(img, 0, 0, 250, 250);
-          setQrGenerated(true);
-          console.log("QR code generated successfully");
-        };
-        img.onerror = () => {
-          console.error("Failed to load QR image");
+        try {
+          // Generate QR as data URL first
+          const dataUrl = await QRCode.toDataURL(upiUrl, {
+            width: 250,
+            margin: 2,
+            color: {
+              dark: "#000000",
+              light: "#ffffff",
+            },
+          });
+
+          // Load image and draw to canvas
+          const ctx = canvasRef.current.getContext("2d");
+          canvasRef.current.width = 250;
+          canvasRef.current.height = 250;
+
+          const img = new Image();
+          img.onload = () => {
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 250, 250);
+            ctx.drawImage(img, 0, 0, 250, 250);
+            setQrGenerated(true);
+            console.log("QR code generated successfully");
+          };
+          img.onerror = () => {
+            console.error("Failed to load QR image");
+            setQrError(true);
+          };
+          img.src = dataUrl;
+        } catch (err) {
+          console.error("QR generation error:", err);
           setQrError(true);
-        };
-        img.src = dataUrl;
-      } catch (err) {
-        console.error("QR generation error:", err);
-        setQrError(true);
-      }
-    };
+        }
+      };
 
-    generateQR();
+      generateQR();
+    }, 100); // Small delay to ensure canvas is mounted
+
+    return () => clearTimeout(timer);
   }, [paymentConfig, orderId, amount, qrGenerated]);
 
   const handleSubmitUTR = async (e) => {
@@ -355,7 +357,14 @@ export default function PaymentPage() {
           {/* QR Code Section */}
           {!qrError && (
             <div className="mb-4 sm:mb-6 flex flex-col items-center">
-              <div className="mb-3 sm:mb-4 rounded-xl sm:rounded-2xl bg-white p-3 sm:p-4 shadow-lg">
+              {!qrGenerated && (
+                <div className="mb-3 sm:mb-4 flex items-center justify-center">
+                  <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--color-accent)] border-t-transparent"></div>
+                </div>
+              )}
+              <div
+                className={`mb-3 sm:mb-4 rounded-xl sm:rounded-2xl bg-white p-3 sm:p-4 shadow-lg ${!qrGenerated ? "hidden" : ""}`}
+              >
                 <canvas
                   ref={canvasRef}
                   width={250}

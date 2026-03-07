@@ -1,34 +1,37 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { HiEye, HiEyeOff } from 'react-icons/hi'
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { HiEye, HiEyeOff } from "react-icons/hi";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
-  const { user, login } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const from = location.state?.from?.pathname || '/'
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const { user, login, loading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     if (user) {
-      navigate('/', { replace: true })
+      navigate("/", { replace: true });
     }
-  }, [user, navigate])
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
-    const result = await login(email, password)
+    e.preventDefault();
+    setError("");
+    const result = await login(email, password);
     if (result.ok) {
-      navigate(from, { replace: true })
+      navigate(from, { replace: true });
     } else {
-      setError(result.error ?? 'Login failed. Maybe try a password you actually remember?')
+      setError(
+        result.error ??
+          "Login failed. Maybe try a password you actually remember?",
+      );
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--color-section-bg)] px-4 py-12 sm:px-6 md:px-8">
@@ -45,7 +48,10 @@ export default function LoginPage() {
             </p>
           )}
           <div>
-            <label htmlFor="login-email" className="block text-[14px] font-medium text-[var(--color-text)]">
+            <label
+              htmlFor="login-email"
+              className="block text-[14px] font-medium text-[var(--color-text)]"
+            >
               Email Address
             </label>
             <input
@@ -60,13 +66,16 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label htmlFor="login-password" className="block text-[14px] font-medium text-[var(--color-text)]">
+            <label
+              htmlFor="login-password"
+              className="block text-[14px] font-medium text-[var(--color-text)]"
+            >
               Secret Code
             </label>
             <div className="relative">
               <input
                 id="login-password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -79,25 +88,55 @@ export default function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors mt-1"
               >
-                {showPassword ? <HiEyeOff className="h-5 w-5" /> : <HiEye className="h-5 w-5" />}
+                {showPassword ? (
+                  <HiEyeOff className="h-5 w-5" />
+                ) : (
+                  <HiEye className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
           <button
             type="submit"
-            className="glass-cta min-h-[44px] w-full rounded-full py-3.5 text-[16px] font-medium text-white sm:text-[17px]"
+            disabled={loading}
+            className="glass-cta min-h-[44px] w-full rounded-full py-3.5 text-[16px] font-medium text-white sm:text-[17px] disabled:opacity-70"
           >
-            Enter the Vault
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg
+                  className="h-5 w-5 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                Entering...
+              </span>
+            ) : (
+              "Enter the Vault"
+            )}
           </button>
         </form>
 
         <p className="mt-6 text-center text-[15px] text-[var(--color-text-muted)]">
-          New around here?{' '}
+          New around here?{" "}
           <Link to="/register" className="apple-link font-medium">
             Join the inner circle
           </Link>
         </p>
       </div>
     </div>
-  )
+  );
 }

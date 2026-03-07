@@ -16,6 +16,7 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -29,6 +30,7 @@ export function AuthProvider({ children }) {
     if (!email?.trim() || !password)
       return { ok: false, error: "Email and password required" };
 
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
@@ -50,6 +52,8 @@ export function AuthProvider({ children }) {
       }
     } catch (err) {
       return { ok: false, error: "Connection to server failed" };
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,6 +62,7 @@ export function AuthProvider({ children }) {
       return { ok: false, error: "Name, email and password required" };
     }
 
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
@@ -75,13 +80,15 @@ export function AuthProvider({ children }) {
       }
     } catch (err) {
       return { ok: false, error: "Connection to server failed" };
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
