@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import { HiHeart } from "react-icons/hi";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 export default function ProductPage() {
   const { id } = useParams();

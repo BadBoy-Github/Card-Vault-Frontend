@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 const WishlistContext = createContext(null);
 

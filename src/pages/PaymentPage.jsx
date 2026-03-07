@@ -12,7 +12,8 @@ import {
 } from "react-icons/hi";
 import QRCode from "qrcode";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 export default function PaymentPage() {
   const [searchParams] = useSearchParams();

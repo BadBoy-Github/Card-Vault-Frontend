@@ -2,7 +2,8 @@ import { useLocation } from "react-router-dom";
 import GiftCard from "../components/GiftCard";
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 export default function SearchPage() {
   const location = useLocation();

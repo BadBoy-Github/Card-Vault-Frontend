@@ -11,7 +11,8 @@ import {
   HiUserCircle,
 } from "react-icons/hi";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 const DEFAULT_ADMIN_EMAIL =
   import.meta.env.VITE_DEFAULT_ADMIN_EMAIL || "elayabarathiedison@gmail.com";
 

@@ -4,7 +4,8 @@ import { useWishlist } from "../context/WishlistContext";
 import { HiHeart } from "react-icons/hi";
 import { useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 export default function GiftCard({ card, onWishlistChange }) {
   const { name, brand, denomination, description, image, popular, inStock } =

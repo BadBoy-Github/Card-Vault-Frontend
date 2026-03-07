@@ -4,7 +4,8 @@ const STORAGE_KEY = "cardvault-user";
 
 const AuthContext = createContext(null);
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
