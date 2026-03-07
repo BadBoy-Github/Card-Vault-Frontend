@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import emailjs from "@emailjs/browser";
 import { HiEye, HiEyeOff, HiCheck, HiArrowLeft } from "react-icons/hi";
 
 const API_URL =
@@ -130,26 +129,32 @@ export default function ForgotPasswordPage() {
       // Generate OTP
       const newOTP = generateOTP();
 
-      // Send OTP via EmailJS
-      const templateParams = {
-        to_email: email,
-        otp: newOTP,
-        from_name: "Card Vault",
-        time: new Date(Date.now() + 15 * 60 * 1000).toLocaleString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          day: "numeric",
-          month: "short",
-          year: "numeric",
+      // Send OTP via backend API using nodemailer
+      const response = await fetch(`${API_URL}/email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "otp",
+          data: {
+            toEmail: email,
+            otp: newOTP,
+            expiryTime: new Date(Date.now() + 3 * 60 * 1000).toLocaleString(
+              "en-IN",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              },
+            ),
+          },
         }),
-      };
+      });
 
-      await emailjs.send(
-        "service_30qcbki", // Your EmailJS service ID
-        "template_7pwqczh", // Your EmailJS template ID
-        templateParams,
-        "BNexrqP2jcx7Zej11", // Your EmailJS public key
-      );
+      if (!response.ok) {
+        throw new Error("Failed to send OTP");
+      }
 
       // Store OTP temporarily (in real app, store in database with expiry)
       localStorage.setItem("forgot_password_otp", newOTP);
@@ -296,7 +301,7 @@ export default function ForgotPasswordPage() {
 
         {/* Notification Popup */}
         {notification && (
-          <div className="fixed top-20 right-4 z-50 animate-scale-in overflow-hidden">
+          <div className="fixed top-16 right-4 z-50 animate-scale-in overflow-hidden">
             <div
               className={`glass-panel rounded-xl px-4 py-2 border transition-all duration-300 ${
                 notification.isSuccess
