@@ -2,6 +2,8 @@ import { useState } from "react";
 import { HiChevronDown, HiQuestionMarkCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
+import { FaAngleRight } from "react-icons/fa6";
+
 const faqs = [
   {
     id: 1,
@@ -49,10 +51,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section
-      className="section-padding-lg"
-      aria-labelledby="faq-heading"
-    >
+    <section className="section-padding-lg" aria-labelledby="faq-heading">
       <div className="container-wide">
         <div className="mb-10 text-center sm:mb-12">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent)]/10">
@@ -66,7 +65,14 @@ export default function FAQSection() {
           </h2>
           <p className="apple-body mx-auto mt-2 max-w-[500px] px-2 text-[15px] sm:mt-3 sm:text-[17px]">
             Got questions? We've got answers. Can't find what you're looking
-            for? Hit us up on WhatsApp.
+            for? {" "}
+            <Link
+              to={"/contact"}
+              className="apple-link inline-flex justify-center gap-1 items-center text-[15px] sm:text-[16px]"
+            >
+              Hit us up.
+              <FaAngleRight />
+            </Link>
           </p>
         </div>
 
@@ -107,13 +113,7 @@ export default function FAQSection() {
           ))}
         </div>
 
-        <div className="mt-10 text-center sm:mt-12">
-          <Link to={'/contact'}
-            className="apple-link inline-flex items-center gap-2 text-[15px] sm:text-[16px]"
-          >
-            Still have questions?
-          </Link>
-        </div>
+        <div className=""></div>
       </div>
     </section>
   );
