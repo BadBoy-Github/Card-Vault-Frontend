@@ -25,6 +25,7 @@ import WishlistPage from "./pages/WishlistPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 import TermsPage from "./pages/TermsPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 const isConstruction = false;
 
@@ -68,6 +69,10 @@ function App() {
                     {/* Public Auth Routes (No Header/Footer) */}
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route
+                      path="/forgot-password"
+                      element={<ForgotPasswordPage />}
+                    />
                     <Route path="/terms" element={<TermsPage />} />
 
                     {/* Protected App Routes (With Header/Footer) */}
