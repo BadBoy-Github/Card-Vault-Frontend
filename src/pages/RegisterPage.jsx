@@ -304,11 +304,10 @@ export default function RegisterPage() {
               I agree to the{" "}
               <Link
                 to="/terms"
-                className="apple-link font-medium"
-                target="_blank"
+                className="apple-link font-medium cursor-pointer"
               >
                 Terms & Conditions
-              </Link>{" "}
+              </Link>
             </label>
           </div>
 
@@ -348,7 +347,7 @@ export default function RegisterPage() {
 
         <p className="mt-6 text-center text-[15px] text-[var(--color-text-muted)]">
           Already one of us?{" "}
-          <Link to="/login" className="apple-link font-medium">
+          <Link to="/login" className="apple-link font-medium cursor-pointer">
             Sign in here
           </Link>
         </p>

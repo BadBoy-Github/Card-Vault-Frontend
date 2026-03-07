@@ -7,7 +7,7 @@ export default function TermsPage() {
       <div className="mx-auto max-w-4xl">
         <Link
           to="/register"
-          className="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors mb-8 cursor-pointer"
         >
           <HiArrowLeft className="h-5 w-5" />
           <span>Back to Registration</span>
@@ -313,7 +313,10 @@ export default function TermsPage() {
                 <p className="text-[var(--color-text)]">
                   <strong>Card Vault Support Team</strong>
                 </p>
-                <Link to="/contact" className="apple-link mt-2 inline-block">
+                <Link
+                  to="/contact"
+                  className="apple-link mt-2 inline-block cursor-pointer"
+                >
                   Contact Page
                 </Link>
               </div>
@@ -323,7 +326,7 @@ export default function TermsPage() {
           <div className="mt-12 pt-8 border-t border-[var(--color-glass-border)]">
             <Link
               to="/register"
-              className="inline-flex items-center justify-center gap-2 glass-cta min-h-[44px] px-8 rounded-full py-3.5 text-[16px] font-medium text-white"
+              className="inline-flex items-center justify-center gap-2 glass-cta min-h-[44px] px-8 rounded-full py-3.5 text-[16px] font-medium text-white cursor-pointer"
             >
               I Agree - Register Now
             </Link>
