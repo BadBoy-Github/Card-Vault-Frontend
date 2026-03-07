@@ -2,11 +2,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
+import { ToastProvider } from "./context/ToastContext";
 import Layout from "./components/Layout";
+import ToastContainer from "./components/ToastContainer";
 import Hero from "./components/Hero";
 import FeaturedSection from "./components/FeaturedSection";
 import GiftCardGrid from "./components/GiftCardGrid";
 import NewsletterSection from "./components/NewsletterSection";
+import FAQSection from "./components/FAQSection";
 import ProductPage from "./pages/ProductPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
@@ -42,6 +45,8 @@ function Home() {
       <Hero />
       <FeaturedSection />
       <GiftCardGrid />
+      <FAQSection />
+      {/* <NewsletterSection /> */}
     </div>
   );
 }
@@ -51,45 +56,48 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <ThemeProvider>
-        <AuthProvider>
-          <WishlistProvider>
-            <Routes>
-              {isConstruction ? (
-                <Route path="*" element={<ConstructionPage />} />
-              ) : (
-                <>
-                  {/* Public Auth Routes (No Header/Footer) */}
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/terms" element={<TermsPage />} />
+        <ToastProvider>
+          <AuthProvider>
+            <WishlistProvider>
+              <ToastContainer />
+              <Routes>
+                {isConstruction ? (
+                  <Route path="*" element={<ConstructionPage />} />
+                ) : (
+                  <>
+                    {/* Public Auth Routes (No Header/Footer) */}
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/terms" element={<TermsPage />} />
 
-                  {/* Protected App Routes (With Header/Footer) */}
-                  <Route
-                    element={
-                      <ProtectedRoute>
-                        <Layout />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route path="/" element={<Home />} />
-                    <Route path="/product/:id" element={<ProductPage />} />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route path="/payment" element={<PaymentPage />} />
-                    <Route path="/orders" element={<OrdersPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/contact" element={<ContactPage />} />
+                    {/* Protected App Routes (With Header/Footer) */}
                     <Route
-                      path="/admin/dashboard"
-                      element={<AdminDashboard />}
-                    />
-                    <Route path="/wishlist" element={<WishlistPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Route>
-                </>
-              )}
-            </Routes>
-          </WishlistProvider>
-        </AuthProvider>
+                      element={
+                        <ProtectedRoute>
+                          <Layout />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route path="/" element={<Home />} />
+                      <Route path="/product/:id" element={<ProductPage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                      <Route path="/payment" element={<PaymentPage />} />
+                      <Route path="/orders" element={<OrdersPage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/contact" element={<ContactPage />} />
+                      <Route
+                        path="/admin/dashboard"
+                        element={<AdminDashboard />}
+                      />
+                      <Route path="/wishlist" element={<WishlistPage />} />
+                      <Route path="*" element={<NotFoundPage />} />
+                    </Route>
+                  </>
+                )}
+              </Routes>
+            </WishlistProvider>
+          </AuthProvider>
+        </ToastProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

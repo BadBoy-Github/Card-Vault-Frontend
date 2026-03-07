@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
-import { HiHeart } from "react-icons/hi";
+import { HiHeart, HiShoppingCart } from "react-icons/hi";
 import { useState } from "react";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 export default function GiftCard({ card, onWishlistChange }) {
-  const { name, brand, denomination, description, image, popular } = card;
+  const { name, brand, denomination, description, image, popular, price, stock } = card;
   const { user } = useAuth();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [notification, setNotification] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const productId = card._id || card.id;
   const productUrlId = card.id || card._id;
@@ -64,9 +65,13 @@ export default function GiftCard({ card, onWishlistChange }) {
         </div>
       )}
 
-      <article className="glass-card group relative flex flex-col overflow-hidden rounded-2xl h-full">
+      <article 
+        className="glass-card group relative flex flex-col overflow-hidden rounded-2xl h-full transition-all duration-300 hover:shadow-xl hover:shadow-[var(--color-accent)]/10 hover:-translate-y-1"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         {popular && (
-          <span className="absolute right-3 top-3 z-10 rounded-full bg-[var(--color-accent)] px-2.5 py-1 text-[11px] font-medium text-white sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[12px]">
+          <span className="absolute right-3 top-3 z-10 rounded-full bg-[var(--color-accent)] px-2.5 py-1 text-[11px] font-medium text-white sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[12px] animate-pulse">
             Popular
           </span>
         )}
@@ -74,11 +79,11 @@ export default function GiftCard({ card, onWishlistChange }) {
         {/* Heart Button */}
         <button
           onClick={handleToggleWishlist}
-          className={`absolute left-3 top-3 z-10 rounded-full p-2 transition ${
+          className={`absolute left-3 top-3 z-10 rounded-full p-2 transition-all duration-300 ${
             wishlisted
-              ? "bg-red-500 text-white hover:bg-red-600"
+              ? "bg-red-500 text-white hover:bg-red-600 scale-100"
               : "bg-white/20 backdrop-blur-sm text-white/70 hover:text-red-500 hover:bg-white/30"
-          } sm:left-4 sm:top-4`}
+          } sm:left-4 sm:top-4 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
           title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
           <HiHeart className="h-5 w-5" />
@@ -88,8 +93,23 @@ export default function GiftCard({ card, onWishlistChange }) {
           <img
             src={image}
             alt={name}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
           />
+          {/* Overlay on hover */}
+          <div className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+          
+          {/* Quick buy button on hover */}
+          {stock > 0 && (
+            <div className={`absolute bottom-3 left-3 right-3 transition-all duration-300 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+              <Link
+                to={`/product/${productUrlId}`}
+                className="glass-cta flex items-center justify-center gap-2 rounded-full py-2.5 text-[13px] font-medium text-white w-full"
+              >
+                <HiShoppingCart className="h-4 w-4" />
+                Quick Buy - ₹{price}
+              </Link>
+            </div>
+          )}
         </div>
         <div className="flex flex-1 flex-col p-3 sm:p-4">
           <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--color-accent)] sm:text-[10px]">
