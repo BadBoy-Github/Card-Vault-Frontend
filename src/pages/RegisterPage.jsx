@@ -178,7 +178,7 @@ export default function RegisterPage() {
                 required
                 minLength={6}
                 className="glass-input mt-2 min-h-[44px] w-full rounded-xl px-4 py-3.5 pr-24 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] sm:px-5 sm:text-[17px]"
-                placeholder="Strong_password_here"
+                placeholder="$tr0ng_P@$$w0rd"
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 mt-1">
                 {isVeryStrong && password && (
