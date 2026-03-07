@@ -40,19 +40,10 @@ export default function OrdersPage() {
   };
 
   const currentOrders = orders.filter(
-    (o) =>
-      o.paymentStatus &&
-      o.paymentStatus !== "pending" &&
-      (["pending", "processing"].includes(o.status) ||
-        o.paymentStatus === "awaiting_verification"),
+    (o) => o.status === "pending" || o.status === "processing",
   );
   const previousOrders = orders.filter(
-    (o) =>
-      o.paymentStatus &&
-      o.paymentStatus !== "pending" &&
-      (["delivered", "cancelled"].includes(o.status) ||
-        o.paymentStatus === "verified" ||
-        o.paymentStatus === "failed"),
+    (o) => o.status === "delivered" || o.status === "cancelled",
   );
 
   const displayOrders =
@@ -100,7 +91,7 @@ export default function OrdersPage() {
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
             }`}
           >
-            Past Treasures
+            Order History
           </button>
         </div>
 
