@@ -4,12 +4,9 @@ import { useWishlist } from "../context/WishlistContext";
 import { HiHeart } from "react-icons/hi";
 import { useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
-export default function GiftCard({
-  card,
-  onWishlistChange,
-}) {
+export default function GiftCard({ card, onWishlistChange }) {
   const { name, brand, denomination, description, image, popular, inStock } =
     card;
   const { user } = useAuth();
@@ -28,7 +25,11 @@ export default function GiftCard({
 
     try {
       await toggleWishlist(card._id || card.id);
-      setNotification(wishlisted ? "Removed from your wishlist – we'll miss it!" : "Added to your wishlist! ✨");
+      setNotification(
+        wishlisted
+          ? "Removed from your wishlist – we'll miss it!"
+          : "Added to your wishlist! ✨",
+      );
       if (onWishlistChange) {
         onWishlistChange(card._id || card.id, !wishlisted);
       }

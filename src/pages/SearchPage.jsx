@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import GiftCard from "../components/GiftCard";
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 export default function SearchPage() {
   const location = useLocation();

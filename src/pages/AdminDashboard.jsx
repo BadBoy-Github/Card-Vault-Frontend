@@ -11,7 +11,7 @@ import {
   HiUserCircle,
 } from "react-icons/hi";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 const DEFAULT_ADMIN_EMAIL =
   import.meta.env.VITE_DEFAULT_ADMIN_EMAIL || "elayabarathiedison@gmail.com";
 

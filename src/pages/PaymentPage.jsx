@@ -12,7 +12,7 @@ import {
 } from "react-icons/hi";
 import QRCode from "qrcode";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 export default function PaymentPage() {
   const [searchParams] = useSearchParams();

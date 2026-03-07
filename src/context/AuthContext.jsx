@@ -1,36 +1,37 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from "react";
 
-const STORAGE_KEY = 'cardvault-user'
+const STORAGE_KEY = "cardvault-user";
 
-const AuthContext = createContext(null)
+const AuthContext = createContext(null);
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      return raw ? JSON.parse(raw) : null
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
     } catch {
-      return null
+      return null;
     }
-  })
+  });
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
     } else {
-      localStorage.removeItem(STORAGE_KEY)
+      localStorage.removeItem(STORAGE_KEY);
     }
-  }, [user])
+  }, [user]);
 
   const login = async (email, password) => {
-    if (!email?.trim() || !password) return { ok: false, error: 'Email and password required' }
-    
+    if (!email?.trim() || !password)
+      return { ok: false, error: "Email and password required" };
+
     try {
       const res = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
@@ -40,26 +41,26 @@ export function AuthProvider({ children }) {
         // Admin status is determined by the database role field
         setUser({
           ...data,
-          isAdmin: data.role === 'admin'
+          isAdmin: data.role === "admin",
         });
         return { ok: true };
       } else {
-        return { ok: false, error: data.message || 'Login failed' };
+        return { ok: false, error: data.message || "Login failed" };
       }
     } catch (err) {
-      return { ok: false, error: 'Connection to server failed' };
+      return { ok: false, error: "Connection to server failed" };
     }
-  }
+  };
 
   const register = async (name, email, password) => {
     if (!name?.trim() || !email?.trim() || !password) {
-      return { ok: false, error: 'Name, email and password required' }
+      return { ok: false, error: "Name, email and password required" };
     }
-    
+
     try {
       const res = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
 
@@ -69,24 +70,24 @@ export function AuthProvider({ children }) {
         setUser(data);
         return { ok: true };
       } else {
-        return { ok: false, error: data.message || 'Registration failed' };
+        return { ok: false, error: data.message || "Registration failed" };
       }
     } catch (err) {
-      return { ok: false, error: 'Connection to server failed' };
+      return { ok: false, error: "Connection to server failed" };
     }
-  }
+  };
 
-  const logout = () => setUser(null)
+  const logout = () => setUser(null);
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-  return ctx
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
 }
