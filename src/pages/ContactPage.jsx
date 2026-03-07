@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import emailjs from "@emailjs/browser";
 import {
   HiMail,
   HiUser,
@@ -8,6 +7,9 @@ import {
   HiChatAlt2,
   HiCheck,
 } from "react-icons/hi";
+
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
 const CATEGORIES = [
   { value: "", label: "Select a category" },
@@ -113,22 +115,27 @@ export default function ContactPage() {
     setIsSending(true);
 
     try {
-      // EmailJS template parameters
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        category:
-          CATEGORIES.find((c) => c.value === formData.category)?.label ||
-          formData.category,
-        subject: formData.subject,
-        message: formData.message,
-      };
-      await emailjs.send(
-        "service_30qcbki", // Your EmailJS service ID
-        "template_vsyw61l", // Your EmailJS template ID
-        templateParams,
-        "BNexrqP2jcx7Zej11", // Your EmailJS public key
-      );
+      // Send email via backend API using nodemailer
+      const response = await fetch(`${API_URL}/email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "contact",
+          data: {
+            name: formData.name,
+            email: formData.email,
+            category:
+              CATEGORIES.find((c) => c.value === formData.category)?.label ||
+              formData.category,
+            subject: formData.subject,
+            message: formData.message,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send email");
+      }
 
       showNotification(
         "Message sent successfully! We'll get back to you soon.",
