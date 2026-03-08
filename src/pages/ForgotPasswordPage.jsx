@@ -47,6 +47,7 @@ export default function ForgotPasswordPage() {
   const [otpVerified, setOtpVerified] = useState(false);
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutes in seconds
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [notification, setNotification] = useState(null);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -248,7 +249,12 @@ export default function ForgotPasswordPage() {
     setOtp("");
     setOtpError("");
     setOtpVerified(false);
-    await handleSendOTP({ preventDefault: () => {} });
+    setIsResending(true);
+    try {
+      await handleSendOTP({ preventDefault: () => {} });
+    } finally {
+      setIsResending(false);
+    }
   };
 
   if (passwordUpdated) {
@@ -422,9 +428,10 @@ export default function ForgotPasswordPage() {
                   <button
                     type="button"
                     onClick={handleResendOTP}
-                    className="text-[14px] text-[var(--color-accent)] hover:underline"
+                    disabled={isResending}
+                    className="text-[14px] text-[var(--color-accent)] hover:underline disabled:opacity-70"
                   >
-                    Resend OTP
+                    {isResending ? "Resending..." : "Resend OTP"}
                   </button>
                 )}
               </div>
