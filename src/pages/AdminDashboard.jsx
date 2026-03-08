@@ -10,6 +10,8 @@ import {
   HiExclamation,
   HiUserCircle,
   HiEye,
+  HiPaperAirplane,
+  HiInformationCircle,
 } from "react-icons/hi";
 
 const API_URL =
@@ -53,7 +55,15 @@ export default function AdminDashboard() {
   const [showOrderEditModal, setShowOrderEditModal] = useState(false);
   const [showOrderDeleteModal, setShowOrderDeleteModal] = useState(false);
   const [showViewOrderModal, setShowViewOrderModal] = useState(false);
+  const [showGiftCardModal, setShowGiftCardModal] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [giftCardFormData, setGiftCardFormData] = useState({
+    cardNumber: "",
+    pin: "",
+    expiryDate: "",
+  });
+  const [giftCardLoading, setGiftCardLoading] = useState(false);
   const [orderFormData, setOrderFormData] = useState({
     user: "",
     productId: "",
@@ -307,6 +317,60 @@ export default function AdminDashboard() {
     setShowViewOrderModal(true);
   };
 
+  const openGiftCardModal = (order) => {
+    setSelectedOrder(order);
+    // Get expiry date from product's validityEndDateTime if available
+    const product = order.orderItems?.[0];
+    let expiryDate = "";
+    if (product?.product) {
+      // Try to get validity date from product
+      const foundProduct = products.find(
+        (p) => p._id === product.product || p.id === product.product,
+      );
+      if (foundProduct?.validityEndDateTime) {
+        expiryDate = foundProduct.validityEndDateTime.split("T")[0];
+      }
+    }
+    setGiftCardFormData({
+      cardNumber: "",
+      pin: "",
+      expiryDate: expiryDate,
+    });
+    setShowGiftCardModal(true);
+  };
+
+  const handleSendGiftCard = async (e) => {
+    e.preventDefault();
+    setGiftCardLoading(true);
+    try {
+      const res = await fetch(
+        `${API_URL}/orders/${selectedOrder._id}/send-giftcard`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify(giftCardFormData),
+        },
+      );
+      if (res.ok) {
+        setMessage("Gift card sent successfully!");
+        fetchData();
+        closeModals();
+        setTimeout(() => setMessage(""), 3000);
+      } else {
+        const error = await res.json();
+        alert(error.message || "Failed to send gift card");
+      }
+    } catch (err) {
+      console.error("Failed to send gift card:", err);
+      alert("Failed to send gift card");
+    } finally {
+      setGiftCardLoading(false);
+    }
+  };
+
   const handleOrderFormSubmit = async (e) => {
     e.preventDefault();
     setFormLoading(true);
@@ -394,6 +458,8 @@ export default function AdminDashboard() {
     setShowOrderEditModal(false);
     setShowOrderDeleteModal(false);
     setShowViewOrderModal(false);
+    setShowGiftCardModal(false);
+    setShowInfoModal(false);
     setSelectedProduct(null);
     setSelectedUser(null);
     setSelectedOrder(null);
@@ -787,6 +853,39 @@ export default function AdminDashboard() {
                           </select>
                         </td>
                         <td className="px-6 py-4 text-right space-x-3">
+                          {/* Send Gift Card Button - Only for verified payment + processing status */}
+                          {o.paymentStatus === "verified" &&
+                          o.status === "processing" ? (
+                            <button
+                              onClick={() => openGiftCardModal(o)}
+                              className="p-2 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20 transition"
+                              title="Send Gift Card"
+                            >
+                              <HiPaperAirplane className="h-4 w-4" />
+                            </button>
+                          ) : (
+                            /* Info Button - For other statuses */
+                            <button
+                              onClick={
+                                o.status === "delivered"
+                                  ? () => {
+                                      setSelectedOrder(o);
+                                      setShowInfoModal(true);
+                                    }
+                                  : undefined
+                              }
+                              className={`p-2 rounded-lg transition ${o.status === "delivered" ? "bg-white/10 text-white hover:bg-white/20 cursor-pointer" : o.status === "cancelled" ? "bg-gray-500/10 text-gray-500 cursor-not-allowed opacity-50" : "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 cursor-pointer"}`}
+                              title={
+                                o.status === "delivered"
+                                  ? "View Gift Card Details"
+                                  : o.status === "cancelled"
+                                    ? "Cancelled"
+                                    : "Info"
+                              }
+                            >
+                              <HiInformationCircle className="h-4 w-4" />
+                            </button>
+                          )}
                           <button
                             onClick={() => openViewOrder(o)}
                             className="p-2 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition"
@@ -1628,6 +1727,244 @@ export default function AdminDashboard() {
                   >
                     Verify Payment
                   </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Send Gift Card Modal */}
+      {showGiftCardModal && selectedOrder && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-md rounded-[32px] overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
+              <h2 className="text-xl font-bold text-[var(--color-text)]">
+                Send Gift Card
+              </h2>
+              <button
+                onClick={closeModals}
+                className="p-2 rounded-full hover:bg-red-500/50 cursor-pointer transition"
+              >
+                <HiX className="h-5 w-5" />
+              </button>
+            </div>
+            <form onSubmit={handleSendGiftCard} className="p-6">
+              {/* Order Info */}
+              <div className="bg-[var(--color-glass)] rounded-xl p-4 mb-5">
+                <div className="flex items-center gap-3 mb-3">
+                  {selectedOrder.orderItems?.[0]?.image && (
+                    <img
+                      src={selectedOrder.orderItems[0].image}
+                      alt={selectedOrder.orderItems[0].name}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                  )}
+                  <div>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedOrder.orderItems?.[0]?.name || "Gift Card"}
+                    </p>
+                    <p className="text-[12px] text-[var(--color-text-muted)]">
+                      Order ID: {selectedOrder._id?.substring(0, 8)}...
+                    </p>
+                  </div>
+                </div>
+                <div className="text-[12px] text-[var(--color-text-muted)]">
+                  Sending to:{" "}
+                  <span className="text-[var(--color-text)]">
+                    {selectedOrder.user?.email}
+                  </span>
+                </div>
+              </div>
+
+              {/* Card Number Input */}
+              <div className="mb-4">
+                <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                  Card Number
+                </label>
+                <input
+                  type="text"
+                  required
+                  maxLength={16}
+                  minLength={16}
+                  value={giftCardFormData.cardNumber}
+                  onChange={(e) =>
+                    setGiftCardFormData({
+                      ...giftCardFormData,
+                      cardNumber: e.target.value.replace(/\s/g, ""),
+                    })
+                  }
+                  placeholder="Enter 16-digit card number"
+                  className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-all font-mono"
+                />
+              </div>
+
+              {/* PIN Input */}
+              <div className="mb-4">
+                <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                  PIN
+                </label>
+                <input
+                  type="text"
+                  required
+                  maxLength={6}
+                  value={giftCardFormData.pin}
+                  onChange={(e) =>
+                    setGiftCardFormData({
+                      ...giftCardFormData,
+                      pin: e.target.value,
+                    })
+                  }
+                  placeholder="Enter PIN"
+                  className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-all font-mono"
+                />
+              </div>
+
+              {/* Expiry Date Input (Read-only from order) */}
+              <div className="mb-6">
+                <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                  Expiry Date
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={giftCardFormData.expiryDate}
+                  onChange={(e) =>
+                    setGiftCardFormData({
+                      ...giftCardFormData,
+                      expiryDate: e.target.value,
+                    })
+                  }
+                  className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-all"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  className="flex-1 glass-btn rounded-xl py-3 font-medium text-[var(--color-text)]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={
+                    giftCardLoading ||
+                    !giftCardFormData.cardNumber ||
+                    !giftCardFormData.pin ||
+                    !giftCardFormData.expiryDate
+                  }
+                  className="flex-1 glass-cta rounded-xl py-3 font-bold text-white shadow-lg shadow-[var(--color-accent)]/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {giftCardLoading ? "Sending..." : "Send Gift Card"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Gift Card Info Modal - For delivered orders */}
+      {showInfoModal && selectedOrder && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-xl rounded-[32px] overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
+              <h2 className="text-xl font-bold text-[var(--color-text)]">
+                Gift Card Details
+              </h2>
+              <button
+                onClick={closeModals}
+                className="p-2 rounded-full hover:bg-red-500/50 cursor-pointer transition"
+              >
+                <HiX className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6">
+              {/* Order Info */}
+              <div className="bg-[var(--color-glass)] rounded-xl p-4 mb-5">
+                <div className="flex items-center gap-3 mb-3">
+                  {selectedOrder.orderItems?.[0]?.image && (
+                    <img
+                      src={selectedOrder.orderItems[0].image}
+                      alt={selectedOrder.orderItems[0].name}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                  )}
+                  <div>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedOrder.orderItems?.[0]?.name || "Gift Card"}
+                    </p>
+                    <p className="text-[12px] text-[var(--color-text-muted)]">
+                      Order ID: {selectedOrder._id?.substring(0, 8)}...
+                    </p>
+                  </div>
+                </div>
+                <div className="text-[12px] text-[var(--color-text-muted)]">
+                  Customer:{" "}
+                  <span className="text-[var(--color-text)]">
+                    {selectedOrder.user?.name}
+                  </span>
+                </div>
+                <div className="text-[12px] text-[var(--color-text-muted)]">
+                  Email:{" "}
+                  <span className="text-[var(--color-text)]">
+                    {selectedOrder.user?.email}
+                  </span>
+                </div>
+              </div>
+
+              {/* Card Details */}
+              <div className="space-y-4">
+                {/* Card Number */}
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                    Card Number
+                  </label>
+                  <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 font-mono text-[var(--color-text)]">
+                    {selectedOrder.giftCardNumber
+                      ? selectedOrder.giftCardNumber.substring(0, 4) +
+                        " " +
+                        selectedOrder.giftCardNumber.substring(4, 8) +
+                        " " +
+                        selectedOrder.giftCardNumber.substring(8, 12) +
+                        " " +
+                        selectedOrder.giftCardNumber.substring(12, 16)
+                      : "N/A"}
+                  </div>
+                </div>
+
+                {/* PIN */}
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                    PIN
+                  </label>
+                  <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 font-mono text-[var(--color-text)]">
+                    {selectedOrder.giftCardPin || "N/A"}
+                  </div>
+                </div>
+
+                {/* Expiry Date */}
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                    Expiry Date
+                  </label>
+                  <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 text-[var(--color-text)]">
+                    {selectedOrder.giftCardExpiryDate || "N/A"}
+                  </div>
+                </div>
+
+                {/* Sent At */}
+                {selectedOrder.giftCardSentAt && (
+                  <div>
+                    <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                      Gift Card Sent At
+                    </label>
+                    <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 text-[var(--color-text)]">
+                      {new Date(selectedOrder.giftCardSentAt).toLocaleString()}
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
