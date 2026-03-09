@@ -29,9 +29,12 @@ export default function ProductPage() {
   const productSchema = card ? generateProductSchema(card) : null;
   const breadcrumbSchema = card
     ? generateBreadcrumbSchema([
-        { name: "Home", url: "https://card-vault.vercel.app/" },
-        { name: "Gift Cards", url: "https://card-vault.vercel.app/search" },
-        { name: card.name, url: `https://card-vault.vercel.app/product/${id}` },
+        { name: "Home", url: "https://card-vaults.vercel.app/" },
+        { name: "Gift Cards", url: "https://card-vaults.vercel.app/search" },
+        {
+          name: card.name,
+          url: `https://card-vaults.vercel.app/product/${id}`,
+        },
       ])
     : null;
 

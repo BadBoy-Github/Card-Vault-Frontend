@@ -3,7 +3,7 @@
     xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     <!-- Homepage - High Priority -->
     <url>
-        <loc>https://card-vault.vercel.app</loc>
+        <loc>https://card-vaults.vercel.app</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
         <lastmod>2026-03-09</lastmod>
@@ -11,7 +11,7 @@
 
     <!-- Search/Browse Page -->
     <url>
-        <loc>https://card-vault.vercel.app/search</loc>
+        <loc>https://card-vaults.vercel.app/search</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
         <lastmod>2026-03-09</lastmod>
@@ -19,7 +19,7 @@
 
     <!-- Contact Page -->
     <url>
-        <loc>https://card-vault.vercel.app/contact</loc>
+        <loc>https://card-vaults.vercel.app/contact</loc>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
         <lastmod>2026-03-09</lastmod>
@@ -27,7 +27,7 @@
 
     <!-- Login Page -->
     <url>
-        <loc>https://card-vault.vercel.app/login</loc>
+        <loc>https://card-vaults.vercel.app/login</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
         <lastmod>2026-03-09</lastmod>
@@ -35,7 +35,7 @@
 
     <!-- Register Page -->
     <url>
-        <loc>https://card-vault.vercel.app/register</loc>
+        <loc>https://card-vaults.vercel.app/register</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
         <lastmod>2026-03-09</lastmod>
@@ -43,7 +43,7 @@
 
     <!-- Terms Page -->
     <url>
-        <loc>https://card-vault.vercel.app/terms</loc>
+        <loc>https://card-vaults.vercel.app/terms</loc>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
         <lastmod>2026-03-09</lastmod>
@@ -51,12 +51,12 @@
 
     <!-- Forgot Password -->
     <url>
-        <loc>https://card-vault.vercel.app/forgot-password</loc>
+        <loc>https://card-vaults.vercel.app/forgot-password</loc>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
         <lastmod>2026-03-09</lastmod>
     </url>
 
     <!-- Product pages should be added dynamically via API -->
-    <!-- Example product URL format: https://card-vault.vercel.app/product/abc123 -->
+    <!-- Example product URL format: https://card-vaults.vercel.app/product/abc123 -->
 </urlset>

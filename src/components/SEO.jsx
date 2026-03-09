@@ -23,7 +23,7 @@ const DEFAULT_SEO = {
   keywords:
     "card vault, card-vault, gift cards, digital gift cards, buy gift card online, gaming gift cards, prepaid cards, online gift cards, digital vouchers, instant gift card delivery",
   image: "/logo.png",
-  url: "https://card-vault.vercel.app",
+  url: "https://card-vaults.vercel.app",
   siteName: "Card Vault",
   type: "website",
   twitterCard: "summary_large_image",
