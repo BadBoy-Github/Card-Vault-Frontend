@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import GiftCard from "../components/GiftCard";
 import { useEffect, useState } from "react";
+import SEO from "../components/SEO";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
@@ -8,6 +9,15 @@ const API_URL =
 export default function SearchPage() {
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("q") || "";
+
+  // Dynamic SEO based on search query
+  const seoTitle = query
+    ? `Search: ${query} - Gift Cards | Card Vault`
+    : "Gift Cards Collection - Find Your Perfect Gift Card | Card Vault";
+
+  const seoDescription = query
+    ? `Search results for "${query}" on Card Vault. Buy ${query} gift cards online with instant delivery. Browse our collection of gaming, entertainment & shopping gift cards.`
+    : "Browse our collection of digital gift cards for gaming, entertainment & shopping. Find the perfect gift card for yourself or your loved ones. Instant email delivery.";
 
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,74 +83,81 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="container-wide flex-1 py-6 sm:py-8 overflow-hidden">
-      <div className="mb-6 sm:mb-8">
-        <h1 className="apple-display text-[var(--color-text)] text-2xl sm:text-3xl">
-          {debouncedQuery
-            ? `Search results for "${debouncedQuery}"`
-            : "All Gift Cards"}
-        </h1>
-        <p className="apple-body mt-1 text-[14px] sm:text-[15px]">
-          {results.length} {results.length === 1 ? "item" : "items"} found.
-        </p>
-      </div>
-
-      {results.length === 0 ? (
-        <div className="glass-panel flex flex-col items-center justify-center rounded-xl p-8 text-center">
-          <div className="mb-3 text-4xl">🔍</div>
-          <p className="apple-body text-[15px]">
-            We couldn't find any matches for your search.
-          </p>
-          <p className="apple-body mt-1 text-[13px]">
-            Try different keywords or browse our top categories.
+    <>
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        keywords={`${query || "gift cards"}, digital gift cards, buy gift cards online, gaming cards, shopping vouchers, card vault`}
+      />
+      <div className="container-wide flex-1 py-6 sm:py-8 overflow-hidden">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="apple-display text-[var(--color-text)] text-2xl sm:text-3xl">
+            {debouncedQuery
+              ? `Search results for "${debouncedQuery}"`
+              : "All Gift Cards"}
+          </h1>
+          <p className="apple-body mt-1 text-[14px] sm:text-[15px]">
+            {results.length} {results.length === 1 ? "item" : "items"} found.
           </p>
         </div>
-      ) : (
-        <>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {results.map((card) => (
-              <GiftCard key={card.id} card={card} />
-            ))}
-          </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-center gap-2">
-              <button
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page === 1}
-                className="glass-btn rounded-full px-4 py-2 text-[14px] disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <div className="flex gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (pageNum) => (
-                    <button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      className={`h-10 w-10 rounded-full text-[14px] ${
-                        pageNum === page
-                          ? "bg-[var(--color-accent)] text-white"
-                          : "glass-btn text-[var(--color-text)]"
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  ),
-                )}
-              </div>
-              <button
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page === totalPages}
-                className="glass-btn rounded-full px-4 py-2 text-[14px] disabled:opacity-50"
-              >
-                Next
-              </button>
+        {results.length === 0 ? (
+          <div className="glass-panel flex flex-col items-center justify-center rounded-xl p-8 text-center">
+            <div className="mb-3 text-4xl">🔍</div>
+            <p className="apple-body text-[15px]">
+              We couldn't find any matches for your search.
+            </p>
+            <p className="apple-body mt-1 text-[13px]">
+              Try different keywords or browse our top categories.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {results.map((card) => (
+                <GiftCard key={card.id} card={card} />
+              ))}
             </div>
-          )}
-        </>
-      )}
-    </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex items-center justify-center gap-2">
+                <button
+                  onClick={() => handlePageChange(page - 1)}
+                  disabled={page === 1}
+                  className="glass-btn rounded-full px-4 py-2 text-[14px] disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <div className="flex gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (pageNum) => (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`h-10 w-10 rounded-full text-[14px] ${
+                          pageNum === page
+                            ? "bg-[var(--color-accent)] text-white"
+                            : "glass-btn text-[var(--color-text)]"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ),
+                  )}
+                </div>
+                <button
+                  onClick={() => handlePageChange(page + 1)}
+                  disabled={page === totalPages}
+                  className="glass-btn rounded-full px-4 py-2 text-[14px] disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 }
