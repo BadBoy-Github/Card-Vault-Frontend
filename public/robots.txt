@@ -1,5 +1,5 @@
 # Card Vault - SEO Optimized Robots.txt
-# https://card-vault.vercel.app
+# https://card-vaults.vercel.app
 
 User-agent: *
 Allow: /
@@ -21,7 +21,7 @@ Disallow: /profile
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://card-vault.vercel.app/sitemap.xml
+Sitemap: https://card-vaults.vercel.app/sitemap.xml
 
 # Host directive for multi-subdomain sites
-Host: card-vault.vercel.app
+Host: card-vaults.vercel.app
