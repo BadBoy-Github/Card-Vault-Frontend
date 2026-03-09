@@ -104,7 +104,9 @@ export default function GiftCard({ card, onWishlistChange }) {
         <div className="relative w-full pt-[62.5%] overflow-hidden bg-[var(--color-surface)]">
           <img
             src={image}
-            alt={name}
+            alt={`${name} gift card - Buy ${brand} gift card on Card Vault - ${denomination || '₹' + price}`}
+            loading="lazy"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
           />
         </div>
