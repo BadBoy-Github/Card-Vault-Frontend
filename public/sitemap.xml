@@ -3,7 +3,7 @@
     xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     <!-- Homepage - High Priority -->
     <url>
-        <loc>https://card-vault.vercel.app/</loc>
+        <loc>https://card-vault.vercel.app</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
         <lastmod>2026-03-09</lastmod>
