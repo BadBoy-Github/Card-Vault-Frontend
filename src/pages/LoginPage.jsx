@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 
 export default function LoginPage() {
@@ -12,12 +13,22 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+  const { warning } = useToast();
+  const toastShown = useRef(false);
 
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    // Show toast only once if user was redirected from a protected route
+    if (location.state?.from && !toastShown.current) {
+      toastShown.current = true;
+      warning("Please login to continue");
+    }
+  }, [location.state, warning]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

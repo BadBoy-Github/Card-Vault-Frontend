@@ -19,6 +19,7 @@ export default function Header() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dpModalOpen, setDpModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,6 +45,7 @@ export default function Header() {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setUserDropdownOpen(false);
+        setDpModalOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -231,18 +233,42 @@ export default function Header() {
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link
-                to="/login"
-                className="glass-btn flex h-9 items-center justify-center rounded-full px-5 text-[14px] font-medium text-[var(--color-text)] transition"
-              >
-                Sign in
-              </Link>
-              <Link
-                to="/register"
-                className="glass-cta flex h-9 items-center justify-center rounded-full px-5 text-[14px] font-medium text-white transition"
-              >
-                Register
-              </Link>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setDpModalOpen(true)}
+                  className="flex items-center gap-2 rounded-full p-1 transition cursor-pointer hover:bg-white/10"
+                >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-[14px] font-bold text-white shadow-sm ring-2 ring-[var(--color-glass-border)]">
+                    A
+                  </div>
+                </button>
+
+                {dpModalOpen && (
+                  <div className="glass-strong absolute right-0 mt-5 w-72 origin-top-right rounded-2xl border border-[var(--color-glass-border)] p-4 shadow-xl animate-scale-in">
+                    <p className="text-[14px] text-[var(--color-text-muted)] mb-3">
+                      Please login to use all features
+                    </p>
+                    <Link
+                      to="/login"
+                      className="glass-cta flex items-center justify-center rounded-xl px-4 py-2.5 text-[14px] font-medium text-white transition"
+                      onClick={() => setDpModalOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <p className="text-center text-[12px] text-[var(--color-text-muted)] mt-3">
+                      Don't have an account?{" "}
+                      <Link
+                        to="/register"
+                        className="text-[var(--color-accent)] hover:underline"
+                        onClick={() => setDpModalOpen(false)}
+                      >
+                        Register
+                      </Link>
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
           <ThemeToggle />

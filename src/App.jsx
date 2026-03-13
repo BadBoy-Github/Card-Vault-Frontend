@@ -75,7 +75,14 @@ function App() {
                     />
                     <Route path="/terms" element={<TermsPage />} />
 
-                    {/* Protected App Routes (With Header/Footer) */}
+                    {/* Public Routes (With Header/Footer) - Accessible without login */}
+                    <Route element={<Layout />}>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/product/:id" element={<ProductPage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                    </Route>
+
+                    {/* Protected App Routes (With Header/Footer) - Require Login */}
                     <Route
                       element={
                         <ProtectedRoute>
@@ -83,8 +90,6 @@ function App() {
                         </ProtectedRoute>
                       }
                     >
-                      <Route path="/" element={<Home />} />
-                      <Route path="/product/:id" element={<ProductPage />} />
                       <Route path="/search" element={<SearchPage />} />
                       <Route path="/payment" element={<PaymentPage />} />
                       <Route path="/orders" element={<OrdersPage />} />
