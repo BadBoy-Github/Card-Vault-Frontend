@@ -26,6 +26,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 import TermsPage from "./pages/TermsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import TermsContactPage from "./pages/TermsContactPage";
 
 const isConstruction = false;
 
@@ -74,6 +75,10 @@ function App() {
                       element={<ForgotPasswordPage />}
                     />
                     <Route path="/terms" element={<TermsPage />} />
+                    <Route
+                      path="/terms-contact"
+                      element={<TermsContactPage />}
+                    />
 
                     {/* Public Routes (With Header/Footer) - Accessible without login */}
                     <Route element={<Layout />}>
