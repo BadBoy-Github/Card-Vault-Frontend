@@ -863,29 +863,19 @@ export default function AdminDashboard() {
                             >
                               <HiPaperAirplane className="h-4 w-4" />
                             </button>
-                          ) : (
-                            /* Info Button - For other statuses */
+                          ) : o.status === "delivered" ? (
+                            /* Info Button - Only show after gift card has been sent (delivered status) */
                             <button
-                              onClick={
-                                o.status === "delivered"
-                                  ? () => {
-                                      setSelectedOrder(o);
-                                      setShowInfoModal(true);
-                                    }
-                                  : undefined
-                              }
-                              className={`p-2 rounded-lg transition ${o.status === "delivered" ? "bg-white/10 text-white hover:bg-white/20 cursor-pointer" : o.status === "cancelled" ? "bg-gray-500/10 text-gray-500 cursor-not-allowed opacity-50" : "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 cursor-pointer"}`}
-                              title={
-                                o.status === "delivered"
-                                  ? "View Gift Card Details"
-                                  : o.status === "cancelled"
-                                    ? "Cancelled"
-                                    : "Info"
-                              }
+                              onClick={() => {
+                                setSelectedOrder(o);
+                                setShowInfoModal(true);
+                              }}
+                              className="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 cursor-pointer transition"
+                              title="View Gift Card Details"
                             >
                               <HiInformationCircle className="h-4 w-4" />
                             </button>
-                          )}
+                          ) : null}
                           <button
                             onClick={() => openViewOrder(o)}
                             className="p-2 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition"
