@@ -6,6 +6,7 @@ import { ToastProvider } from "./context/ToastContext";
 import Layout from "./components/Layout";
 import ToastContainer from "./components/ToastContainer";
 import Hero from "./components/Hero";
+import Carousel from "./components/Carousel";
 import FeaturedSection from "./components/FeaturedSection";
 import GiftCardGrid from "./components/GiftCardGrid";
 import NewsletterSection from "./components/NewsletterSection";
@@ -45,6 +46,7 @@ function Home() {
   return (
     <div className="full-viewport">
       <Hero />
+      <Carousel />
       <FeaturedSection />
       <GiftCardGrid />
       <FAQSection />

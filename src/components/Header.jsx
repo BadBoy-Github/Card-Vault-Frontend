@@ -221,7 +221,7 @@ export default function Header() {
                   <button
                     onClick={() => {
                       logout();
-                      navigate("/login");
+                      navigate("/");
                     }}
                     className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-red-400 transition hover:bg-red-500/10"
                   >
@@ -432,7 +432,7 @@ export default function Header() {
                       onClick={() => {
                         logout();
                         closeMobileMenu();
-                        navigate("/login");
+                        navigate("/");
                       }}
                       className="glass-btn flex min-h-[44px] w-full items-center justify-center rounded-xl text-[17px] font-medium text-[var(--color-accent)]"
                     >

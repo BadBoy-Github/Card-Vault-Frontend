@@ -9,9 +9,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="text-center md:text-left">
-            <h3 className="text-[18px] font-bold text-[var(--color-text)] mb-1">
-              Card Vault
-            </h3>
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-[18px] font-bold text-[var(--color-text)] mb-1"
+            >
+              <img src="/logo.png" alt="" className="h-8 w-8" />
+              <span>Card Vault</span>
+            </Link>
             <p className="text-[13px] text-[var(--color-text-muted)]">
               © {new Date().getFullYear()} Card Vault. All rights reserved.
             </p>
@@ -40,6 +44,7 @@ export default function Footer() {
             >
               Orders
             </Link>
+            
             <Link
               to="/contact"
               className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
