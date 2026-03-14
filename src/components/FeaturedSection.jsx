@@ -46,7 +46,7 @@ const features = [
 export default function FeaturedSection() {
   return (
     <section
-      className="section-padding-lg "
+      className="section-padding-lg mt-28"
       aria-labelledby="featured-heading"
     >
       <div className="container-wide">

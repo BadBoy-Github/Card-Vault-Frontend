@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
+import { useToast } from "../context/ToastContext";
 import { HiHeart } from "react-icons/hi";
 import SEO, {
   generateProductSchema,
@@ -18,6 +19,7 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { wishlist, isInWishlist, toggleWishlist } = useWishlist();
+  const { warning } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [notification, setNotification] = useState(null);
 
@@ -143,7 +145,7 @@ export default function ProductPage() {
     e.stopPropagation();
 
     if (!user) {
-      navigate("/login");
+      warning("Login to add items to wishlist");
       return;
     }
 

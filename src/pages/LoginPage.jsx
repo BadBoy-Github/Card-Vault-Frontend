@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { HiEye, HiEyeOff } from "react-icons/hi";
+import { useToast } from "../context/ToastContext";
+import { HiEye, HiEyeOff, HiInformationCircle } from "react-icons/hi";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,12 +13,22 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+  const { warning } = useToast();
+  const toastShown = useRef(false);
 
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    // Show toast only once if user was redirected from a protected route
+    if (location.state?.from && !toastShown.current) {
+      toastShown.current = true;
+      warning("Please login to continue");
+    }
+  }, [location.state, warning]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -146,6 +157,22 @@ export default function LoginPage() {
             Join the inner circle
           </Link>
         </p>
+
+        <div className="mt-10 flex items-center justify-center gap-2">
+          <Link
+            to="/"
+            className="text-[14px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+          >
+            Continue as a guest
+          </Link>
+          <div className="group relative inline-block">
+            <HiInformationCircle className="h-4 w-4 text-[var(--color-text-muted)] cursor-help" />
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-[var(--color-panel)] border border-[var(--color-glass-border)] rounded-lg text-[12px] text-[var(--color-text)] whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-lg">
+              For any action, an account is required
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[var(--color-glass-border)]" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

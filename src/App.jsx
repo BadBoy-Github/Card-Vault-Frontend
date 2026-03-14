@@ -6,6 +6,7 @@ import { ToastProvider } from "./context/ToastContext";
 import Layout from "./components/Layout";
 import ToastContainer from "./components/ToastContainer";
 import Hero from "./components/Hero";
+import Carousel from "./components/Carousel";
 import FeaturedSection from "./components/FeaturedSection";
 import GiftCardGrid from "./components/GiftCardGrid";
 import NewsletterSection from "./components/NewsletterSection";
@@ -26,6 +27,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 import TermsPage from "./pages/TermsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import TermsContactPage from "./pages/TermsContactPage";
 
 const isConstruction = false;
 
@@ -44,6 +46,7 @@ function Home() {
   return (
     <div className="full-viewport">
       <Hero />
+      <Carousel />
       <FeaturedSection />
       <GiftCardGrid />
       <FAQSection />
@@ -74,8 +77,19 @@ function App() {
                       element={<ForgotPasswordPage />}
                     />
                     <Route path="/terms" element={<TermsPage />} />
+                    <Route
+                      path="/terms-contact"
+                      element={<TermsContactPage />}
+                    />
 
-                    {/* Protected App Routes (With Header/Footer) */}
+                    {/* Public Routes (With Header/Footer) - Accessible without login */}
+                    <Route element={<Layout />}>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/product/:id" element={<ProductPage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                    </Route>
+
+                    {/* Protected App Routes (With Header/Footer) - Require Login */}
                     <Route
                       element={
                         <ProtectedRoute>
@@ -83,8 +97,6 @@ function App() {
                         </ProtectedRoute>
                       }
                     >
-                      <Route path="/" element={<Home />} />
-                      <Route path="/product/:id" element={<ProductPage />} />
                       <Route path="/search" element={<SearchPage />} />
                       <Route path="/payment" element={<PaymentPage />} />
                       <Route path="/orders" element={<OrdersPage />} />

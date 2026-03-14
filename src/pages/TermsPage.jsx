@@ -314,7 +314,7 @@ export default function TermsPage() {
                   <strong>Card Vault Support Team</strong>
                 </p>
                 <Link
-                  to="/contact"
+                  to="/terms-contact"
                   className="apple-link mt-2 inline-block cursor-pointer"
                 >
                   Contact Page

@@ -23,7 +23,7 @@ export default function WishlistPage() {
   const handleRemoveFromWishlist = async (productId) => {
     try {
       await removeFromWishlist(productId);
-      showNotification("Removed from your wishlist – we'll miss it!");
+      showNotification("Removed from wishlist");
     } catch (err) {
       console.error(err);
     }
