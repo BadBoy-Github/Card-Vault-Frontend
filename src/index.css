@@ -58,6 +58,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html::selection{
+  background-color: var(--color-accent);
+  color: var(--color-text);
+}
+
 html {
   overflow-x: hidden;
   height: 100%;

@@ -29,7 +29,7 @@ export default function Carousel() {
     if (isAnimating) return;
     setIsAnimating(true);
     setCurrentSlide((prev) => (prev + 1) % CAROUSEL_SLIDES.length);
-    setTimeout(() => setIsAnimating(false), 1000);
+    setTimeout(() => setIsAnimating(false), 10);
   }, [isAnimating]);
 
   useEffect(() => {
@@ -58,10 +58,10 @@ export default function Carousel() {
             <h2 className="apple-hero text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-text)] mb-1">
               {CAROUSEL_SLIDES[currentSlide].title}
             </h2>
-            <p className="apple-body text-base md:text-lg text-[var(--color-accent)] font-semibold mb-2">
+            <p className="apple-body mt-4 text-base md:text-lg text-[var(--color-accent)] font-semibold mb-2">
               {CAROUSEL_SLIDES[currentSlide].subtitle}
             </p>
-            <p className="apple-body text-sm md:text-base text-[var(--color-text-muted)] mb-4 max-w-md">
+            <p className="apple-body text-sm md:text-base text-[var(--color-text-muted)] mb-4 max-w-xl">
               {CAROUSEL_SLIDES[currentSlide].description}
             </p>
             <a
