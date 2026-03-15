@@ -67,9 +67,9 @@ export default function Header() {
   const navLinks = (
     <>
       <Link
-        to="/contact"
+        to="/#contact"
         className={`flex items-center gap-1.5 text-[14px] transition ${
-          location.pathname === "/contact"
+          location.pathname === "/" && location.hash === "#contact"
             ? "text-[var(--color-accent)] font-semibold"
             : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
         }`}
@@ -373,7 +373,7 @@ export default function Header() {
             </form>
             <nav className="flex flex-col gap-1">
               <Link
-                to="/contact"
+                to="/#contact"
                 className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
                 onClick={closeMobileMenu}
               >

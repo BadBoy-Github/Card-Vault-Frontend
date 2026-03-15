@@ -5,8 +5,8 @@ export default function Hero() {
     <>
       <SEO
         title="Buy Digital Gift Cards Online - Instant Delivery"
-        description="Shop premium digital gift cards for gaming, entertainment & shopping on Card Vault. Instant email delivery. Secure UPI & card payments."
-        keywords="buy gift cards online, digital gift cards, gaming gift cards, steam gift card, playstation gift card, xbox gift card"
+        description="Card Vault (card-vault, card vaults, card-vaults) - Your #1 destination for digital gift cards. Shop premium gaming, entertainment & shopping gift cards with instant email delivery. Secure UPI & card payments. 100+ brands at Card Vault."
+        keywords="card vault, card-vault, card vaults, card-vaults, buy gift cards online, digital gift cards, gaming gift cards, steam gift card, playstation gift card, xbox gift card, instant gift card delivery"
       />
       <section className="hero-viewport relative overflow-hidden">
         <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -17,7 +17,7 @@ export default function Hero() {
           />
         </div>
         <div className="container-wide text-center">
-          {/* H1 - Primary SEO Target for "card vault" */}
+          {/* H1 - Primary SEO Target for "card vault" keyword */}
           <h1 className="apple-hero mb-4 text-[var(--color-text)] sm:mb-5 md:mb-6">
             The Ultimate{" "}
             <span className="text-[var(--color-accent)]">Card Vault</span> for
@@ -25,7 +25,7 @@ export default function Hero() {
           </h1>
           {/* H2 - Supporting keyword */}
           <h2 className="sr-only">
-            Buy Gift Cards Online - Instant Digital Delivery
+            Buy Gift Cards Online - Instant Digital Delivery - Card Vault
           </h2>
           <p className="apple-body mx-auto max-w-[600px] px-1 text-[15px] sm:text-[17px] md:text-[19px]">
             High-grade digital assets for the discerning spender. We provide the

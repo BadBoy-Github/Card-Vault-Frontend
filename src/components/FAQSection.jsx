@@ -67,7 +67,7 @@ export default function FAQSection() {
             Got questions? We've got answers. Can't find what you're looking
             for? {" "}
             <Link
-              to={"/contact"}
+              to={"/#contact"}
               className="apple-link inline-flex justify-center gap-1 items-center text-[15px] sm:text-[16px]"
             >
               Hit us up.

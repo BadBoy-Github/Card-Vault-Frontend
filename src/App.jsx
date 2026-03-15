@@ -12,12 +12,12 @@ import GiftCardGrid from "./components/GiftCardGrid";
 import NewsletterSection from "./components/NewsletterSection";
 import FAQSection from "./components/FAQSection";
 import NewsletterSignup from "./components/NewsletterSignup";
+import ContactFormSection from "./components/ContactFormSection";
 import ProductPage from "./pages/ProductPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import ContactPage from "./pages/ContactPage";
 import ConstructionPage from "./pages/ConstructionPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import OrdersPage from "./pages/OrdersPage";
@@ -52,6 +52,7 @@ function Home() {
       <GiftCardGrid />
       <FAQSection />
       <NewsletterSignup />
+      <ContactFormSection />
     </div>
   );
 }
@@ -102,7 +103,6 @@ function App() {
                       <Route path="/payment" element={<PaymentPage />} />
                       <Route path="/orders" element={<OrdersPage />} />
                       <Route path="/profile" element={<ProfilePage />} />
-                      <Route path="/contact" element={<ContactPage />} />
                       <Route
                         path="/admin/dashboard"
                         element={<AdminDashboard />}

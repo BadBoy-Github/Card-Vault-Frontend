@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 
 /**
  * SEO Component - Dynamic SEO Meta Tags Manager
+ * Optimized for: card vault, card-vault, card vaults, card-vaults
  *
  * Usage:
  * <SEO
@@ -19,9 +20,9 @@ import { useLocation } from "react-router-dom";
 const DEFAULT_SEO = {
   title: "Card Vault | Buy Digital Gift Cards Online - Instant Delivery",
   description:
-    "Card Vault (card-vault) - Your #1 destination for digital gift cards. Buy gaming, entertainment & shopping gift cards online with instant email delivery. Secure payments via UPI, Cards & More. 100+ brands available.",
+    "Card Vault (card-vault, card vaults, card-vaults) - Your #1 destination for digital gift cards in India. Buy gaming, entertainment & shopping gift cards online with instant email delivery. Secure payments via UPI, Cards & More. 100+ brands available at Card Vault.",
   keywords:
-    "card vault, card-vault, gift cards, digital gift cards, buy gift card online, gaming gift cards, prepaid cards, online gift cards, digital vouchers, instant gift card delivery",
+    "card vault, card-vault, card vaults, card-vaults, gift cards, digital gift cards, buy gift card online, gaming gift cards, prepaid cards, online gift cards, digital vouchers, instant gift card delivery, steam gift card, playstation gift card, xbox gift card, itunes gift card, google play gift card, amazon gift card, shopping gift cards, gift card India",
   image: "/logo.png",
   url: "https://card-vaults.vercel.app",
   siteName: "Card Vault",
@@ -146,7 +147,7 @@ const addOrganizationSchema = (baseUrl) => {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Card Vault",
-    alternateName: "card-vault",
+    alternateName: ["card-vault", "card vaults", "card-vaults"],
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
     description: DEFAULT_SEO.description,
@@ -183,7 +184,7 @@ export default function SEO({
   const location = useLocation();
   const baseUrl = DEFAULT_SEO.url;
 
-  // Build complete SEO data
+  // Build complete SEO data with target keywords
   const seo = {
     title: title ? `${title} | Card Vault` : DEFAULT_SEO.title,
     description: description || DEFAULT_SEO.description,
@@ -295,6 +296,18 @@ export const generateBreadcrumbSchema = (items) => ({
     "@type": "ListItem",
     position: index + 1,
     name: item.name,
+    item: item.url,
+  })),
+});
+
+// Generate localized breadcrumb schema with proper card vault keywords
+export const generateCardVaultBreadcrumb = (items) => ({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.name.replace("Card Vault", "Card Vault"),
     item: item.url,
   })),
 });

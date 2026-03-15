@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-    xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-    <!-- Homepage - High Priority -->
+    xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+    xmlns=xhtml="http://www.w3.org/1999/xhtml">
+
+    <!-- Homepage - Primary Target for "card vault" keyword - HIGH PRIORITY -->
     <url>
-        <loc>https://card-vaults.vercel.app</loc>
+        <loc>https://card-vaults.vercel.app/</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
-        <lastmod>2026-03-09</lastmod>
+        <lastmod>2026-03-15</lastmod>
+        <xhtml:link rel="alternate" hreflang="en" href="https://card-vaults.vercel.app/"/>
     </url>
 
-    <!-- Search/Browse Page -->
+    <!-- Search/Browse Page - Gift Cards Collection -->
     <url>
         <loc>https://card-vaults.vercel.app/search</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
-        <lastmod>2026-03-09</lastmod>
-    </url>
-
-    <!-- Contact Page -->
-    <url>
-        <loc>https://card-vaults.vercel.app/contact</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-        <lastmod>2026-03-09</lastmod>
+        <lastmod>2026-03-15</lastmod>
+        <xhtml:link rel="alternate" hreflang="en" href="https://card-vaults.vercel.app/search"/>
     </url>
 
     <!-- Login Page -->
@@ -30,7 +26,7 @@
         <loc>https://card-vaults.vercel.app/login</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
-        <lastmod>2026-03-09</lastmod>
+        <lastmod>2026-03-15</lastmod>
     </url>
 
     <!-- Register Page -->
@@ -38,15 +34,23 @@
         <loc>https://card-vaults.vercel.app/register</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
-        <lastmod>2026-03-09</lastmod>
+        <lastmod>2026-03-15</lastmod>
     </url>
 
-    <!-- Terms Page -->
+    <!-- Terms of Service -->
     <url>
         <loc>https://card-vaults.vercel.app/terms</loc>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
-        <lastmod>2026-03-09</lastmod>
+        <lastmod>2026-03-15</lastmod>
+    </url>
+
+    <!-- Terms Contact Page -->
+    <url>
+        <loc>https://card-vaults.vercel.app/terms-contact</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        <lastmod>2026-03-15</lastmod>
     </url>
 
     <!-- Forgot Password -->
@@ -54,9 +58,49 @@
         <loc>https://card-vaults.vercel.app/forgot-password</loc>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
-        <lastmod>2026-03-09</lastmod>
+        <lastmod>2026-03-15</lastmod>
     </url>
 
-    <!-- Product pages should be added dynamically via API -->
-    <!-- Example product URL format: https://card-vaults.vercel.app/product/abc123 -->
+    <!-- Wishlist Page (Protected but sitemap needed for SEO) -->
+    <url>
+        <loc>https://card-vaults.vercel.app/wishlist</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+        <lastmod>2026-03-15</lastmod>
+    </url>
+
+    <!-- Orders Page (Protected but sitemap needed) -->
+    <url>
+        <loc>https://card-vaults.vercel.app/orders</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+        <lastmod>2026-03-15</lastmod>
+    </url>
+
+    <!-- Profile Page (Protected but sitemap needed) -->
+    <url>
+        <loc>https://card-vaults.vercel.app/profile</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+        <lastmod>2026-03-15</lastmod>
+    </url>
+
+    <!-- Payment Page (Protected but sitemap needed) -->
+    <url>
+        <loc>https://card-vaults.vercel.app/payment</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+        <lastmod>2026-03-15</lastmod>
+    </url>
+
+    <!-- 404 Not Found Page -->
+    <url>
+        <loc>https://card-vaults.vercel.app/404</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.1</priority>
+        <lastmod>2026-03-15</lastmod>
+    </url>
+
+    <!-- Product pages are added dynamically via API/sitemap endpoint -->
+    <!-- Contact page removed - no longer available -->
 </urlset>
