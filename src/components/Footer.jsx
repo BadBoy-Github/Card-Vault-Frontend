@@ -44,9 +44,9 @@ export default function Footer() {
             >
               Orders
             </Link>
-            
+
             <Link
-              to="/contact"
+              to="/#contact"
               className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
             >
               Contact
@@ -82,7 +82,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="/contact"
+                href="/#contact"
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-[var(--color-text-muted)] hover:bg-[var(--color-accent)] hover:text-white transition"
                 aria-label="Website"
               >
