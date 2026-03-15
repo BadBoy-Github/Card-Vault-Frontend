@@ -84,6 +84,11 @@ body {
   flex-direction: column;
 }
 
+/* Hide default cursor and use custom cursor */
+* {
+  cursor: none !important;
+}
+
 /* Custom Thin Scrollbar - Visible in both light and dark modes */
 ::-webkit-scrollbar {
   width: 8px;

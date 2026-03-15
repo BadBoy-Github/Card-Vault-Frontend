@@ -41,15 +41,11 @@ export default function CustomCursor() {
     document.addEventListener("mouseleave", handleMouseLeave);
     document.addEventListener("mouseover", handleMouseOver);
 
-    // Hide default cursor
-    document.body.style.cursor = "none";
-
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseenter", handleMouseEnter);
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("mouseover", handleMouseOver);
-      document.body.style.cursor = "auto";
     };
   }, []);
 
@@ -78,19 +74,21 @@ export default function CustomCursor() {
           transition: "transform 0.05s ease-out",
         }}
       >
-        {/* Inner dot */}
+        {/* Inner dot - bigger */}
         <div
-          className="absolute w-2 h-2 rounded-full bg-white"
+          className="absolute rounded-full bg-white"
           style={{
-            left: "-4px",
-            top: "-4px",
+            left: "-6px",
+            top: "-6px",
+            width: "12px",
+            height: "12px",
             transform: isHovering ? "scale(1.5)" : "scale(1)",
             transition: "transform 0.15s ease",
           }}
         />
       </div>
 
-      {/* Circling rings - smaller and closer to cursor */}
+      {/* Circling rings - bigger and closer to cursor */}
       <div
         ref={ringsRef}
         className="fixed pointer-events-none z-[9998]"
@@ -105,12 +103,12 @@ export default function CustomCursor() {
         <div
           className="absolute"
           style={{
-            left: "-8px",
-            top: "-8px",
-            width: "16px",
-            height: "16px",
+            left: "-14px",
+            top: "-14px",
+            width: "28px",
+            height: "28px",
             borderRadius: "50%",
-            border: "1.5px solid var(--color-accent)",
+            border: "2px solid var(--color-accent)",
             animation: "spin-clockwise 1.5s linear infinite",
             opacity: isHovering ? 0.2 : 0.5,
             transform: isHovering ? "scale(1.3)" : "scale(1)",
@@ -122,12 +120,12 @@ export default function CustomCursor() {
         <div
           className="absolute"
           style={{
-            left: "-12px",
-            top: "-12px",
-            width: "24px",
-            height: "24px",
+            left: "-20px",
+            top: "-20px",
+            width: "40px",
+            height: "40px",
             borderRadius: "50%",
-            border: "1px solid var(--color-accent)",
+            border: "1.5px solid var(--color-accent)",
             animation: "spin-counter-clockwise 2s linear infinite",
             opacity: isHovering ? 0.15 : 0.35,
             transform: isHovering ? "scale(1.2)" : "scale(1)",
@@ -139,10 +137,10 @@ export default function CustomCursor() {
         <div
           className="absolute"
           style={{
-            left: "-16px",
-            top: "-16px",
-            width: "32px",
-            height: "32px",
+            left: "-26px",
+            top: "-26px",
+            width: "52px",
+            height: "52px",
             borderRadius: "50%",
             border: "1px solid var(--color-accent)",
             animation: "spin-clockwise 2.5s linear infinite",
