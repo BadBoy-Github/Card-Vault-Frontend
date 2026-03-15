@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 import {
   HiUserCircle,
   HiPencil,
@@ -8,6 +9,7 @@ import {
   HiLockClosed,
   HiCheck,
   HiX,
+  HiBell,
 } from "react-icons/hi";
 
 const API_URL =
@@ -16,9 +18,15 @@ const API_URL =
 export default function ProfilePage() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
+  const { success: showSuccess, error: showError } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
+
+  // Newsletter state
+  const [newsletterSubscribed, setNewsletterSubscribed] = useState(null);
+  const [unsubscribing, setUnsubscribing] = useState(false);
+  const [showUnsubscribeModal, setShowUnsubscribeModal] = useState(false);
 
   // Form states
   const [isEditingName, setIsEditingName] = useState(false);
@@ -46,7 +54,49 @@ export default function ProfilePage() {
       email: user.email || "",
     });
     setLoading(false);
+
+    // Fetch newsletter subscription status
+    const checkNewsletterStatus = async () => {
+      try {
+        const res = await fetch(
+          `${API_URL}/newsletter?email=${encodeURIComponent(user.email)}`,
+        );
+        const data = await res.json();
+        setNewsletterSubscribed(data.subscribed || false);
+      } catch (error) {
+        console.error("Error checking newsletter status:", error);
+        setNewsletterSubscribed(false);
+      }
+    };
+    checkNewsletterStatus();
   }, [user, navigate]);
+
+  // Handle unsubscribe from newsletter
+  const handleUnsubscribe = async () => {
+    if (!user?.email) return;
+
+    setUnsubscribing(true);
+    try {
+      const res = await fetch(`${API_URL}/newsletter`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, action: "unsubscribe" }),
+      });
+
+      if (res.ok) {
+        setNewsletterSubscribed(false);
+        setShowUnsubscribeModal(false);
+        showSuccess("Successfully unsubscribed from newsletter");
+      } else {
+        showError("Failed to unsubscribe. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error unsubscribing:", error);
+      showError("Something went wrong. Please try again.");
+    } finally {
+      setUnsubscribing(false);
+    }
+  };
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -488,6 +538,76 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Newsletter Status Card */}
+        <div
+          className={`mt-6 glass-panel rounded-2xl p-6 border-2 ${
+            newsletterSubscribed
+              ? "border-green-500/30"
+              : "border-yellow-500/30"
+          }`}
+        >
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-full bg-[var(--color-accent)]/10">
+              <HiBell className="h-6 w-6 text-[var(--color-accent)]" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-[15px] font-semibold text-[var(--color-text)]">
+                  Newsletter Subscription
+                </h3>
+                <span
+                  className={`text-sm font-medium ${
+                    newsletterSubscribed ? "text-green-400" : "text-yellow-400"
+                  }`}
+                >
+                  {newsletterSubscribed ? "Subscribed" : "Not Subscribed"}
+                </span>
+              </div>
+              {newsletterSubscribed ? (
+                <>
+                  <div className="text-[13px] text-[var(--color-text-muted)] mb-4 space-y-1">
+                    <p className="font-medium text-[var(--color-text)]">
+                      As a subscriber, you enjoy:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-1">
+                      <li>Early access to new gift card arrivals</li>
+                      <li>Exclusive deals and promotional offers</li>
+                    </ul>
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setShowUnsubscribeModal(true)}
+                      className="glass-cta px-4 py-2 rounded-lg text-sm font-medium text-white"
+                    >
+                      Opt out
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-[13px] text-[var(--color-text-muted)] mb-4 space-y-1">
+                    <p className="font-medium text-[var(--color-text)]">
+                      You're missing out on:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 ml-1">
+                      <li>Early access to new gift card arrivals</li>
+                      <li>Exclusive deals and promotional offers</li>
+                    </ul>
+                  </div>
+                  <div className="flex justify-end">
+                    <a
+                      href="/#newsletter"
+                      className="glass-cta px-4 py-2 rounded-lg text-sm font-medium text-white"
+                    >
+                      Subscribe to newsletter
+                    </a>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Account Info */}
         <div className="mt-6 glass-panel rounded-2xl p-6">
           <h3 className="text-[15px] font-semibold text-[var(--color-text)] mb-3">
@@ -506,6 +626,36 @@ export default function ProfilePage() {
             </p>
           </div>
         </div>
+
+        {/* Unsubscribe Confirmation Modal */}
+        {showUnsubscribeModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="glass-panel rounded-2xl p-6 max-w-sm w-full mx-4 animate-fade-in">
+              <h3 className="text-lg font-semibold text-[var(--color-text)] mb-2">
+                Confirm Unsubscribe
+              </h3>
+              <p className="text-[14px] text-[var(--color-text-muted)] mb-6">
+                Are you sure you want to unsubscribe from our newsletter? You'll
+                miss out on exclusive deals and new gift card updates.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowUnsubscribeModal(false)}
+                  className="flex-1 px-4 py-2 rounded-xl border border-[var(--color-glass-border)] text-[var(--color-text)] hover:bg-[var(--color-glass-bg)] transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUnsubscribe}
+                  disabled={unsubscribing}
+                  className="flex-1 px-4 py-2 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition disabled:opacity-50"
+                >
+                  {unsubscribing ? "Unsubscribing..." : "Yes, Unsubscribe"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

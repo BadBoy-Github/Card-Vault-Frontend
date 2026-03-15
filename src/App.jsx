@@ -11,6 +11,7 @@ import FeaturedSection from "./components/FeaturedSection";
 import GiftCardGrid from "./components/GiftCardGrid";
 import NewsletterSection from "./components/NewsletterSection";
 import FAQSection from "./components/FAQSection";
+import NewsletterSignup from "./components/NewsletterSignup";
 import ProductPage from "./pages/ProductPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
@@ -50,7 +51,7 @@ function Home() {
       <FeaturedSection />
       <GiftCardGrid />
       <FAQSection />
-      {/* <NewsletterSection /> */}
+      <NewsletterSignup />
     </div>
   );
 }

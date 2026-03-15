@@ -9,9 +9,10 @@ import {
   HiX,
   HiExclamation,
   HiUserCircle,
-  HiEye,
+  HiCurrencyRupee,
   HiPaperAirplane,
   HiInformationCircle,
+  HiCheck,
 } from "react-icons/hi";
 
 const API_URL =
@@ -26,6 +27,7 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [newsletterSubscribers, setNewsletterSubscribers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -76,7 +78,11 @@ export default function AdminDashboard() {
   // User Edit states
   const [showUserEditModal, setShowUserUserEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [userFormData, setUserFormData] = useState({ name: "", role: "" });
+  const [userFormData, setUserFormData] = useState({
+    name: "",
+    email: "",
+    role: "",
+  });
 
   useEffect(() => {
     if (!user || !user.isAdmin) {
@@ -90,7 +96,7 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       // Ensure we have products and users for order forms
-      const endpoints = ["products", "users", "orders"];
+      const endpoints = ["products", "users", "orders", "newsletter"];
       const results = await Promise.all(
         endpoints.map((e) =>
           fetch(`${API_URL}/${e}`, {
@@ -104,6 +110,9 @@ export default function AdminDashboard() {
       // Show all orders including pending ones
       const allOrders = Array.isArray(results[2]) ? results[2] : [];
       setOrders(allOrders);
+      // Set newsletter subscribers
+      const allSubscribers = Array.isArray(results[3]) ? results[3] : [];
+      setNewsletterSubscribers(allSubscribers);
     } catch (err) {
       console.error(err);
     } finally {
@@ -282,7 +291,7 @@ export default function AdminDashboard() {
 
   const openUserEdit = (u) => {
     setSelectedUser(u);
-    setUserFormData({ name: u.name, role: u.role });
+    setUserFormData({ name: u.name, email: u.email, role: u.role });
     setShowUserUserEditModal(true);
   };
 
@@ -699,49 +708,72 @@ export default function AdminDashboard() {
                       <th className="px-6 py-4">User ID</th>
                       <th className="px-6 py-4">Name</th>
                       <th className="px-6 py-4">Email</th>
+                      <th className="px-6 py-4">Newsletter</th>
                       <th className="px-6 py-4">Role</th>
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--color-glass-border)]">
-                    {users.map((u) => (
-                      <tr key={u._id} className="hover:bg-white/5 transition">
-                        <td className="px-6 py-4 font-mono text-xs">{u._id}</td>
-                        <td className="px-6 py-4">{u.name}</td>
-                        <td className="px-6 py-4">{u.email}</td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-[12px] ${u.role === "admin" ? "bg-purple-500/20 text-purple-400" : "bg-green-500/20 text-green-400"}`}
-                          >
-                            {u.role}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right space-x-3">
-                          <button
-                            onClick={() => openUserEdit(u)}
-                            className="p-2 rounded-lg bg-[var(--color-accent)]/10 text-[var(--color-accent)] cursor-pointer hover:bg-[var(--color-accent)]/20 transition"
-                            title="Edit User"
-                          >
-                            <HiPencil className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedUser(u);
-                              setShowUserDeleteModal(true);
-                            }}
-                            disabled={u.email === "admin@cardvault.com"}
-                            className={`p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 cursor-pointer transition ${u.email === "admin@cardvault.com" ? "opacity-30 cursor-not-allowed" : ""}`}
-                            title={
-                              u.email === "admin@cardvault.com"
-                                ? "Master Admin Locked"
-                                : "Delete User"
-                            }
-                          >
-                            <HiTrash className="h-4 w-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {users.map((u) => {
+                      const isSubscribed = newsletterSubscribers.some(
+                        (sub) =>
+                          sub.email?.toLowerCase() === u.email?.toLowerCase() &&
+                          sub.isActive,
+                      );
+                      return (
+                        <tr key={u._id} className="hover:bg-white/5 transition">
+                          <td className="px-6 py-4 font-mono text-xs">
+                            {u._id}
+                          </td>
+                          <td className="px-6 py-4">{u.name}</td>
+                          <td className="px-6 py-4">{u.email}</td>
+                          <td className="px-6 py-4">
+                            {isSubscribed ? (
+                              <span className="inline-flex items-center gap-1 text-green-400">
+                                <HiCheck className="h-4 w-4" />
+                                <span className="text-xs">Subscribed</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-red-400">
+                                <HiX className="h-4 w-4" />
+                                <span className="text-xs">Not Subscribed</span>
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[12px] ${u.role === "admin" ? "bg-purple-500/20 text-purple-400" : "bg-green-500/20 text-green-400"}`}
+                            >
+                              {u.role}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right space-x-3">
+                            <button
+                              onClick={() => openUserEdit(u)}
+                              className="p-2 rounded-lg bg-[var(--color-accent)]/10 text-[var(--color-accent)] cursor-pointer hover:bg-[var(--color-accent)]/20 transition"
+                              title="Edit User"
+                            >
+                              <HiPencil className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedUser(u);
+                                setShowUserDeleteModal(true);
+                              }}
+                              disabled={u.email === "admin@cardvault.com"}
+                              className={`p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 cursor-pointer transition ${u.email === "admin@cardvault.com" ? "opacity-30 cursor-not-allowed" : ""}`}
+                              title={
+                                u.email === "admin@cardvault.com"
+                                  ? "Master Admin Locked"
+                                  : "Delete User"
+                              }
+                            >
+                              <HiTrash className="h-4 w-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               )}
@@ -858,40 +890,30 @@ export default function AdminDashboard() {
                           o.status === "processing" ? (
                             <button
                               onClick={() => openGiftCardModal(o)}
-                              className="p-2 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20 transition"
+                              className="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition"
                               title="Send Gift Card"
                             >
                               <HiPaperAirplane className="h-4 w-4" />
                             </button>
-                          ) : (
-                            /* Info Button - For other statuses */
+                          ) : o.status === "delivered" ? (
+                            /* Info Button - Only show after gift card has been sent (delivered status) */
                             <button
-                              onClick={
-                                o.status === "delivered"
-                                  ? () => {
-                                      setSelectedOrder(o);
-                                      setShowInfoModal(true);
-                                    }
-                                  : undefined
-                              }
-                              className={`p-2 rounded-lg transition ${o.status === "delivered" ? "bg-white/10 text-white hover:bg-white/20 cursor-pointer" : o.status === "cancelled" ? "bg-gray-500/10 text-gray-500 cursor-not-allowed opacity-50" : "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 cursor-pointer"}`}
-                              title={
-                                o.status === "delivered"
-                                  ? "View Gift Card Details"
-                                  : o.status === "cancelled"
-                                    ? "Cancelled"
-                                    : "Info"
-                              }
+                              onClick={() => {
+                                setSelectedOrder(o);
+                                setShowInfoModal(true);
+                              }}
+                              className="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 cursor-pointer transition"
+                              title="View Gift Card Details"
                             >
                               <HiInformationCircle className="h-4 w-4" />
                             </button>
-                          )}
+                          ) : null}
                           <button
                             onClick={() => openViewOrder(o)}
-                            className="p-2 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition"
+                            className="p-2 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20 transition"
                             title="View UTR Details"
                           >
-                            <HiEye className="h-4 w-4" />
+                            <HiCurrencyRupee className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => openOrderEdit(o)}
@@ -1168,6 +1190,27 @@ export default function AdminDashboard() {
                   }
                   className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-all"
                 />
+              </div>
+              <div>
+                <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={userFormData.email}
+                  onChange={(e) =>
+                    setUserFormData({ ...userFormData, email: e.target.value })
+                  }
+                  disabled={selectedUser?.email === DEFAULT_ADMIN_EMAIL}
+                  className={`glass-input w-full mt-1 rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-all ${selectedUser?.email === DEFAULT_ADMIN_EMAIL ? "opacity-50 cursor-not-allowed" : ""}`}
+                />
+                {selectedUser?.email === DEFAULT_ADMIN_EMAIL && (
+                  <p className="mt-2 text-[11px] text-amber-500 flex items-center gap-1.5">
+                    <HiExclamation className="h-3 w-3" />
+                    Master Admin email is locked for security.
+                  </p>
+                )}
               </div>
               <div>
                 <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
