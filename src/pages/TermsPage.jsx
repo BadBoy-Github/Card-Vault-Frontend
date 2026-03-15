@@ -299,28 +299,6 @@ export default function TermsPage() {
                 any changes constitutes acceptance of the new terms.
               </p>
             </section>
-
-            {/* Section 12: Contact Information */}
-            <section>
-              <h2 className="text-xl font-semibold text-[var(--color-text)] mb-4">
-                12. Contact Information
-              </h2>
-              <p className="text-[var(--color-text-muted)] leading-relaxed mb-4">
-                If you have any questions about these Terms & Conditions, please
-                contact us:
-              </p>
-              <div className="bg-[var(--color-section-bg)] rounded-xl p-5 border border-[var(--color-glass-border)]">
-                <p className="text-[var(--color-text)]">
-                  <strong>Card Vault Support Team</strong>
-                </p>
-                <Link
-                  to="/terms-contact"
-                  className="apple-link mt-2 inline-block cursor-pointer"
-                >
-                  Contact Page
-                </Link>
-              </div>
-            </section>
           </div>
 
           <div className="mt-12 pt-8 border-t border-[var(--color-glass-border)]">
