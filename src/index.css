@@ -84,28 +84,38 @@ body {
   flex-direction: column;
 }
 
-/* Custom Thin Scrollbar */
+/* Hide default cursor and use custom cursor */
+* {
+  cursor: none !important;
+}
+
+/* Custom Thin Scrollbar - Visible in both light and dark modes */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-glass-border);
+  background: var(--color-surface);
   border-radius: 10px;
 }
 
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 10px;
+  border: 2px solid var(--color-surface);
+  background-clip: content-box;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+  background: var(--color-accent);
+  background-clip: content-box;
 }
 
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-glass-border) transparent;
+  scrollbar-color: var(--color-accent) var(--color-surface);
 }
 
 /* Apple-style typography classes */

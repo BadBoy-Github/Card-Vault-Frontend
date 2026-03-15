@@ -65,9 +65,9 @@ export default function FAQSection() {
           </h2>
           <p className="apple-body mx-auto mt-2 max-w-[500px] px-2 text-[15px] sm:mt-3 sm:text-[17px]">
             Got questions? We've got answers. Can't find what you're looking
-            for? {" "}
+            for?{" "}
             <Link
-              to={"/#contact"}
+              to="/#contact"
               className="apple-link inline-flex justify-center gap-1 items-center text-[15px] sm:text-[16px]"
             >
               Hit us up.
