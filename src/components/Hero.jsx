@@ -1,4 +1,5 @@
 import SEO from "./SEO";
+import ShinyText from "./ShinyText";
 
 export default function Hero() {
   return (
@@ -20,8 +21,21 @@ export default function Hero() {
           {/* H1 - Primary SEO Target for "card vault" keyword */}
           <h1 className="apple-hero mb-4 text-[var(--color-text)] sm:mb-5 md:mb-6">
             The Ultimate{" "}
-            <span className="text-[var(--color-accent)]">Card Vault</span> for
-            Digital Gift Cards
+            <span className="text-[var(--color-accent)]">
+              <ShinyText
+                text="Card Vault"
+                speed={2}
+                delay={0}
+                color="#2997ff"
+                shineColor="#5eb3ff"
+                spread={120}
+                direction="left"
+                yoyo={false}
+                pauseOnHover={false}
+                disabled={false}
+              />
+            </span>{" "}
+            for Digital Gift Cards
           </h1>
           {/* H2 - Supporting keyword */}
           <h2 className="sr-only">
@@ -58,3 +72,4 @@ export default function Hero() {
     </>
   );
 }
+

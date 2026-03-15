@@ -5,6 +5,7 @@ import { WishlistProvider } from "./context/WishlistContext";
 import { ToastProvider } from "./context/ToastContext";
 import Layout from "./components/Layout";
 import ToastContainer from "./components/ToastContainer";
+import CustomCursor from "./components/CustomCursor";
 import Hero from "./components/Hero";
 import Carousel from "./components/Carousel";
 import FeaturedSection from "./components/FeaturedSection";
@@ -61,6 +62,7 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <CustomCursor />
       <ThemeProvider>
         <ToastProvider>
           <AuthProvider>
