@@ -43,14 +43,6 @@
         <lastmod>2026-03-15</lastmod>
     </url>
 
-    <!-- Terms Contact Page -->
-    <url>
-        <loc>https://card-vaults.vercel.app/terms-contact</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-        <lastmod>2026-03-15</lastmod>
-    </url>
-
     <!-- Forgot Password -->
     <url>
         <loc>https://card-vaults.vercel.app/forgot-password</loc>

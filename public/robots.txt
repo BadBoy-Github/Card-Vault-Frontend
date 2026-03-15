@@ -9,7 +9,6 @@ Allow: /wishlist
 Allow: /orders
 Allow: /profile
 Allow: /terms
-Allow: /terms-contact
 Allow: /login
 Allow: /register
 
