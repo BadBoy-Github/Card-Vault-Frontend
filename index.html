@@ -1,6 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
+    <script>
+      // Apply theme BEFORE React loads to prevent flash
+      (function () {
+        const savedTheme = localStorage.getItem("cardvault-theme");
+        const theme = savedTheme || "dark"; // Default to dark if no preference
+        document.documentElement.classList.remove("light", "dark");
+        document.documentElement.classList.add(theme);
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />

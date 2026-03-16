@@ -4,54 +4,35 @@ import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useToast } from "../context/ToastContext";
 import { HiHeart } from "react-icons/hi";
-import SEO, {
-  generateProductSchema,
-  generateBreadcrumbSchema,
-} from "../components/SEO";
+import SEO from "../components/SEO";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
 
-export default function ProductPage() {
+export default function FeaturedProductPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
-  const { wishlist, isInWishlist, toggleWishlist } = useWishlist();
-  const { warning } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [notification, setNotification] = useState(null);
+  const { user } = useAuth();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const { warning } = useToast();
 
   // Get the latest wishlist state to re-evaluate isWishlisted
   // Use card._id which is the MongoDB ObjectId that matches what's stored in wishlist
   const isWishlisted = card?._id ? isInWishlist(card._id) : false;
 
-  // Generate SEO and schema when card is loaded
-  const productSchema = card ? generateProductSchema(card) : null;
-  const breadcrumbSchema = card
-    ? generateBreadcrumbSchema([
-        { name: "Home", url: "https://card-vaults.vercel.app/" },
-        { name: "Gift Cards", url: "https://card-vaults.vercel.app/search" },
-        {
-          name: card.name,
-          url: `https://card-vaults.vercel.app/product/${id}`,
-        },
-      ])
-    : null;
-
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // Try fetching by the 9-char id first (e.g., yx6glrhQG)
-        let res = await fetch(`${API_URL}/products/${id}`);
+        let res = await fetch(`${API_URL}/products?type=featured&id=${id}`);
         let data = await res.json();
 
-        // If not found by id, try by _id (MongoDB ObjectId)
         if (!res.ok || !data) {
-          res = await fetch(`${API_URL}/products?id=${id}`);
+          res = await fetch(`${API_URL}/products?type=featured&id=${id}`);
           data = await res.json();
-          // If it's an array, get the first match
           if (res.ok && Array.isArray(data) && data.length > 0) {
             data = data[0];
           }
@@ -61,7 +42,7 @@ export default function ProductPage() {
           setCard(data);
         }
       } catch (err) {
-        console.error("Error fetching product:", err);
+        console.error("Error fetching featured product:", err);
       } finally {
         setLoading(false);
       }
@@ -108,36 +89,49 @@ export default function ProductPage() {
 
   // SEO - Product Page
   const productTitle = `${card.name} - Buy Gift Card on Card Vault`;
-  const productDescription = `Buy ${card.name} gift card online on Card Vault. Instant delivery via email. ${card.description || "Get your digital gift card now!"}`;
+  const productDescription = `Buy ${card.name} gift card online on Card Vault. ${card.subheading || "Instant delivery via email."} ${card.description || "Get your digital gift card now!"}`;
 
-  const handleBuy = async () => {
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: card.name,
+    description: productDescription,
+    image: card.image,
+    offers: {
+      "@type": "Offer",
+      price: card.price,
+      priceCurrency: "INR",
+      availability: card.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+    },
+  };
+
+  const handleBuy = () => {
     if (!user) {
-      navigate("/login", { state: { from: `/product/${card.id}` } });
+      navigate("/login", { state: { from: `/featured-product/${card.id}` } });
       return;
     }
 
-    // Instead of creating order, redirect directly to payment page with product info
-    // Order will be created after UTR is submitted
     const orderItem = {
       name: card.name,
       brand: card.brand,
       price: card.price,
       image: card.image,
       qty: quantity,
-      product: card._id,
+      featuredProduct: card._id,
     };
 
-    // Store order item in sessionStorage to create order after payment
     sessionStorage.setItem(
-      "pendingOrder",
+      "pendingFeaturedOrder",
       JSON.stringify({
         orderItems: [orderItem],
         totalPrice: total,
+        type: "featured",
       }),
     );
 
-    // Redirect to payment page - order will be created there after UTR submission
-    navigate(`/payment?amount=${total}`);
+    navigate(`/payment?amount=${total}&type=featured`);
   };
 
   const handleToggleWishlist = async (e) => {
@@ -253,6 +247,11 @@ export default function ProductPage() {
                 <h1 className="apple-title mt-1 text-xl font-bold text-[var(--color-text)] sm:text-2xl">
                   {card.name}
                 </h1>
+                {card.subheading && (
+                  <p className="text-sm text-[var(--color-text-muted)] mt-1">
+                    {card.subheading}
+                  </p>
+                )}
                 <p className="text-sm text-[var(--color-accent)]">
                   {card.category}
                 </p>
