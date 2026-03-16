@@ -23,7 +23,7 @@ const DEFAULT_ADMIN_EMAIL =
 export default function AdminDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("products");
+  const [activeTab, setActiveTab] = useState("users");
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -564,7 +564,7 @@ export default function AdminDashboard() {
         {/* Tabs and Add Button */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-glass-border)] pb-2">
           <div className="flex gap-4 overflow-x-auto">
-            {["products", "users", "orders"].map((tab) => (
+            {["users", "products", "orders"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
