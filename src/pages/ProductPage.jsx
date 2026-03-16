@@ -351,7 +351,7 @@ export default function ProductPage() {
 
         {/* Redemption Info Card */}
         <div className="mx-auto mt-6 max-w-4xl rounded-xl bg-yellow-500/30 border border-yellow-500/50 p-4">
-          <p className="text-sm text-yellow-200">
+          <p className="text-sm text-yellow-600">
             For specific and more detailed redemption steps, please visit the
             official {card.brand} website. Steps may vary depending on the
             brand.

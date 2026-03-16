@@ -114,7 +114,7 @@ export default function Header() {
               placeholder="Search gift cards..."
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="glass-input w-full rounded-full py-2 pl-10 pr-4 text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all"
+              className="glass-input w-full rounded-full py-2 pl-10 pr-4 text-[14px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all"
             />
             <svg
               className="absolute left-3.5 top-2.5 h-4 w-4 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-accent)]"
@@ -335,7 +335,7 @@ export default function Header() {
                   placeholder="Search gift cards..."
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="glass-input w-full rounded-full py-2.5 pl-10 pr-4 text-[16px] focus:outline-none"
+                  className="glass-input w-full rounded-full py-2.5 pl-10 pr-4 text-[16px] text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus:outline-none"
                 />
                 <svg
                   className="absolute left-3.5 top-3 h-5 w-5 text-[var(--color-text-muted)]"
