@@ -2940,13 +2940,13 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Featured Order Info Modal - Payment & Order Details */}
+      {/* Featured Order Info Modal - Gift Card Details */}
       {showFeaturedInfoModal && selectedFeaturedOrder && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-          <div className="glass-strong w-full max-w-lg rounded-[32px] overflow-hidden animate-scale-in">
+          <div className="glass-strong w-full max-w-xl rounded-[32px] overflow-hidden animate-scale-in">
             <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
               <h2 className="text-xl font-bold text-[var(--color-text)]">
-                Payment & Order Details
+                Gift Card Details
               </h2>
               <button
                 onClick={closeModals}
@@ -2956,173 +2956,73 @@ export default function AdminDashboard() {
               </button>
             </div>
             <div className="p-6">
-              {/* User & Payment Details */}
-              <div className="bg-[var(--color-glass)] rounded-2xl p-4 mb-4">
-                <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
-                  User & Payment Information
-                </h3>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">
-                      User Name
-                    </p>
-                    <p className="font-medium text-[var(--color-text)]">
-                      {selectedFeaturedOrder.user?.name || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">
-                      User Email
-                    </p>
-                    <p className="font-medium text-[var(--color-text)] break-all">
-                      {selectedFeaturedOrder.user?.email || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">
-                      Payment Method
-                    </p>
-                    <p className="font-medium text-[var(--color-text)]">
-                      {selectedFeaturedOrder.paymentMethod || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">
-                      UTR Number
-                    </p>
-                    <p className="font-mono text-[var(--color-text)] text-xs">
-                      {selectedFeaturedOrder.utrNumber || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">
-                      Payment Status
-                    </p>
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
-                        selectedFeaturedOrder.paymentStatus === "verified"
-                          ? "bg-green-500/20 text-green-400"
-                          : selectedFeaturedOrder.paymentStatus ===
-                              "awaiting_verification"
-                            ? "bg-yellow-500/20 text-yellow-400"
-                            : selectedFeaturedOrder.paymentStatus === "failed"
-                              ? "bg-red-500/20 text-red-400"
-                              : "bg-gray-500/20 text-gray-400"
-                      }`}
-                    >
-                      {selectedFeaturedOrder.paymentStatus === "verified"
-                        ? "Verified"
-                        : selectedFeaturedOrder.paymentStatus ===
-                            "awaiting_verification"
-                          ? "Awaiting Verification"
-                          : selectedFeaturedOrder.paymentStatus === "failed"
-                            ? "Failed"
-                            : "No Payment"}
-                    </span>
-                  </div>
-                  {selectedFeaturedOrder.paymentSubmittedAt && (
-                    <div>
-                      <p className="text-[11px] text-[var(--color-text-muted)]">
-                        Payment Submitted At
-                      </p>
-                      <p className="font-medium text-[var(--color-text)]">
-                        {new Date(
-                          selectedFeaturedOrder.paymentSubmittedAt,
-                        ).toLocaleString()}
-                      </p>
-                    </div>
+              {/* Order Info */}
+              <div className="bg-[var(--color-glass)] rounded-xl p-4 mb-5">
+                <div className="flex items-center gap-3 mb-3">
+                  {selectedFeaturedOrder.orderItems?.[0]?.image && (
+                    <img
+                      src={selectedFeaturedOrder.orderItems[0].image}
+                      alt={selectedFeaturedOrder.orderItems[0].name}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
                   )}
-                </div>
-              </div>
-
-              {/* Product Details */}
-              <div className="bg-[var(--color-glass)] rounded-2xl p-4 mb-4">
-                <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
-                  Product Details
-                </h3>
-                <div className="flex gap-4">
-                  {selectedFeaturedOrder.orderItems &&
-                    selectedFeaturedOrder.orderItems.map((item, idx) => (
-                      <div key={idx} className="flex gap-3">
-                        {item.image && (
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-16 h-16 rounded-xl object-cover"
-                          />
-                        )}
-                        <div>
-                          <p className="font-medium text-[var(--color-text)]">
-                            {item.name}
-                          </p>
-                          <p className="text-[12px] text-[var(--color-text-muted)]">
-                            {item.brand}
-                          </p>
-                          <p className="text-[12px] text-[var(--color-text-muted)]">
-                            Qty: {item.qty || 1}
-                          </p>
-                          <p className="text-sm font-bold text-[var(--color-accent)]">
-                            ₹{item.price}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-
-              {/* Gift Card Code (if sent) */}
-              {selectedFeaturedOrder.giftCardCode && (
-                <div className="bg-[var(--color-glass)] rounded-2xl p-4 mb-4">
-                  <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
-                    Redeem Code
-                  </h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-[11px] text-[var(--color-text-muted)]">
-                        Code
-                      </label>
-                      <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 font-mono text-[var(--color-text)]">
-                        {selectedFeaturedOrder.giftCardCode}
-                      </div>
-                    </div>
-                    {selectedFeaturedOrder.giftCardExpiryDate && (
-                      <div>
-                        <label className="text-[11px] text-[var(--color-text-muted)]">
-                          Expiry Date
-                        </label>
-                        <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 text-[var(--color-text)]">
-                          {new Date(
-                            selectedFeaturedOrder.giftCardExpiryDate,
-                          ).toLocaleDateString("en-IN")}
-                        </div>
-                      </div>
-                    )}
+                  <div>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedFeaturedOrder.orderItems?.[0]?.name || "Gift Card"}
+                    </p>
+                    <p className="text-[12px] text-[var(--color-text-muted)]">
+                      Order ID: {selectedFeaturedOrder._id?.substring(0, 8)}...
+                    </p>
                   </div>
                 </div>
-              )}
+                <div className="text-[12px] text-[var(--color-text-muted)]">
+                  Customer:{" "}
+                  <span className="text-[var(--color-text)]">
+                    {selectedFeaturedOrder.user?.name}
+                  </span>
+                </div>
+                <div className="text-[12px] text-[var(--color-text-muted)]">
+                  Email:{" "}
+                  <span className="text-[var(--color-text)]">
+                    {selectedFeaturedOrder.user?.email}
+                  </span>
+                </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div className="mt-6 flex gap-3">
-                <button
-                  onClick={closeModals}
-                  className="flex-1 glass-btn rounded-xl py-3 font-medium text-[var(--color-text)]"
-                >
-                  Close
-                </button>
-                {selectedFeaturedOrder.paymentStatus ===
-                  "awaiting_verification" && (
-                  <button
-                    onClick={() => {
-                      handleFeaturedUpdatePaymentStatus(
-                        selectedFeaturedOrder._id,
-                        "verified",
-                      );
-                      closeModals();
-                    }}
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 font-bold transition-colors"
-                  >
-                    Verify Payment
-                  </button>
+              {/* Card Details */}
+              <div className="space-y-4">
+                {/* Card Number / Redeem Code */}
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                    {selectedFeaturedOrder.type === "featured" ? "Redeem Code" : "Card Number"}
+                  </label>
+                  <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 font-mono text-[var(--color-text)]">
+                    {selectedFeaturedOrder.giftCardCode
+                      ? selectedFeaturedOrder.giftCardCode
+                      : "N/A"}
+                  </div>
+                </div>
+
+                {/* Expiry Date */}
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                    Expiry Date
+                  </label>
+                  <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 text-[var(--color-text)]">
+                    {selectedFeaturedOrder.giftCardExpiryDate || "N/A"}
+                  </div>
+                </div>
+
+                {/* Sent At */}
+                {selectedFeaturedOrder.giftCardSentAt && (
+                  <div>
+                    <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
+                      Gift Card Sent At
+                    </label>
+                    <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 text-[var(--color-text)]">
+                      {new Date(selectedFeaturedOrder.giftCardSentAt).toLocaleString()}
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
