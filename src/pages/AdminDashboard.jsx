@@ -207,15 +207,21 @@ export default function AdminDashboard() {
       const isFeatured = activeTab === "featured-products";
       const method = showEditModal ? "PUT" : "POST";
       const url = showEditModal
-        ? `${API_URL}/${isFeatured ? "products?type=featured" : "products"}/${selectedProduct.id}`
-        : `${API_URL}/${isFeatured ? "products?type=featured" : "products"}`;
+        ? `${API_URL}/products/${selectedProduct.id}?type=${isFeatured ? "featured" : "regular"}`
+        : `${API_URL}/products?type=${isFeatured ? "featured" : "regular"}`;
+
+      // Add type to body for featured products
+      const bodyData = isFeatured
+        ? { ...formData, type: "featured" }
+        : formData;
+
       const res = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(bodyData),
       });
       if (res.ok) {
         setMessage(
@@ -271,7 +277,7 @@ export default function AdminDashboard() {
     try {
       const isFeatured = activeTab === "featured-products";
       const res = await fetch(
-        `${API_URL}/${isFeatured ? "products?type=featured" : "products"}/${selectedProduct.id}`,
+        `${API_URL}/products/${selectedProduct.id}?type=${isFeatured ? "featured" : "regular"}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${user.token}` },
@@ -368,18 +374,6 @@ export default function AdminDashboard() {
     setSelectedUser(u);
     setUserFormData({ name: u.name, email: u.email, role: u.role });
     setShowUserUserEditModal(true);
-  };
-
-  const openOrderAdd = () => {
-    setOrderFormData({
-      user: "",
-      productId: "",
-      productName: "",
-      productPrice: 0,
-      quantity: 1,
-      status: "pending",
-    });
-    setShowOrderModal(true);
   };
 
   const openOrderEdit = (order) => {
@@ -544,9 +538,16 @@ export default function AdminDashboard() {
     setShowViewOrderModal(false);
     setShowGiftCardModal(false);
     setShowInfoModal(false);
+    setShowFeaturedOrderModal(false);
+    setShowFeaturedOrderEditModal(false);
+    setShowFeaturedOrderDeleteModal(false);
+    setShowFeaturedViewOrderModal(false);
+    setShowFeaturedGiftCardModal(false);
+    setShowFeaturedInfoModal(false);
     setSelectedProduct(null);
     setSelectedUser(null);
     setSelectedOrder(null);
+    setSelectedFeaturedOrder(null);
   };
 
   const handleUpdateOrderStatus = async (id, status) => {
@@ -716,18 +717,6 @@ export default function AdminDashboard() {
   };
 
   // Featured Order handlers
-  const openFeaturedOrderAdd = () => {
-    setFeaturedOrderFormData({
-      user: "",
-      featuredProductId: "",
-      productName: "",
-      productPrice: 0,
-      quantity: 1,
-      status: "pending",
-    });
-    setShowFeaturedOrderModal(true);
-  };
-
   const openFeaturedOrderEdit = (order) => {
     setSelectedFeaturedOrder(order);
     const item = order.orderItems[0];
@@ -988,24 +977,8 @@ export default function AdminDashboard() {
               Add Featured Product
             </button>
           )}
-          {activeTab === "orders" && (
-            <button
-              onClick={openOrderAdd}
-              className="glass-cta flex items-center gap-2 rounded-full px-5 py-2 text-[14px] font-semibold text-white shadow-lg shadow-[var(--color-accent)]/20"
-            >
-              <HiPlus className="h-4 w-4" />
-              Add New Order
-            </button>
-          )}
-          {activeTab === "featured-orders" && (
-            <button
-              onClick={openFeaturedOrderAdd}
-              className="glass-cta flex items-center gap-2 rounded-full px-5 py-2 text-[14px] font-semibold text-white shadow-lg shadow-[var(--color-accent)]/20"
-            >
-              <HiPlus className="h-4 w-4" />
-              Add New Featured Order
-            </button>
-          )}
+          {activeTab === "orders" && <></>}
+          {activeTab === "featured-orders" && <></>}
         </div>
 
         {message && (
@@ -1566,6 +1539,7 @@ export default function AdminDashboard() {
                           </select>
                         </td>
                         <td className="px-6 py-4 text-right space-x-3">
+                          {/* Send Gift Card Button - Only for verified payment + processing status */}
                           {o.paymentStatus === "verified" &&
                           o.status === "processing" ? (
                             <button
@@ -1576,6 +1550,7 @@ export default function AdminDashboard() {
                               <HiPaperAirplane className="h-4 w-4" />
                             </button>
                           ) : o.status === "delivered" ? (
+                            /* Info Button - Only show after gift card has been sent (delivered status) */
                             <button
                               onClick={() => {
                                 setSelectedFeaturedOrder(o);
@@ -1587,6 +1562,16 @@ export default function AdminDashboard() {
                               <HiInformationCircle className="h-4 w-4" />
                             </button>
                           ) : null}
+                          <button
+                            onClick={() => {
+                              setSelectedFeaturedOrder(o);
+                              setShowFeaturedViewOrderModal(true);
+                            }}
+                            className="p-2 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20 transition"
+                            title="View UTR Details"
+                          >
+                            <HiCurrencyRupee className="h-4 w-4" />
+                          </button>
                           <button
                             onClick={() => openFeaturedOrderEdit(o)}
                             className="p-2 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition"
@@ -2707,6 +2692,686 @@ export default function AdminDashboard() {
                       {new Date(selectedOrder.giftCardSentAt).toLocaleString()}
                     </div>
                   </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Featured Order Edit Modal */}
+      {showFeaturedOrderEditModal && selectedFeaturedOrder && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-lg rounded-[24px] overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
+              <h2 className="text-xl font-bold text-[var(--color-text)]">
+                Edit Order Details
+              </h2>
+              <button
+                onClick={closeModals}
+                className="p-2 rounded-full hover:bg-white/10 transition"
+              >
+                <HiX className="h-5 w-5" />
+              </button>
+            </div>
+            <form onSubmit={handleFeaturedOrderFormSubmit} className="p-6 space-y-4">
+              <div className="max-h-[60vh] overflow-y-auto px-1 space-y-4">
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                    Customer
+                  </label>
+                  <select
+                    required
+                    value={featuredOrderFormData.user}
+                    onChange={(e) =>
+                      setFeaturedOrderFormData({
+                        ...featuredOrderFormData,
+                        user: e.target.value,
+                      })
+                    }
+                    className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                  >
+                    <option value="">Select a Customer</option>
+                    {users.map((u) => (
+                      <option
+                        key={u._id}
+                        value={u._id}
+                        className="bg-[var(--color-background)]"
+                      >
+                        {u.name} ({u.email})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                    Select Product
+                  </label>
+                  <select
+                    required
+                    value={featuredOrderFormData.featuredProductId}
+                    onChange={(e) => {
+                      const p = featuredProducts.find(
+                        (prod) =>
+                          prod._id === e.target.value ||
+                          prod.id === e.target.value,
+                      );
+                      setFeaturedOrderFormData({
+                        ...featuredOrderFormData,
+                        featuredProductId: e.target.value,
+                        productName: p?.name || "",
+                        productPrice: p?.price || 0,
+                      });
+                    }}
+                    className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                  >
+                    <option value="">Select a Product</option>
+                    {featuredProducts.map((p) => (
+                      <option
+                        key={p._id}
+                        value={p._id}
+                        className="bg-[var(--color-background)]"
+                      >
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                      Product ID
+                    </label>
+                    <input
+                      type="text"
+                      readOnly
+                      value={featuredOrderFormData.featuredProductId}
+                      className="glass-input w-full mt-1 rounded-xl px-4 py-2 opacity-50"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                      Quantity
+                    </label>
+                    <div className="flex flex-col gap-1">
+                      <select
+                        required
+                        value={featuredOrderFormData.quantity}
+                        onChange={(e) =>
+                          setFeaturedOrderFormData({
+                            ...featuredOrderFormData,
+                            quantity: Number(e.target.value),
+                          })
+                        }
+                        className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                      >
+                        {(() => {
+                          const p = featuredProducts.find(
+                            (prod) =>
+                              prod._id === featuredOrderFormData.featuredProductId ||
+                              prod.id === featuredOrderFormData.featuredProductId,
+                          );
+                          const currentQty = selectedFeaturedOrder
+                            ? selectedFeaturedOrder.orderItems.find((i) => {
+                                const itemProductId =
+                                  typeof i.featuredProduct === "string"
+                                    ? i.featuredProduct
+                                    : i.featuredProduct?._id || i.featuredProduct?.toString();
+                                const prodId = p?._id || p?.id;
+                                return itemProductId === prodId;
+                              })?.qty || 0
+                            : 0;
+                          const max = p ? Math.min(5, p.stock + currentQty) : 1;
+                          return Array.from(
+                            { length: max },
+                            (_, i) => i + 1,
+                          ).map((n) => (
+                            <option
+                              key={n}
+                              value={n}
+                              className="bg-[var(--color-background)]"
+                            >
+                              {n}
+                            </option>
+                          ));
+                        })()}
+                      </select>
+                      {(() => {
+                        const p = featuredProducts.find(
+                          (prod) =>
+                            prod._id === featuredOrderFormData.featuredProductId ||
+                            prod.id === featuredOrderFormData.featuredProductId,
+                        );
+                        if (!p) return null;
+                        const currentQty = selectedFeaturedOrder
+                          ? selectedFeaturedOrder.orderItems.find((i) => {
+                              const itemProductId =
+                                typeof i.featuredProduct === "string"
+                                  ? i.featuredProduct
+                                  : i.featuredProduct?._id || i.featuredProduct?.toString();
+                              const prodId = p?._id || p?.id;
+                              return itemProductId === prodId;
+                            })?.qty || 0
+                          : 0;
+                        const available = p.stock + currentQty;
+                        if (available === 0)
+                          return (
+                            <span className="text-[11px] text-red-500 font-bold">
+                              Out of Stock
+                            </span>
+                          );
+                        if (available <= 2)
+                          return (
+                            <span className="text-[11px] text-orange-500 font-bold">
+                              Low Stock ({available})
+                            </span>
+                          );
+                        return (
+                          <span className="text-[11px] text-green-500 font-medium">
+                            Available: {available}
+                          </span>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                      Total Order Price
+                    </label>
+                    <div className="glass-input w-full mt-1 rounded-xl px-4 py-2 font-bold text-[var(--color-accent)]">
+                      ₹{featuredOrderFormData.productPrice * featuredOrderFormData.quantity}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6 flex gap-4">
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  className="flex-1 glass-btn rounded-xl py-3 font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={formLoading}
+                  className="flex-1 glass-cta rounded-xl py-3 font-bold text-white shadow-lg shadow-[var(--color-accent)]/20"
+                >
+                  {formLoading ? "Updating..." : "Update Order"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Featured Order Delete Confirmation Modal */}
+      {showFeaturedOrderDeleteModal && selectedFeaturedOrder && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-sm rounded-[32px] p-8 text-center animate-scale-in border-red-500/30">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 text-red-500">
+              <HiTrash className="h-8 w-8" />
+            </div>
+            <h3 className="text-xl font-bold text-[var(--color-text)]">
+              Erase this Featured Order?
+            </h3>
+            <p className="mt-4 text-[15px] text-[var(--color-text-muted)] leading-relaxed">
+              Deleting this order will remove it permanently. This action cannot
+              be undone.
+            </p>
+            <div className="mt-8 flex flex-col gap-3">
+              <button
+                onClick={confirmFeaturedOrderDelete}
+                className="w-full rounded-2xl bg-red-500 py-3.5 text-[16px] font-bold text-white hover:bg-red-600 transition-colors"
+              >
+                Yes, Delete it
+              </button>
+              <button
+                onClick={closeModals}
+                className="w-full rounded-2xl bg-white/5 py-3.5 text-[16px] font-medium text-[var(--color-text)]"
+              >
+                No, Keep it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Featured Order Info Modal - Payment & Order Details */}
+      {showFeaturedInfoModal && selectedFeaturedOrder && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-lg rounded-[32px] overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
+              <h2 className="text-xl font-bold text-[var(--color-text)]">
+                Payment & Order Details
+              </h2>
+              <button
+                onClick={closeModals}
+                className="p-2 rounded-full hover:bg-red-500/50 cursor-pointer transition"
+              >
+                <HiX className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6">
+              {/* User & Payment Details */}
+              <div className="bg-[var(--color-glass)] rounded-2xl p-4 mb-4">
+                <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+                  User & Payment Information
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      User Name
+                    </p>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedFeaturedOrder.user?.name || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      User Email
+                    </p>
+                    <p className="font-medium text-[var(--color-text)] break-all">
+                      {selectedFeaturedOrder.user?.email || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Payment Method
+                    </p>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedFeaturedOrder.paymentMethod || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      UTR Number
+                    </p>
+                    <p className="font-mono text-[var(--color-text)] text-xs">
+                      {selectedFeaturedOrder.utrNumber || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Payment Status
+                    </p>
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                        selectedFeaturedOrder.paymentStatus === "verified"
+                          ? "bg-green-500/20 text-green-400"
+                          : selectedFeaturedOrder.paymentStatus ===
+                              "awaiting_verification"
+                            ? "bg-yellow-500/20 text-yellow-400"
+                            : selectedFeaturedOrder.paymentStatus === "failed"
+                              ? "bg-red-500/20 text-red-400"
+                              : "bg-gray-500/20 text-gray-400"
+                      }`}
+                    >
+                      {selectedFeaturedOrder.paymentStatus === "verified"
+                        ? "Verified"
+                        : selectedFeaturedOrder.paymentStatus ===
+                            "awaiting_verification"
+                          ? "Awaiting Verification"
+                          : selectedFeaturedOrder.paymentStatus === "failed"
+                            ? "Failed"
+                            : "No Payment"}
+                    </span>
+                  </div>
+                  {selectedFeaturedOrder.paymentSubmittedAt && (
+                    <div>
+                      <p className="text-[11px] text-[var(--color-text-muted)]">
+                        Payment Submitted At
+                      </p>
+                      <p className="font-medium text-[var(--color-text)]">
+                        {new Date(
+                          selectedFeaturedOrder.paymentSubmittedAt,
+                        ).toLocaleString()}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Product Details */}
+              <div className="bg-[var(--color-glass)] rounded-2xl p-4 mb-4">
+                <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+                  Product Details
+                </h3>
+                <div className="flex gap-4">
+                  {selectedFeaturedOrder.orderItems &&
+                    selectedFeaturedOrder.orderItems.map((item, idx) => (
+                      <div key={idx} className="flex gap-3">
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-16 h-16 rounded-xl object-cover"
+                          />
+                        )}
+                        <div>
+                          <p className="font-medium text-[var(--color-text)]">
+                            {item.name}
+                          </p>
+                          <p className="text-[12px] text-[var(--color-text-muted)]">
+                            {item.brand}
+                          </p>
+                          <p className="text-[12px] text-[var(--color-text-muted)]">
+                            Qty: {item.qty || 1}
+                          </p>
+                          <p className="text-sm font-bold text-[var(--color-accent)]">
+                            ₹{item.price}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              {/* Gift Card Code (if sent) */}
+              {selectedFeaturedOrder.giftCardCode && (
+                <div className="bg-[var(--color-glass)] rounded-2xl p-4 mb-4">
+                  <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+                    Redeem Code
+                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-[11px] text-[var(--color-text-muted)]">
+                        Code
+                      </label>
+                      <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 font-mono text-[var(--color-text)]">
+                        {selectedFeaturedOrder.giftCardCode}
+                      </div>
+                    </div>
+                    {selectedFeaturedOrder.giftCardExpiryDate && (
+                      <div>
+                        <label className="text-[11px] text-[var(--color-text-muted)]">
+                          Expiry Date
+                        </label>
+                        <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 text-[var(--color-text)]">
+                          {new Date(
+                            selectedFeaturedOrder.giftCardExpiryDate,
+                          ).toLocaleDateString("en-IN")}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={closeModals}
+                  className="flex-1 glass-btn rounded-xl py-3 font-medium text-[var(--color-text)]"
+                >
+                  Close
+                </button>
+                {selectedFeaturedOrder.paymentStatus ===
+                  "awaiting_verification" && (
+                  <button
+                    onClick={() => {
+                      handleFeaturedUpdatePaymentStatus(
+                        selectedFeaturedOrder._id,
+                        "verified",
+                      );
+                      closeModals();
+                    }}
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 font-bold transition-colors"
+                  >
+                    Verify Payment
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Featured Gift Card Modal - Send Code */}
+      {showFeaturedGiftCardModal && selectedFeaturedOrder && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-lg rounded-[32px] overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
+              <h2 className="text-xl font-bold text-[var(--color-text)]">
+                Send Redeem Code
+              </h2>
+              <button
+                onClick={closeModals}
+                className="p-2 rounded-full hover:bg-red-500/50 cursor-pointer transition"
+              >
+                <HiX className="h-5 w-5" />
+              </button>
+            </div>
+            <form onSubmit={handleFeaturedSendGiftCard} className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                    Redeem Code
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    minLength={2}
+                    value={featuredGiftCardFormData.giftCardCode}
+                    onChange={(e) =>
+                      setFeaturedGiftCardFormData({
+                        ...featuredGiftCardFormData,
+                        giftCardCode: e.target.value,
+                      })
+                    }
+                    className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                    placeholder="Enter the redeem code"
+                  />
+                </div>
+                <div>
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                    Expiry Date (Optional)
+                  </label>
+                  <input
+                    type="date"
+                    value={featuredGiftCardFormData.expiryDate}
+                    onChange={(e) =>
+                      setFeaturedGiftCardFormData({
+                        ...featuredGiftCardFormData,
+                        expiryDate: e.target.value,
+                      })
+                    }
+                    className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={featuredGiftCardLoading}
+                  className="w-full glass-cta mt-4 py-3 rounded-xl font-bold text-white disabled:opacity-50"
+                >
+                  {featuredGiftCardLoading ? "Sending..." : "Send Code"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Featured View Order UTR Details Modal */}
+      {showFeaturedViewOrderModal && selectedFeaturedOrder && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="glass-strong w-full max-w-lg rounded-[32px] overflow-hidden animate-scale-in">
+            <div className="flex items-center justify-between border-b border-[var(--color-glass-border)] px-6 py-4 bg-white/5">
+              <h2 className="text-xl font-bold text-[var(--color-text)]">
+                Payment & Order Details
+              </h2>
+              <button
+                onClick={closeModals}
+                className="p-2 rounded-full hover:bg-red-500/50 cursor-pointer transition"
+              >
+                <HiX className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-6">
+              {/* User & Payment Details - Top Section */}
+              <div className="bg-[var(--color-glass)] rounded-2xl p-4 mb-4">
+                <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+                  User & Payment Information
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      User Name
+                    </p>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedFeaturedOrder.user?.name || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      User Email
+                    </p>
+                    <p className="font-medium text-[var(--color-text)] break-all">
+                      {selectedFeaturedOrder.user?.email || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Account ID
+                    </p>
+                    <p className="font-mono text-[var(--color-text)] text-xs">
+                      {selectedFeaturedOrder.user?._id ||
+                        selectedFeaturedOrder.user?.id ||
+                        "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Order ID
+                    </p>
+                    <p className="font-mono text-[var(--color-text)] text-xs">
+                      {selectedFeaturedOrder._id}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      UTR Number
+                    </p>
+                    <p className="font-mono font-bold text-[var(--color-accent)]">
+                      {selectedFeaturedOrder.utrNumber || "Not Submitted"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Payment Mode
+                    </p>
+                    <p className="font-medium text-[var(--color-text)]">
+                      {selectedFeaturedOrder.paymentMethod || "UPI"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Payment Amount
+                    </p>
+                    <p className="font-bold text-green-400">
+                      ₹
+                      {selectedFeaturedOrder.paymentAmount ||
+                        selectedFeaturedOrder.totalPrice ||
+                        0}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                      Payment Status
+                    </p>
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                        selectedFeaturedOrder.paymentStatus === "verified"
+                          ? "bg-green-500/20 text-green-400"
+                          : selectedFeaturedOrder.paymentStatus ===
+                              "awaiting_verification"
+                            ? "bg-yellow-500/20 text-yellow-400"
+                            : selectedFeaturedOrder.paymentStatus === "failed"
+                              ? "bg-red-500/20 text-red-400"
+                              : "bg-gray-500/20 text-gray-400"
+                      }`}
+                    >
+                      {selectedFeaturedOrder.paymentStatus === "verified"
+                        ? "Verified"
+                        : selectedFeaturedOrder.paymentStatus ===
+                            "awaiting_verification"
+                          ? "Awaiting Verification"
+                          : selectedFeaturedOrder.paymentStatus === "failed"
+                            ? "Failed"
+                            : "No Payment"}
+                    </span>
+                  </div>
+                  {selectedFeaturedOrder.paymentSubmittedAt && (
+                    <div className="col-span-2">
+                      <p className="text-[11px] text-[var(--color-text-muted)]">
+                        Payment Submitted At
+                      </p>
+                      <p className="font-medium text-[var(--color-text)]">
+                        {new Date(
+                          selectedFeaturedOrder.paymentSubmittedAt,
+                        ).toLocaleString()}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Product Details - Below Section */}
+              <div className="bg-[var(--color-glass)] rounded-2xl p-4">
+                <h3 className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+                  Product Details
+                </h3>
+                <div className="flex gap-4">
+                  {selectedFeaturedOrder.orderItems &&
+                    selectedFeaturedOrder.orderItems.map((item, idx) => (
+                      <div key={idx} className="flex gap-3">
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-16 h-16 rounded-xl object-cover"
+                          />
+                        )}
+                        <div>
+                          <p className="font-medium text-[var(--color-text)]">
+                            {item.name}
+                          </p>
+                          <p className="text-[12px] text-[var(--color-text-muted)]">
+                            {item.brand}
+                          </p>
+                          <p className="text-[12px] text-[var(--color-text-muted)]">
+                            Qty: {item.qty || 1}
+                          </p>
+                          <p className="text-sm font-bold text-[var(--color-accent)]">
+                            ₹{item.price}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={closeModals}
+                  className="flex-1 glass-btn rounded-xl py-3 font-medium text-[var(--color-text)]"
+                >
+                  Close
+                </button>
+                {selectedFeaturedOrder.paymentStatus === "awaiting_verification" && (
+                  <button
+                    onClick={() => {
+                      handleFeaturedUpdatePaymentStatus(selectedFeaturedOrder._id, "verified");
+                      closeModals();
+                    }}
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 font-bold transition-colors"
+                  >
+                    Verify Payment
+                  </button>
                 )}
               </div>
             </div>

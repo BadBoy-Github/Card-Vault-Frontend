@@ -14,11 +14,14 @@ export default function FeaturedProductPage() {
   const navigate = useNavigate();
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
+  const [notification, setNotification] = useState(null);
   const { user } = useAuth();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { warning } = useToast();
-  const [quantity, setQuantity] = useState(1);
 
+  // Get the latest wishlist state to re-evaluate isWishlisted
+  // Use card._id which is the MongoDB ObjectId that matches what's stored in wishlist
   const isWishlisted = card?._id ? isInWishlist(card._id) : false;
 
   useEffect(() => {
@@ -84,10 +87,27 @@ export default function FeaturedProductPage() {
 
   const total = card.price * quantity;
 
+  // SEO - Product Page
   const productTitle = `${card.name} - Buy Gift Card on Card Vault`;
   const productDescription = `Buy ${card.name} gift card online on Card Vault. ${card.subheading || "Instant delivery via email."} ${card.description || "Get your digital gift card now!"}`;
 
-  const handleBuy = async () => {
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: card.name,
+    description: productDescription,
+    image: card.image,
+    offers: {
+      "@type": "Offer",
+      price: card.price,
+      priceCurrency: "INR",
+      availability: card.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+    },
+  };
+
+  const handleBuy = () => {
     if (!user) {
       navigate("/login", { state: { from: `/featured-product/${card.id}` } });
       return;
@@ -123,155 +143,218 @@ export default function FeaturedProductPage() {
       return;
     }
 
-    toggleWishlist(card._id, {
-      id: card.id,
-      name: card.name,
-      brand: card.brand,
-      price: card.price,
-      image: card.image,
-      category: card.category,
-    });
+    if (!card || !card._id) return;
+
+    const currentWishlistState = isWishlisted;
+
+    try {
+      await toggleWishlist(card._id);
+      setNotification(
+        currentWishlistState
+          ? "Removed from your wishlist – we'll miss it!"
+          : "Added to your wishlist! ✨",
+      );
+    } catch (err) {
+      console.error(err);
+    }
+
+    setTimeout(() => setNotification(null), 3000);
   };
 
   return (
     <>
-      <SEO title={productTitle} description={productDescription} />
-      <div className="container-wide py-8 sm:py-12 mt-14 sm:mt-20">
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Product Image */}
-          <div className="relative">
-            <div className="glass-panel overflow-hidden rounded-2xl sm:rounded-3xl">
+      <SEO
+        title={productTitle}
+        description={productDescription}
+        keywords={`${card.name} gift card, buy ${card.name} gift card, digital gift card, ${card.category || "gift card"}, card vault`}
+        image={card.image}
+        type="product"
+        schema="Product"
+        schemaData={productSchema}
+      />
+      <div className="container-wide py-4 sm:py-6 h-full overflow-hidden">
+        {/* Notification */}
+        {notification && (
+          <div className="fixed top-20 right-4 z-50 animate-scale-in overflow-hidden">
+            <div
+              className={`glass-panel rounded-xl px-4 py-2 border transition-all duration-300 ${isWishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
+            >
+              <p
+                className={`text-[14px] font-medium transition-all duration-300 ${isWishlisted ? "text-green-500" : "text-red-500"}`}
+              >
+                {notification}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <Link
+          to="/"
+          className="apple-link mb-6 inline-flex min-h-[44px] w-fit items-center gap-2 text-[14px]"
+        >
+          <svg
+            className="h-4 w-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back to Vault
+        </Link>
+
+        <div className="glass-card mx-auto max-w-4xl overflow-hidden rounded-2xl p-6">
+          <div className="flex flex-col gap-8 md:flex-row">
+            {/* Image Section - 16:9 Aspect Ratio */}
+            <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-xl bg-[var(--color-surface)] md:w-2/5">
               <img
                 src={card.image}
                 alt={card.name}
-                className="w-full aspect-video object-cover"
+                className="h-full w-full object-cover"
               />
               {card.popular && (
-                <div className="absolute top-4 left-4 bg-[var(--color-accent)] text-white text-[12px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wide">
+                <span className="glass-pill absolute right-3 top-3 rounded-full bg-[var(--color-accent)]/90 px-2.5 py-1 text-[11px] font-medium text-white">
                   Popular
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Product Details */}
-          <div className="flex flex-col">
-            <div className="mb-2">
-              <span className="text-[12px] font-semibold text-[var(--color-accent)] uppercase tracking-wider">
-                {card.brand}
-              </span>
-            </div>
-            <h1 className="apple-display text-[var(--color-text)] text-2xl sm:text-3xl mb-2">
-              {card.name}
-            </h1>
-            {card.subheading && (
-              <p className="text-[17px] text-[var(--color-text-muted)] mb-4">
-                {card.subheading}
-              </p>
-            )}
-
-            {/* Price */}
-            <div className="flex items-baseline gap-3 mb-6">
-              <span className="text-3xl sm:text-4xl font-bold text-[var(--color-accent)]">
-                ₹{card.price}
-              </span>
-              {card.denomination && (
-                <span className="text-[16px] text-[var(--color-text-muted)]">
-                  {card.denomination}
                 </span>
               )}
-            </div>
-
-            {/* Description */}
-            {card.description && (
-              <div className="mb-6">
-                <p className="text-[15px] text-[var(--color-text-muted)] leading-relaxed">
-                  {card.description}
-                </p>
-              </div>
-            )}
-
-            {/* Quantity */}
-            <div className="mb-6">
-              <label className="text-[13px] font-medium text-[var(--color-text-muted)] mb-2 block">
-                Quantity
-              </label>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="glass-btn w-10 h-10 rounded-xl flex items-center justify-center text-[18px] font-bold"
-                >
-                  -
-                </button>
-                <span className="text-[18px] font-semibold w-12 text-center">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="glass-btn w-10 h-10 rounded-xl flex items-center justify-center text-[18px] font-bold"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-4 mt-auto">
+              {/* Heart Button */}
               <button
-                onClick={handleBuy}
-                disabled={!card.inStock || card.stock === 0}
-                className="flex-1 glass-cta py-4 rounded-2xl text-[16px] font-bold text-white shadow-lg shadow-[var(--color-accent)]/20 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {card.inStock && card.stock > 0 ? "Buy Now" : "Out of Stock"}
-              </button>
-              <button
-                onClick={handleToggleWishlist}
-                className="glass-btn p-4 rounded-2xl"
+                onClick={(e) => handleToggleWishlist(e)}
+                className={`absolute left-3 top-3 rounded-full p-2 transition-all duration-300 cursor-pointer ${
+                  isWishlisted
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-white/20 backdrop-blur-sm text-white/70 hover:text-red-500 hover:bg-white/30"
+                }`}
                 title={
                   isWishlisted ? "Remove from wishlist" : "Add to wishlist"
                 }
               >
-                <HiHeart
-                  className={`h-6 w-6 ${
-                    isWishlisted
-                      ? "fill-red-500 text-red-500"
-                      : "text-[var(--color-text)]"
-                  }`}
-                />
+                <HiHeart className="h-6 w-6" />
               </button>
             </div>
 
-            {/* Stock Info */}
-            {card.stock <= 5 && card.stock > 0 && (
-              <p className="mt-4 text-[13px] text-red-400">
-                Only {card.stock} left in stock!
-              </p>
-            )}
-            {!card.inStock && (
-              <p className="mt-4 text-[13px] text-red-400">
-                This product is currently out of stock.
-              </p>
-            )}
-
-            {/* Validity */}
-            {card.validityEndDateTime && (
-              <div className="mt-6 pt-6 border-t border-[var(--color-glass-border)]">
-                <p className="text-[13px] text-[var(--color-text-muted)]">
-                  Valid until:{" "}
-                  <span className="font-medium text-[var(--color-text)]">
-                    {new Date(card.validityEndDateTime).toLocaleDateString(
-                      "en-IN",
-                      {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      },
-                    )}
-                  </span>
+            {/* Details Section - Right to the Image */}
+            <div className="flex flex-1 flex-col">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
+                  {card.brand}
+                </p>
+                <h1 className="apple-title mt-1 text-xl font-bold text-[var(--color-text)] sm:text-2xl">
+                  {card.name}
+                </h1>
+                {card.subheading && (
+                  <p className="text-sm text-[var(--color-text-muted)] mt-1">
+                    {card.subheading}
+                  </p>
+                )}
+                <p className="text-sm text-[var(--color-accent)]">
+                  {card.category}
+                </p>
+                <p className="apple-body mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+                  {card.description}
                 </p>
               </div>
-            )}
+
+              <div className="mt-6 flex flex-col gap-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl font-bold text-[var(--color-text)] sm:text-4xl">
+                      ₹{card.price}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] uppercase tracking-tight text-[var(--color-text-muted)]">
+                        Digital Delivery
+                      </span>
+                      {card.stock > 0 ? (
+                        <span
+                          className={`text-[11px] font-semibold ${card.stock <= 2 ? "text-red-500 animate-pulse" : "text-green-500"}`}
+                        >
+                          {card.stock <= 2
+                            ? `Only ${card.stock} left!`
+                            : "In Stock"}
+                        </span>
+                      ) : (
+                        <span className="text-[11px] font-bold text-red-500">
+                          Out of Stock
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-3 justify-end">
+                    {card.validityEndDateTime && (
+                      <div className="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+                          Valid Until:
+                        </span>
+                        <span className="text-[12px] font-medium text-[var(--color-text)]">
+                          {new Date(
+                            card.validityEndDateTime,
+                          ).toLocaleDateString("en-IN")}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-[var(--color-glass-border)] pt-6">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                    Quantity
+                  </label>
+                  <select
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    disabled={card.stock === 0}
+                    className="glass-input h-10 w-fit min-w-[80px] rounded-lg px-3 py-1.5 text-[15px] text-[var(--color-text)] focus:outline-none disabled:opacity-50"
+                  >
+                    {Array.from(
+                      { length: Math.min(card.stock, 5) },
+                      (_, i) => i + 1,
+                    ).map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                    {card.stock === 0 && <option value="0">0</option>}
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-0.5 text-right">
+                  <label className="text-[11px] font-medium text-[var(--color-text-muted)] uppercase tracking-tight">
+                    Total Amount
+                  </label>
+                  <span className="text-2xl font-bold text-[var(--color-accent)]">
+                    ₹{total.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+              <div className="mt-auto pt-8">
+                <button
+                  type="button"
+                  onClick={handleBuy}
+                  disabled={card.stock === 0}
+                  className="glass-cta flex min-h-[48px] w-full items-center justify-center rounded-xl px-8 text-[16px] font-bold text-white transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+                >
+                  {card.stock > 0 ? "Buy Now" : "Out of Stock"}
+                </button>
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Redemption Info Card */}
+        <div className="mx-auto mt-6 max-w-4xl rounded-xl bg-yellow-500/30 border border-yellow-500/50 p-4">
+          <p className="text-sm text-yellow-200">
+            For specific and more detailed redemption steps, please visit the
+            official {card.brand} website. Steps may vary depending on the
+            brand.
+          </p>
         </div>
       </div>
     </>
