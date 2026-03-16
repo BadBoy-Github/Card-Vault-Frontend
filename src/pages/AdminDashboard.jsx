@@ -25,8 +25,10 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("users");
   const [products, setProducts] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [featuredOrders, setFeaturedOrders] = useState([]);
   const [newsletterSubscribers, setNewsletterSubscribers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -43,6 +45,7 @@ export default function AdminDashboard() {
     id: "",
     brand: "",
     name: "",
+    subheading: "",
     category: "",
     image: "",
     description: "",
@@ -75,6 +78,32 @@ export default function AdminDashboard() {
     status: "pending",
   });
 
+  // Featured Order Management states
+  const [showFeaturedOrderModal, setShowFeaturedOrderModal] = useState(false);
+  const [showFeaturedOrderEditModal, setShowFeaturedOrderEditModal] =
+    useState(false);
+  const [showFeaturedOrderDeleteModal, setShowFeaturedOrderDeleteModal] =
+    useState(false);
+  const [showFeaturedViewOrderModal, setShowFeaturedViewOrderModal] =
+    useState(false);
+  const [showFeaturedGiftCardModal, setShowFeaturedGiftCardModal] =
+    useState(false);
+  const [showFeaturedInfoModal, setShowFeaturedInfoModal] = useState(false);
+  const [selectedFeaturedOrder, setSelectedFeaturedOrder] = useState(null);
+  const [featuredGiftCardFormData, setFeaturedGiftCardFormData] = useState({
+    giftCardCode: "",
+    expiryDate: "",
+  });
+  const [featuredGiftCardLoading, setFeaturedGiftCardLoading] = useState(false);
+  const [featuredOrderFormData, setFeaturedOrderFormData] = useState({
+    user: "",
+    featuredProductId: "",
+    productName: "",
+    productPrice: 0,
+    quantity: 1,
+    status: "pending",
+  });
+
   // User Edit states
   const [showUserEditModal, setShowUserUserEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -95,8 +124,26 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Ensure we have products and users for order forms
-      const endpoints = ["products", "users", "orders", "newsletter"];
+      // Determine which endpoints to fetch based on activeTab
+      let endpoints = [];
+      if (activeTab === "featured-products") {
+        endpoints = [
+          "products?type=featured",
+          "users",
+          "orders?type=featured",
+          "newsletter",
+        ];
+      } else if (activeTab === "featured-orders") {
+        endpoints = [
+          "products?type=featured",
+          "users",
+          "orders?type=featured",
+          "newsletter",
+        ];
+      } else {
+        endpoints = ["products", "users", "orders", "newsletter"];
+      }
+
       const results = await Promise.all(
         endpoints.map((e) =>
           fetch(`${API_URL}/${e}`, {
@@ -113,6 +160,15 @@ export default function AdminDashboard() {
       // Set newsletter subscribers
       const allSubscribers = Array.isArray(results[3]) ? results[3] : [];
       setNewsletterSubscribers(allSubscribers);
+
+      // Handle featured products and orders
+      if (
+        activeTab === "featured-products" ||
+        activeTab === "featured-orders"
+      ) {
+        setFeaturedProducts(Array.isArray(results[0]) ? results[0] : []);
+        setFeaturedOrders(Array.isArray(results[2]) ? results[2] : []);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -148,10 +204,11 @@ export default function AdminDashboard() {
     e.preventDefault();
     setFormLoading(true);
     try {
+      const isFeatured = activeTab === "featured-products";
       const method = showEditModal ? "PUT" : "POST";
       const url = showEditModal
-        ? `${API_URL}/products/${selectedProduct.id}`
-        : `${API_URL}/products`;
+        ? `${API_URL}/${isFeatured ? "products?type=featured" : "products"}/${selectedProduct.id}`
+        : `${API_URL}/${isFeatured ? "products?type=featured" : "products"}`;
       const res = await fetch(url, {
         method,
         headers: {
@@ -162,7 +219,11 @@ export default function AdminDashboard() {
       });
       if (res.ok) {
         setMessage(
-          showEditModal ? "Product updated!" : "New card added to the vault!",
+          showEditModal
+            ? "Product updated!"
+            : isFeatured
+              ? "Featured Product added!"
+              : "New card added to the vault!",
         );
         fetchData();
         closeModals();
@@ -208,13 +269,27 @@ export default function AdminDashboard() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`${API_URL}/products/${selectedProduct.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const isFeatured = activeTab === "featured-products";
+      const res = await fetch(
+        `${API_URL}/${isFeatured ? "products?type=featured" : "products"}/${selectedProduct.id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
       if (res.ok) {
-        setProducts(products.filter((p) => p.id !== selectedProduct.id));
-        setMessage("Product vanished from the vault.");
+        if (isFeatured) {
+          setFeaturedProducts(
+            featuredProducts.filter((p) => p.id !== selectedProduct.id),
+          );
+        } else {
+          setProducts(products.filter((p) => p.id !== selectedProduct.id));
+        }
+        setMessage(
+          isFeatured
+            ? "Featured Product removed from the vault."
+            : "Product vanished from the vault.",
+        );
         closeModals();
         setTimeout(() => setMessage(""), 3000);
       }
@@ -543,6 +618,317 @@ export default function AdminDashboard() {
     }
   };
 
+  // Featured Product handlers
+  const openFeaturedProductAdd = async () => {
+    setFormData({
+      id: "",
+      brand: "",
+      name: "",
+      subheading: "",
+      category: "",
+      image: "",
+      description: "",
+      price: 0,
+      validityEndDateTime: "",
+      stock: 1,
+      popular: false,
+    });
+    setShowAddModal(true);
+
+    try {
+      const res = await fetch(
+        `${API_URL}/products?type=featured?generateId=true`,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setFormData((prev) => ({ ...prev, id: data.id }));
+      }
+    } catch (err) {
+      console.error("Failed to generate featured product ID:", err);
+    }
+  };
+
+  const openFeaturedProductEdit = (product) => {
+    setSelectedProduct(product);
+    setFormData({
+      id: product.id,
+      brand: product.brand,
+      name: product.name,
+      subheading: product.subheading || "",
+      category: product.category,
+      image: product.image,
+      description: product.description,
+      price: product.price,
+      validityEndDateTime: product.validityEndDateTime?.split("T")[0] || "",
+      stock: product.stock,
+      popular: product.popular,
+    });
+    setShowEditModal(true);
+  };
+
+  const handleFeaturedProductUpdateStock = async (id, newStock) => {
+    try {
+      const res = await fetch(`${API_URL}/products/${id}?type=featured`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ stock: Number(newStock) }),
+      });
+      if (res.ok) {
+        setFeaturedProducts(
+          featuredProducts.map((p) =>
+            p.id === id ? { ...p, stock: Number(newStock) } : p,
+          ),
+        );
+        setMessage("Stock updated successfully.");
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const confirmFeaturedProductDelete = async () => {
+    try {
+      const res = await fetch(
+        `${API_URL}/products/${selectedProduct.id}?type=featured`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
+      if (res.ok) {
+        setFeaturedProducts(
+          featuredProducts.filter((p) => p.id !== selectedProduct.id),
+        );
+        setMessage("Featured Product removed from the vault.");
+        closeModals();
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Featured Order handlers
+  const openFeaturedOrderAdd = () => {
+    setFeaturedOrderFormData({
+      user: "",
+      featuredProductId: "",
+      productName: "",
+      productPrice: 0,
+      quantity: 1,
+      status: "pending",
+    });
+    setShowFeaturedOrderModal(true);
+  };
+
+  const openFeaturedOrderEdit = (order) => {
+    setSelectedFeaturedOrder(order);
+    const item = order.orderItems[0];
+    setFeaturedOrderFormData({
+      user: order.user?._id || "",
+      featuredProductId: item.featuredProduct,
+      productName: item.name,
+      productPrice: item.price,
+      quantity: item.qty || 1,
+      status: order.status,
+    });
+    setShowFeaturedOrderEditModal(true);
+  };
+
+  const handleFeaturedOrderFormSubmit = async (e) => {
+    e.preventDefault();
+    setFormLoading(true);
+    try {
+      const method = showFeaturedOrderEditModal ? "PUT" : "POST";
+      const url = showFeaturedOrderEditModal
+        ? `${API_URL}/orders/${selectedFeaturedOrder._id}?type=featured`
+        : `${API_URL}/orders?type=featured`;
+
+      const product = featuredProducts.find(
+        (p) =>
+          p._id === featuredOrderFormData.featuredProductId ||
+          p.id === featuredOrderFormData.featuredProductId,
+      );
+
+      const body = {
+        user: featuredOrderFormData.user,
+        orderItems: [
+          {
+            name: product?.name || featuredOrderFormData.productName,
+            brand: product?.brand || "",
+            price: featuredOrderFormData.productPrice,
+            image: product?.image || "",
+            qty: featuredOrderFormData.quantity,
+            featuredProduct: featuredOrderFormData.featuredProductId,
+          },
+        ],
+        totalPrice:
+          featuredOrderFormData.productPrice * featuredOrderFormData.quantity,
+        status: featuredOrderFormData.status,
+      };
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        setMessage(
+          showFeaturedOrderEditModal
+            ? "Featured Order updated!"
+            : "Featured Order created!",
+        );
+        fetchData();
+        closeModals();
+        setTimeout(() => setMessage(""), 3000);
+      } else {
+        const error = await res.json();
+        alert(error.message || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const confirmFeaturedOrderDelete = async () => {
+    try {
+      const res = await fetch(
+        `${API_URL}/orders/${selectedFeaturedOrder._id}?type=featured`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${user.token}` },
+        },
+      );
+      if (res.ok) {
+        setFeaturedOrders(
+          featuredOrders.filter((o) => o._id !== selectedFeaturedOrder._id),
+        );
+        setMessage("Featured Order deleted.");
+        closeModals();
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleFeaturedUpdatePaymentStatus = async (id, paymentStatus) => {
+    try {
+      const res = await fetch(
+        `${API_URL}/orders/${id}/verify-payment?type=featured`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify({
+            verified: paymentStatus === "verified",
+            paymentStatus: paymentStatus,
+          }),
+        },
+      );
+      if (res.ok) {
+        const updatedOrder = await res.json();
+        setFeaturedOrders(
+          featuredOrders.map((o) => (o._id === id ? updatedOrder : o)),
+        );
+        setMessage(`Payment status updated to ${paymentStatus}.`);
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleFeaturedUpdateOrderStatus = async (id, status) => {
+    try {
+      const res = await fetch(`${API_URL}/orders/${id}/status?type=featured`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) {
+        const updatedOrder = await res.json();
+        setFeaturedOrders(
+          featuredOrders.map((o) => (o._id === id ? updatedOrder : o)),
+        );
+        setMessage(`Order status updated to ${status}.`);
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const openFeaturedGiftCardModal = (order) => {
+    setSelectedFeaturedOrder(order);
+    const product = order.orderItems?.[0];
+    let expiryDate = "";
+    if (product?.featuredProduct) {
+      const foundProduct = featuredProducts.find(
+        (p) =>
+          p._id === product.featuredProduct || p.id === product.featuredProduct,
+      );
+      if (foundProduct?.validityEndDateTime) {
+        expiryDate = foundProduct.validityEndDateTime.split("T")[0];
+      }
+    }
+    setFeaturedGiftCardFormData({
+      giftCardCode: "",
+      expiryDate: expiryDate,
+    });
+    setShowFeaturedGiftCardModal(true);
+  };
+
+  const handleFeaturedSendGiftCard = async (e) => {
+    e.preventDefault();
+    setFeaturedGiftCardLoading(true);
+    try {
+      const res = await fetch(
+        `${API_URL}/orders/${selectedFeaturedOrder._id}/send-giftcard?type=featured`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify(featuredGiftCardFormData),
+        },
+      );
+      if (res.ok) {
+        setMessage("Gift card code sent successfully!");
+        fetchData();
+        closeModals();
+        setTimeout(() => setMessage(""), 3000);
+      } else {
+        const error = await res.json();
+        alert(error.message || "Failed to send gift card");
+      }
+    } catch (err) {
+      console.error("Failed to send gift card:", err);
+      alert("Failed to send gift card");
+    } finally {
+      setFeaturedGiftCardLoading(false);
+    }
+  };
+
   return (
     <div className="container-wide py-24 sm:py-32">
       <div className="flex flex-col gap-8">
@@ -564,7 +950,13 @@ export default function AdminDashboard() {
         {/* Tabs and Add Button */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-glass-border)] pb-2">
           <div className="flex gap-4 overflow-x-auto">
-            {["users", "products", "orders"].map((tab) => (
+            {[
+              "users",
+              "products",
+              "featured-products",
+              "orders",
+              "featured-orders",
+            ].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -587,6 +979,15 @@ export default function AdminDashboard() {
               Add Card to Vault
             </button>
           )}
+          {activeTab === "featured-products" && (
+            <button
+              onClick={openFeaturedProductAdd}
+              className="glass-cta flex items-center gap-2 rounded-full px-5 py-2 text-[14px] font-semibold text-white shadow-lg shadow-[var(--color-accent)]/20"
+            >
+              <HiPlus className="h-4 w-4" />
+              Add Featured Product
+            </button>
+          )}
           {activeTab === "orders" && (
             <button
               onClick={openOrderAdd}
@@ -594,6 +995,15 @@ export default function AdminDashboard() {
             >
               <HiPlus className="h-4 w-4" />
               Add New Order
+            </button>
+          )}
+          {activeTab === "featured-orders" && (
+            <button
+              onClick={openFeaturedOrderAdd}
+              className="glass-cta flex items-center gap-2 rounded-full px-5 py-2 text-[14px] font-semibold text-white shadow-lg shadow-[var(--color-accent)]/20"
+            >
+              <HiPlus className="h-4 w-4" />
+              Add New Featured Order
             </button>
           )}
         </div>
@@ -935,6 +1345,278 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
+                    {orders.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan="7"
+                          className="px-6 py-12 text-center text-[var(--color-text-muted)]"
+                        >
+                          No orders yet.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              )}
+
+              {activeTab === "featured-products" && (
+                <table className="w-full text-left text-[14px]">
+                  <thead className="bg-white/5 text-[var(--color-text-muted)]">
+                    <tr>
+                      <th className="px-6 py-4">Product ID</th>
+                      <th className="px-6 py-4">Product Name</th>
+                      <th className="px-6 py-4">Subheading</th>
+                      <th className="px-6 py-4">Stock</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--color-glass-border)]">
+                    {featuredProducts.map((p) => (
+                      <tr key={p.id} className="hover:bg-white/5 transition">
+                        <td className="px-6 py-4 font-mono text-[var(--color-text-muted)]">
+                          {p.id}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={p.image}
+                              className="h-8 w-8 rounded-md object-cover"
+                              alt=""
+                            />
+                            <span className="font-semibold">{p.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-[var(--color-text-muted)]">
+                          {p.subheading || "-"}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <select
+                              value={p.stock}
+                              onChange={(e) =>
+                                handleFeaturedProductUpdateStock(
+                                  p.id,
+                                  e.target.value,
+                                )
+                              }
+                              className="bg-white/5 cursor-pointer border border-[var(--color-glass-border)] rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                            >
+                              {[0, 1, 2, 3, 4, 5].map((n) => (
+                                <option
+                                  key={n}
+                                  value={n}
+                                  className="bg-[var(--color-background)]"
+                                >
+                                  {n === 0 ? "Out of Stock (0)" : n}
+                                </option>
+                              ))}
+                            </select>
+                            {p.stock <= 2 && p.stock > 0 && (
+                              <span className="text-[11px] font-bold text-red-500 animate-pulse">
+                                LOW
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right space-x-3">
+                          <button
+                            onClick={() => openFeaturedProductEdit(p)}
+                            className="p-2 rounded-lg bg-blue-500/10 text-blue-400 cursor-pointer hover:bg-blue-500/20 transition"
+                            title="Edit"
+                          >
+                            <HiPencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedProduct(p);
+                              setShowDeleteModal(true);
+                            }}
+                            className="p-2 rounded-lg bg-red-500/10 text-red-400 cursor-pointer hover:bg-red-500/20 transition"
+                            title="Delete"
+                          >
+                            <HiTrash className="h-4 w-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {featuredProducts.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan="5"
+                          className="px-6 py-20 text-center text-[var(--color-text-muted)]"
+                        >
+                          No featured products yet. Add one!
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              )}
+
+              {activeTab === "featured-orders" && (
+                <table className="w-full text-left text-[14px]">
+                  <thead className="bg-white/5 text-[var(--color-text-muted)]">
+                    <tr>
+                      <th className="px-6 py-4">Order ID</th>
+                      <th className="px-6 py-4">User</th>
+                      <th className="px-6 py-4">Items</th>
+                      <th className="px-6 py-4">Total</th>
+                      <th className="px-6 py-4">Payment</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--color-glass-border)]">
+                    {featuredOrders.map((o) => (
+                      <tr key={o._id} className="hover:bg-white/5 transition">
+                        <td className="px-6 py-4 font-mono">
+                          {o._id.substring(0, 8)}...
+                        </td>
+                        <td className="px-6 py-4 text-[var(--color-text-muted)] font-medium underline">
+                          {o.user?.name || "Guest"}
+                        </td>
+                        <td className="px-6 py-4">
+                          {o.orderItems.reduce(
+                            (acc, item) => acc + (item.qty || 1),
+                            0,
+                          )}{" "}
+                          items
+                        </td>
+                        <td className="px-6 py-4 font-bold">₹{o.totalPrice}</td>
+                        <td className="px-6 py-4">
+                          <select
+                            value={o.paymentStatus || "pending"}
+                            onChange={(e) =>
+                              handleFeaturedUpdatePaymentStatus(
+                                o._id,
+                                e.target.value,
+                              )
+                            }
+                            className={`bg-transparent border border-[var(--color-glass-border)] rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] text-xs font-medium ${
+                              o.paymentStatus === "verified"
+                                ? "text-green-400"
+                                : o.paymentStatus === "awaiting_verification"
+                                  ? "text-yellow-400"
+                                  : o.paymentStatus === "failed"
+                                    ? "text-red-400"
+                                    : "text-gray-400"
+                            }`}
+                          >
+                            <option
+                              value="pending"
+                              className="bg-[var(--color-background)]"
+                            >
+                              No Payment
+                            </option>
+                            <option
+                              value="awaiting_verification"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Pending Verify
+                            </option>
+                            <option
+                              value="verified"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Verified
+                            </option>
+                            <option
+                              value="failed"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Failed
+                            </option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4">
+                          <select
+                            value={o.status}
+                            onChange={(e) =>
+                              handleFeaturedUpdateOrderStatus(
+                                o._id,
+                                e.target.value,
+                              )
+                            }
+                            className="bg-transparent border border-[var(--color-glass-border)] rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                          >
+                            <option
+                              value="pending"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Pending
+                            </option>
+                            <option
+                              value="processing"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Processing
+                            </option>
+                            <option
+                              value="delivered"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Delivered
+                            </option>
+                            <option
+                              value="cancelled"
+                              className="bg-[var(--color-background)]"
+                            >
+                              Cancelled
+                            </option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4 text-right space-x-3">
+                          {o.paymentStatus === "verified" &&
+                          o.status === "processing" ? (
+                            <button
+                              onClick={() => openFeaturedGiftCardModal(o)}
+                              className="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition"
+                              title="Send Gift Card"
+                            >
+                              <HiPaperAirplane className="h-4 w-4" />
+                            </button>
+                          ) : o.status === "delivered" ? (
+                            <button
+                              onClick={() => {
+                                setSelectedFeaturedOrder(o);
+                                setShowFeaturedInfoModal(true);
+                              }}
+                              className="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 cursor-pointer transition"
+                              title="View Gift Card Details"
+                            >
+                              <HiInformationCircle className="h-4 w-4" />
+                            </button>
+                          ) : null}
+                          <button
+                            onClick={() => openFeaturedOrderEdit(o)}
+                            className="p-2 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition"
+                            title="Edit Order"
+                          >
+                            <HiPencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedFeaturedOrder(o);
+                              setShowFeaturedOrderDeleteModal(true);
+                            }}
+                            className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
+                            title="Delete Order"
+                          >
+                            <HiTrash className="h-4 w-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {featuredOrders.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan="7"
+                          className="px-6 py-20 text-center text-[var(--color-text-muted)]"
+                        >
+                          No featured orders yet.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               )}
@@ -1004,6 +1686,23 @@ export default function AdminDashboard() {
                     className="glass-input w-full mt-1 rounded-xl px-4 py-2"
                   />
                 </div>
+                {activeTab === "featured-products" && (
+                  <div>
+                    <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
+                      Subheading
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.subheading}
+                      onChange={(e) =>
+                        setFormData({ ...formData, subheading: e.target.value })
+                      }
+                      className="glass-input w-full mt-1 rounded-xl px-4 py-2"
+                      placeholder="e.g., Get $10 bonus on recharge"
+                    />
+                  </div>
+                )}
                 <div>
                   <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
                     Category

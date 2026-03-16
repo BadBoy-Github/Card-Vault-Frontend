@@ -10,11 +10,13 @@ import Hero from "./components/Hero";
 import Carousel from "./components/Carousel";
 import FeaturedSection from "./components/FeaturedSection";
 import GiftCardGrid from "./components/GiftCardGrid";
+import FeaturedGiftCardGrid from "./components/FeaturedGiftCardGrid";
 import NewsletterSection from "./components/NewsletterSection";
 import FAQSection from "./components/FAQSection";
 import NewsletterSignup from "./components/NewsletterSignup";
 import ContactFormSection from "./components/ContactFormSection";
 import ProductPage from "./pages/ProductPage";
+import FeaturedProductPage from "./pages/FeaturedProductPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
 import LoginPage from "./pages/LoginPage";
@@ -49,6 +51,7 @@ function Home() {
       <Hero />
       <Carousel />
       <FeaturedSection />
+      <FeaturedGiftCardGrid />
       <GiftCardGrid />
       <FAQSection />
       <NewsletterSignup />
@@ -85,6 +88,10 @@ function App() {
                     <Route element={<Layout />}>
                       <Route path="/" element={<Home />} />
                       <Route path="/product/:id" element={<ProductPage />} />
+                      <Route
+                        path="/featured-product/:id"
+                        element={<FeaturedProductPage />}
+                      />
                       <Route path="/search" element={<SearchPage />} />
                     </Route>
 

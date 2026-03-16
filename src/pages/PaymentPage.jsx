@@ -25,6 +25,7 @@ export default function PaymentPage() {
 
   const orderId = searchParams.get("orderId");
   const amount = searchParams.get("amount");
+  const orderType = searchParams.get("type") || "regular"; // "regular" or "featured"
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,10 @@ export default function PaymentPage() {
 
   const fetchOrder = async () => {
     try {
-      const res = await fetch(`${API_URL}/orders/${orderId}`, {
+      // Use different API endpoint based on order type
+      const apiEndpoint =
+        orderType === "featured" ? "orders?type=featured" : "orders";
+      const res = await fetch(`${API_URL}/${apiEndpoint}/${orderId}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await res.json();
@@ -194,13 +198,19 @@ export default function PaymentPage() {
     setSubmitting(true);
     setMessage(null);
 
+    // Determine API endpoint and session storage key based on order type
+    const apiEndpoint =
+      orderType === "featured" ? "orders?type=featured" : "orders";
+    const sessionKey =
+      orderType === "featured" ? "pendingFeaturedOrder" : "pendingOrder";
+
     try {
       // If no orderId, create order first
       if (!orderId) {
-        const pendingOrderData = sessionStorage.getItem("pendingOrder");
+        const pendingOrderData = sessionStorage.getItem(sessionKey);
 
         // Create order with UTR - stock will be reduced in backend
-        const createRes = await fetch(`${API_URL}/orders`, {
+        const createRes = await fetch(`${API_URL}/${apiEndpoint}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -219,7 +229,7 @@ export default function PaymentPage() {
         const createdOrder = await createRes.json();
 
         if (createRes.ok) {
-          sessionStorage.removeItem("pendingOrder");
+          sessionStorage.removeItem(sessionKey);
           setMessage({
             type: "success",
             text: "UTR submitted successfully! Redirecting to orders...",
@@ -239,17 +249,20 @@ export default function PaymentPage() {
       }
 
       // Original flow - submit UTR for existing order
-      const res = await fetch(`${API_URL}/orders/${orderId}/submit-utr`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
+      const res = await fetch(
+        `${API_URL}/${apiEndpoint}/${orderId}/submit-utr`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify({
+            utrNumber: utrNumber.trim(),
+            paymentAmount: parseFloat(amount),
+          }),
         },
-        body: JSON.stringify({
-          utrNumber: utrNumber.trim(),
-          paymentAmount: parseFloat(amount),
-        }),
-      });
+      );
 
       const data = await res.json();
 
