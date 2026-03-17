@@ -8,7 +8,7 @@
         <loc>https://card-vaults.vercel.app/</loc>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
     <!-- Search/Browse Page - Gift Cards Collection -->
@@ -16,7 +16,23 @@
         <loc>https://card-vaults.vercel.app/search</loc>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
+    </url>
+
+    <!-- Featured Products - Dynamic pages for featured gift cards -->
+    <url>
+        <loc>https://card-vaults.vercel.app/featured-product/example123</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <lastmod>2026-03-17</lastmod>
+    </url>
+
+    <!-- Product Pages - Dynamic (generated via /api/sitemap for actual products) -->
+    <url>
+        <loc>https://card-vaults.vercel.app/product/example123</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
     <!-- Login Page -->
@@ -24,7 +40,7 @@
         <loc>https://card-vaults.vercel.app/login</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
     <!-- Register Page -->
@@ -32,7 +48,7 @@
         <loc>https://card-vaults.vercel.app/register</loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
     <!-- Terms of Service -->
@@ -40,7 +56,7 @@
         <loc>https://card-vaults.vercel.app/terms</loc>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
     <!-- Forgot Password -->
@@ -48,7 +64,7 @@
         <loc>https://card-vaults.vercel.app/forgot-password</loc>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
     <!-- Wishlist Page (Protected but sitemap needed for SEO) -->
@@ -56,7 +72,7 @@
         <loc>https://card-vaults.vercel.app/wishlist</loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
     <!-- Orders Page (Protected but sitemap needed) -->
@@ -64,7 +80,7 @@
         <loc>https://card-vaults.vercel.app/orders</loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
     <!-- Profile Page (Protected but sitemap needed) -->
@@ -72,15 +88,17 @@
         <loc>https://card-vaults.vercel.app/profile</loc>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
-        <lastmod>2026-03-15</lastmod>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
-    <!-- Payment Page (Protected but sitemap needed) -->
+    <!-- Note: /payment and /admin/dashboard are excluded from sitemap (disallowed in robots.txt) -->
+
+    <!-- 404 Not Found Page -->
     <url>
-        <loc>https://card-vaults.vercel.app/payment</loc>
-        <changefreq>monthly</changefreq>
-        <priority>0.4</priority>
-        <lastmod>2026-03-15</lastmod>
+        <loc>https://card-vaults.vercel.app/404</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.1</priority>
+        <lastmod>2026-03-17</lastmod>
     </url>
 
 </urlset>

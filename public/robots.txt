@@ -5,6 +5,8 @@
 User-agent: *
 Allow: /
 Allow: /search
+Allow: /product/
+Allow: /featured-product/
 Allow: /wishlist
 Allow: /orders
 Allow: /profile
@@ -13,10 +15,13 @@ Allow: /login
 Allow: /register
 
 # Disallow admin and private areas
-Disallow: /admin/
 Disallow: /api/
+Disallow: /admin/
 Disallow: /payment
 Disallow: /forgot-password
+Disallow: /profile/
+Disallow: /orders/
+Disallow: /wishlist/
 
 # Crawl-delay for politeness
 Crawl-delay: 1
@@ -30,3 +35,5 @@ Host: card-vaults.vercel.app
 # Clean parameter URLs
 Clean-param: q /search
 Clean-param: page /search
+Clean-param: sort /search
+Clean-param: filter /search
