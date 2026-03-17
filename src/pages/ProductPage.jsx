@@ -264,7 +264,7 @@ export default function ProductPage() {
                 className={`absolute left-3 top-3 rounded-full p-2 transition-all duration-300 cursor-pointer ${
                   isWishlisted
                     ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-white/20 backdrop-blur-sm text-white/70 hover:text-red-500 hover:bg-white/30"
+                    : "bg-black/40 backdrop-blur-sm text-white/70 hover:text-red-500 hover:bg-black/20"
                 }`}
                 title={
                   isWishlisted ? "Remove from wishlist" : "Add to wishlist"

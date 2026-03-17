@@ -13,7 +13,7 @@ export function CartProvider({ children }) {
 
   // Fetch cart when user changes
   useEffect(() => {
-    if (user) {
+    if (user && user.token) {
       fetchCart();
     } else {
       setCart([]);
@@ -21,6 +21,8 @@ export function CartProvider({ children }) {
   }, [user]);
 
   const fetchCart = async () => {
+    if (!user?.token) return;
+
     try {
       setLoading(true);
       const res = await fetch(`${API_URL}/cart`, {
@@ -29,11 +31,14 @@ export function CartProvider({ children }) {
         },
       });
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data) {
         setCart(data.products || []);
+      } else {
+        setCart([]);
       }
     } catch (err) {
       console.error("Error fetching cart:", err);
+      setCart([]);
     } finally {
       setLoading(false);
     }
@@ -55,6 +60,10 @@ export function CartProvider({ children }) {
   };
 
   const addToCart = async (productId, quantity = 1) => {
+    if (!user?.token) {
+      return { success: false, message: "Please login to add to cart" };
+    }
+
     try {
       const res = await fetch(`${API_URL}/cart/add`, {
         method: "POST",
@@ -65,7 +74,7 @@ export function CartProvider({ children }) {
         body: JSON.stringify({ productId, quantity }),
       });
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data) {
         setCart(data.products || []);
         return { success: true, message: "Added to cart" };
       } else {
@@ -81,6 +90,8 @@ export function CartProvider({ children }) {
   };
 
   const removeFromCart = async (productId) => {
+    if (!user?.token) return;
+
     try {
       const res = await fetch(`${API_URL}/cart/remove/${productId}`, {
         method: "DELETE",
@@ -89,7 +100,7 @@ export function CartProvider({ children }) {
         },
       });
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data) {
         setCart(data.products || []);
         return { success: true, message: "Removed from cart" };
       }
