@@ -82,6 +82,15 @@ export default function CartPage() {
         </p>
       </div>
 
+      {/* Alert - Cart doesn't reserve items */}
+      {cart.length > 0 && (
+        <div className="mb-6 rounded-xl bg-yellow-500/10 border border-yellow-500/30 p-4">
+          <p className="text-[14px] text-yellow-600">
+            <span className="font-semibold">Note:</span> Adding items to cart doesn't reserve them. Complete payment quickly to secure your purchase before others do!
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-1 flex-col overflow-hidden">
         {cart.length === 0 ? (
           <div className="glass-panel flex flex-1 flex-col items-center justify-center rounded-[32px] p-10 text-center">

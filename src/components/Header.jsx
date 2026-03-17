@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import {
   HiCreditCard,
   HiCollection,
@@ -20,6 +21,7 @@ import {
 export default function Header() {
   const { user, logout } = useAuth();
   const { cartItemCount } = useCart();
+  const { wishlistItemCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [dpModalOpen, setDpModalOpen] = useState(false);
@@ -199,6 +201,11 @@ export default function Header() {
                     >
                       <HiHeart className="h-4 w-4" />
                       <span>My Wishlist</span>
+                      {wishlistItemCount > 0 && (
+                        <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                          {wishlistItemCount > 9 ? "9+" : wishlistItemCount}
+                        </span>
+                      )}
                     </Link>
                   ) : (
                     <>
@@ -209,6 +216,11 @@ export default function Header() {
                       >
                         <HiHeart className="h-4 w-4" />
                         <span>My Wishlist</span>
+                        {wishlistItemCount > 0 && (
+                          <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                            {wishlistItemCount > 9 ? "9+" : wishlistItemCount}
+                          </span>
+                        )}
                       </Link>
                     </>
                   )}
@@ -220,7 +232,7 @@ export default function Header() {
                     <HiShoppingCart className="h-4 w-4" />
                     <span>My Cart</span>
                     {cartItemCount > 0 && (
-                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-accent)] text-[10px] font-bold text-white">
+                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-[10px] font-bold text-white">
                         {cartItemCount > 9 ? "9+" : cartItemCount}
                       </span>
                     )}

@@ -92,11 +92,15 @@ export function WishlistProvider({ children }) {
     }
   };
 
+  // Get total items count in wishlist
+  const wishlistItemCount = wishlist.length;
+
   return (
     <WishlistContext.Provider
       value={{
         wishlist,
         loading,
+        wishlistItemCount,
         isInWishlist,
         addToWishlist,
         removeFromWishlist,
