@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
+import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
-import { HiHeart } from "react-icons/hi";
+import { HiHeart, HiShoppingCart, HiCheck } from "react-icons/hi";
 import SEO, {
   generateProductSchema,
   generateBreadcrumbSchema,
@@ -19,6 +20,7 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { wishlist, isInWishlist, toggleWishlist } = useWishlist();
+  const { isInCart, addToCart, removeFromCart } = useCart();
   const { warning } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [notification, setNotification] = useState(null);
@@ -26,6 +28,7 @@ export default function ProductPage() {
   // Get the latest wishlist state to re-evaluate isWishlisted
   // Use card._id which is the MongoDB ObjectId that matches what's stored in wishlist
   const isWishlisted = card?._id ? isInWishlist(card._id) : false;
+  const inCart = card?._id ? isInCart(card._id) : false;
 
   // Generate SEO and schema when card is loaded
   const productSchema = card ? generateProductSchema(card) : null;
@@ -160,6 +163,33 @@ export default function ProductPage() {
           ? "Removed from your wishlist – we'll miss it!"
           : "Added to your wishlist! ✨",
       );
+    } catch (err) {
+      console.error(err);
+    }
+
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      warning("Login to add items to cart");
+      return;
+    }
+
+    if (!card || !card._id) return;
+
+    try {
+      if (inCart) {
+        await removeFromCart(card._id);
+        setNotification("Removed from cart");
+      } else {
+        const result = await addToCart(card._id, quantity);
+        if (result.success) {
+          setNotification("Added to cart! 🛒");
+        } else {
+          setNotification(result.message);
+        }
+      }
     } catch (err) {
       console.error(err);
     }
@@ -336,14 +366,41 @@ export default function ProductPage() {
                 </div>
               </div>
               <div className="mt-auto pt-8">
-                <button
-                  type="button"
-                  onClick={handleBuy}
-                  disabled={card.stock === 0}
-                  className="glass-cta flex min-h-[48px] w-full items-center justify-center rounded-xl px-8 text-[16px] font-bold text-white transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
-                >
-                  {card.stock > 0 ? "Buy Now" : "Out of Stock"}
-                </button>
+                <div className="flex gap-3">
+                  {/* Add to Cart Button */}
+                  {card.stock > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleAddToCart}
+                      className={`flex min-h-[48px] flex-1 items-center justify-center rounded-xl px-6 text-[16px] font-bold transition-all hover:scale-[1.01] active:scale-[0.99] ${
+                        inCart
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : "bg-white/10 border border-[var(--color-glass-border)] text-[var(--color-text)] hover:bg-white/20"
+                      }`}
+                    >
+                      {inCart ? (
+                        <>
+                          <HiCheck className="mr-2 h-5 w-5" />
+                          In Cart
+                        </>
+                      ) : (
+                        <>
+                          <HiShoppingCart className="mr-2 h-5 w-5" />
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  )}
+                  {/* Buy Now Button */}
+                  <button
+                    type="button"
+                    onClick={handleBuy}
+                    disabled={card.stock === 0}
+                    className="glass-cta flex min-h-[48px] flex-1 items-center justify-center rounded-xl px-8 text-[16px] font-bold text-white transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+                  >
+                    {card.stock > 0 ? "Buy Now" : "Out of Stock"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

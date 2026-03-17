@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
-import { HiHeart, HiShoppingCart } from "react-icons/hi";
+import { useCart } from "../context/CartContext";
+import { HiHeart, HiShoppingCart, HiCheck } from "react-icons/hi";
 import { useState } from "react";
 
 const API_URL =
@@ -24,12 +25,16 @@ export default function GiftCard({
   } = card;
   const { user } = useAuth();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { isInCart, addToCart, removeFromCart } = useCart();
   const [notification, setNotification] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const productId = card._id || card.id;
   const productUrlId = card.id || card._id;
   const wishlisted = isInWishlist(productId);
+  const inCart = isInCart(productId);
+  const isAvailable = stock > 0;
 
   const handleToggleWishlist = async (e) => {
     e.preventDefault();
@@ -61,6 +66,41 @@ export default function GiftCard({
     setTimeout(() => setNotification(null), 3000);
   };
 
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      setNotification("Please login to add to cart");
+      setTimeout(() => setNotification(null), 3000);
+      return;
+    }
+
+    if (!isAvailable) return;
+
+    setIsAddingToCart(true);
+
+    try {
+      if (inCart) {
+        await removeFromCart(productId);
+        setNotification("Removed from cart");
+      } else {
+        const result = await addToCart(productId, 1);
+        if (result.success) {
+          setNotification("Added to cart! 🛒");
+        } else {
+          setNotification(result.message);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      setNotification("Failed to update cart. Please try again.");
+    }
+
+    setIsAddingToCart(false);
+    setTimeout(() => setNotification(null), 3000);
+  };
+
   return (
     <Link
       to={`${basePath}/${productUrlId}`}
@@ -70,10 +110,22 @@ export default function GiftCard({
       {notification && (
         <div className="fixed top-20 right-4 z-50 animate-scale-in overflow-hidden transition-all duration-300">
           <div
-            className={`glass-panel rounded-xl px-4 py-2 border transition-all duration-300 ${wishlisted ? "border-green-500/30 bg-green-500/10" : "border-red-500/30 bg-red-500/10"}`}
+            className={`glass-panel rounded-xl px-4 py-2 border transition-all duration-300 ${
+              inCart
+                ? "border-green-500/30 bg-green-500/10"
+                : wishlisted
+                  ? "border-red-500/30 bg-red-500/10"
+                  : "border-blue-500/30 bg-blue-500/10"
+            }`}
           >
             <p
-              className={`text-[14px] font-medium transition-all duration-300 ${wishlisted ? "text-green-500" : "text-red-500"}`}
+              className={`text-[14px] font-medium transition-all duration-300 ${
+                inCart
+                  ? "text-green-500"
+                  : wishlisted
+                    ? "text-red-500"
+                    : "text-blue-500"
+              }`}
             >
               {notification}
             </p>
@@ -86,26 +138,45 @@ export default function GiftCard({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {popular && (
-          <span className="absolute right-3 top-3 z-10 rounded-full bg-[var(--color-accent)] px-2.5 py-1 text-[11px] font-medium text-white sm:right-4 sm:top-4 sm:px-3 sm:py-1.5 sm:text-[12px]">
-            Popular
-          </span>
-        )}
-
         {/* Heart Button - Always visible */}
         <button
           onClick={handleToggleWishlist}
           className={`absolute left-3 top-3 z-10 rounded-full p-2 transition-all duration-300 ${
             wishlisted
               ? "bg-red-500 text-white hover:bg-red-600 scale-100"
-              : "bg-white/20 backdrop-blur-sm text-white/70 hover:text-red-500 hover:bg-white/30"
+              : "bg-black/40 backdrop-blur-sm text-white/80 hover:text-red-500 hover:bg-black/20"
           } sm:left-4 sm:top-4 opacity-100`}
           title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
           <HiHeart className="h-5 w-5" />
         </button>
 
+        {/* Cart Button - Small icon for available products */}
+        {isAvailable && (
+          <button
+            onClick={handleAddToCart}
+            disabled={isAddingToCart}
+            className={`absolute right-3 top-3 z-10 rounded-full p-2 transition-all duration-300 sm:right-4 sm:top-4 ${
+              inCart
+                ? "bg-green-500 text-white hover:bg-green-600"
+                : "bg-black/40 backdrop-blur-sm text-white/70 hover:text-green-500 hover:bg-black/20"
+            } ${isHovered || inCart ? "opacity-100" : "opacity-0 sm:opacity-100"}`}
+            title={inCart ? "In cart" : "Add to cart"}
+          >
+            {inCart ? (
+              <HiCheck className="h-5 w-5" />
+            ) : (
+              <HiShoppingCart className="h-5 w-5" />
+            )}
+          </button>
+        )}
+
         <div className="relative w-full pt-[62.5%] overflow-hidden bg-[var(--color-surface)]">
+          {popular && (
+            <span className="absolute right-2 bottom-2 z-10 rounded-full bg-[var(--color-accent)] px-2 py-1 text-[10px] font-medium text-white sm:right-3 sm:bottom-3 sm:px-2.5 sm:py-1 sm:text-[11px]">
+              Popular
+            </span>
+          )}
           <img
             src={image}
             alt={`${name} gift card - Buy ${brand} gift card on Card Vault - ${denomination || "₹" + price}`}

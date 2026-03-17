@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 import {
   HiCreditCard,
   HiCollection,
@@ -13,10 +14,12 @@ import {
   HiHeart,
   HiLockClosed,
   HiCog,
+  HiShoppingCart,
 } from "react-icons/hi";
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const { cartItemCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [dpModalOpen, setDpModalOpen] = useState(false);
@@ -210,6 +213,19 @@ export default function Header() {
                     </>
                   )}
                   <Link
+                    to="/cart"
+                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
+                    onClick={() => setUserDropdownOpen(false)}
+                  >
+                    <HiShoppingCart className="h-4 w-4" />
+                    <span>My Cart</span>
+                    {cartItemCount > 0 && (
+                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-accent)] text-[10px] font-bold text-white">
+                        {cartItemCount > 9 ? "9+" : cartItemCount}
+                      </span>
+                    )}
+                  </Link>
+                  <Link
                     to="/orders"
                     className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
                     onClick={() => setUserDropdownOpen(false)}
@@ -272,6 +288,21 @@ export default function Header() {
             </div>
           )}
           <ThemeToggle />
+          {/* Cart Icon */}
+          {user && (
+            <Link
+              to="/cart"
+              className="relative flex items-center justify-center rounded-full p-2 text-[var(--color-text)] transition hover:bg-white/10"
+              title="Cart"
+            >
+              <HiShoppingCart className="h-6 w-6" />
+              {cartItemCount > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-accent)] text-[11px] font-bold text-white">
+                  {cartItemCount > 9 ? "9+" : cartItemCount}
+                </span>
+              )}
+            </Link>
+          )}
         </nav>
 
         {/* Mobile: right side icons + hamburger */}
