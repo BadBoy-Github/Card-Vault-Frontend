@@ -289,20 +289,6 @@ export default function Header() {
           )}
           <ThemeToggle />
           {/* Cart Icon */}
-          {user && (
-            <Link
-              to="/cart"
-              className="relative flex items-center justify-center rounded-full p-2 text-[var(--color-text)] transition hover:bg-white/10"
-              title="Cart"
-            >
-              <HiShoppingCart className="h-6 w-6" />
-              {cartItemCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-accent)] text-[11px] font-bold text-white">
-                  {cartItemCount > 9 ? "9+" : cartItemCount}
-                </span>
-              )}
-            </Link>
-          )}
         </nav>
 
         {/* Mobile: right side icons + hamburger */}
@@ -411,6 +397,24 @@ export default function Header() {
                 <span>Contact</span>
                 <HiPhone className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
+              {user && (
+                <Link
+                  to="/wishlist"
+                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Wishlist</span>
+                  <HiHeart className="h-6 w-6 text-[var(--color-text-muted)]" />
+                </Link>
+              )}
+              <Link
+                to="/cart"
+                className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                onClick={closeMobileMenu}
+              >
+                <span>Cart</span>
+                <HiShoppingCart className="h-6 w-6 text-[var(--color-text-muted)]" />
+              </Link>
               <Link
                 to="/orders"
                 className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
@@ -427,16 +431,6 @@ export default function Header() {
                 >
                   <span>Dashboard</span>
                   <HiLockClosed className="h-6 w-6 text-[var(--color-text-muted)]" />
-                </Link>
-              )}
-              {user && (
-                <Link
-                  to="/wishlist"
-                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
-                  onClick={closeMobileMenu}
-                >
-                  <span>Wishlist</span>
-                  <HiHeart className="h-6 w-6 text-[var(--color-text-muted)]" />
                 </Link>
               )}
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
