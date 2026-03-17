@@ -163,11 +163,7 @@ export default function GiftCard({
             } ${isHovered || inCart ? "opacity-100" : "opacity-0 sm:opacity-100"}`}
             title={inCart ? "In cart" : "Add to cart"}
           >
-            {inCart ? (
-              <HiCheck className="h-5 w-5" />
-            ) : (
-              <HiShoppingCart className="h-5 w-5" />
-            )}
+            <HiShoppingCart className="h-5 w-5" />
           </button>
         )}
 

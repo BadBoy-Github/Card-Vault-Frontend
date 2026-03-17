@@ -377,17 +377,10 @@ export default function FeaturedProductPage() {
                           : "bg-white/10 border border-[var(--color-glass-border)] text-[var(--color-text)] hover:bg-white/20"
                       }`}
                     >
-                      {inCart ? (
-                        <>
-                          <HiCheck className="mr-2 h-5 w-5" />
-                          In Cart
-                        </>
-                      ) : (
-                        <>
-                          <HiShoppingCart className="mr-2 h-5 w-5" />
-                          Add to Cart
-                        </>
-                      )}
+                      <HiShoppingCart
+                        className={`mr-2 h-5 w-5 ${inCart ? "text-white" : ""}`}
+                      />
+                      {inCart ? "In Cart" : "Add to Cart"}
                     </button>
                   )}
                   {/* Buy Now Button */}
