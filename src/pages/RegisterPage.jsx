@@ -3,6 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { HiEye, HiEyeOff, HiCheck } from "react-icons/hi";
 
+const SESSION_STORAGE_KEY = "cardvault_register_form_data";
+
+// Email validation regex
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,11 +23,27 @@ export default function RegisterPage() {
   const { user, register, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Email validation regex
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  // Restore form data from sessionStorage on mount
+  useEffect(() => {
+    const savedData = sessionStorage.getItem(SESSION_STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        if (parsedData.name) setName(parsedData.name);
+        if (parsedData.email) {
+          setEmail(parsedData.email);
+          // Validate the restored email
+          if (validateEmail(parsedData.email)) {
+            setEmailValid(true);
+          }
+        }
+        if (parsedData.password) setPassword(parsedData.password);
+      } catch (e) {
+        // If parsing fails, clear the invalid data
+        sessionStorage.removeItem(SESSION_STORAGE_KEY);
+      }
+    }
+  }, []);
 
   // Password validation checks
   const passwordChecks = {
@@ -46,6 +70,12 @@ export default function RegisterPage() {
 
   // Check if password is very strong (all conditions met)
   const isVeryStrong = strengthScore === 6;
+
+  // Save form data to sessionStorage
+  const saveFormData = () => {
+    const formData = { name, email, password };
+    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(formData));
+  };
 
   // Handle email change with validation
   const handleEmailChange = (e) => {
@@ -85,12 +115,22 @@ export default function RegisterPage() {
 
     const result = await register(name, email, password);
     if (result.ok) {
+      // Clear session storage on successful registration
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
       navigate("/");
     } else {
       setError(
         result.error ??
           "Registration failed. Maybe yours is already in our vault?",
       );
+    }
+  };
+
+  // Handle clicking on terms link - save data before navigating
+  const handleTermsClick = (e) => {
+    // Only save if there's some data entered
+    if (name || email || password) {
+      saveFormData();
     }
   };
 
@@ -304,6 +344,7 @@ export default function RegisterPage() {
               I agree to the{" "}
               <Link
                 to="/terms"
+                onClick={handleTermsClick}
                 className="apple-link font-medium cursor-pointer"
               >
                 Terms & Conditions

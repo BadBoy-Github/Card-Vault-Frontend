@@ -1,17 +1,78 @@
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { HiArrowLeft } from "react-icons/hi";
+import { useAuth } from "../context/AuthContext";
+
+const SESSION_STORAGE_KEY = "cardvault_register_form_data";
+const TIMER_DURATION = 3 * 60; // 3 minutes in seconds
 
 export default function TermsPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
+
+  // Check if user came from registration page (has saved data)
+  const hasSavedData = sessionStorage.getItem(SESSION_STORAGE_KEY) !== null;
+
+  // Timer countdown
+  useEffect(() => {
+    if (!hasSavedData) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          // Clear session storage when timer expires
+          sessionStorage.removeItem(SESSION_STORAGE_KEY);
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [hasSavedData]);
+
+  // Format time as MM:SS
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleGoToRegister = () => {
+    navigate("/register");
+  };
+
   return (
     <div className="min-h-screen bg-[var(--color-section-bg)] px-4 py-12 sm:px-6 md:px-8">
       <div className="mx-auto max-w-4xl">
-        <Link
-          to="/register"
-          className="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors mb-8 cursor-pointer"
-        >
-          <HiArrowLeft className="h-5 w-5" />
-          <span>Back to Registration</span>
-        </Link>
+        {/* Back Link - Different based on auth status */}
+        {user ? (
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors mb-8 cursor-pointer"
+          >
+            <HiArrowLeft className="h-5 w-5" />
+            <span>Back to Homepage</span>
+          </Link>
+        ) : (
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors mb-8 cursor-pointer"
+          >
+            <HiArrowLeft className="h-5 w-5" />
+            <span>Back to Registration</span>
+          </Link>
+        )}
+
+        {/* Timer warning if user has saved data */}
+        {hasSavedData && timeLeft > 0 && (
+          <div className="mb-4 rounded-lg bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-sm text-amber-400">
+            Your form data will be saved for {formatTime(timeLeft)}. After that,
+            it will be automatically cleared.
+          </div>
+        )}
 
         <div className="glass-panel rounded-2xl p-6 sm:p-10 md:p-12">
           <h1 className="apple-display text-[var(--color-text)] text-3xl sm:text-4xl">
@@ -301,14 +362,17 @@ export default function TermsPage() {
             </section>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-[var(--color-glass-border)]">
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-2 glass-cta min-h-[44px] px-8 rounded-full py-3.5 text-[16px] font-medium text-white cursor-pointer"
-            >
-              I Agree - Register Now
-            </Link>
-          </div>
+          {/* Only show agree button for non-logged in users */}
+          {!user && (
+            <div className="mt-12 pt-8 border-t border-[var(--color-glass-border)]">
+              <button
+                onClick={handleGoToRegister}
+                className="inline-flex items-center justify-center gap-2 glass-cta min-h-[44px] px-8 rounded-full py-3.5 text-[16px] font-medium text-white cursor-pointer"
+              >
+                I Agree - Register Now
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

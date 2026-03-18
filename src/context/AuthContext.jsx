@@ -50,7 +50,7 @@ export function AuthProvider({ children }) {
       } else {
         return { ok: false, error: data.message || "Login failed" };
       }
-    } catch (err) {
+    } catch (_err) {
       return { ok: false, error: "Connection to server failed" };
     } finally {
       setLoading(false);
@@ -78,7 +78,7 @@ export function AuthProvider({ children }) {
       } else {
         return { ok: false, error: data.message || "Registration failed" };
       }
-    } catch (err) {
+    } catch (_err) {
       return { ok: false, error: "Connection to server failed" };
     } finally {
       setLoading(false);

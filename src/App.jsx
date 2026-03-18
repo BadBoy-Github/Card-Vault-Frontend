@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
+import { CartProvider } from "./context/CartContext";
 import { ToastProvider } from "./context/ToastContext";
 import Layout from "./components/Layout";
 import ToastContainer from "./components/ToastContainer";
@@ -27,6 +28,7 @@ import OrdersPage from "./pages/OrdersPage";
 import ScrollToTop from "./components/ScrollToTop";
 import { Navigate, useLocation } from "react-router-dom";
 import WishlistPage from "./pages/WishlistPage";
+import CartPage from "./pages/CartPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 import TermsPage from "./pages/TermsPage";
@@ -69,54 +71,57 @@ function App() {
         <ToastProvider>
           <AuthProvider>
             <WishlistProvider>
-              <ToastContainer />
-              <Routes>
-                {isConstruction ? (
-                  <Route path="*" element={<ConstructionPage />} />
-                ) : (
-                  <>
-                    {/* Public Auth Routes (No Header/Footer) */}
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route
-                      path="/forgot-password"
-                      element={<ForgotPasswordPage />}
-                    />
-                    <Route path="/terms" element={<TermsPage />} />
-
-                    {/* Public Routes (With Header/Footer) - Accessible without login */}
-                    <Route element={<Layout />}>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/product/:id" element={<ProductPage />} />
+              <CartProvider>
+                <ToastContainer />
+                <Routes>
+                  {isConstruction ? (
+                    <Route path="*" element={<ConstructionPage />} />
+                  ) : (
+                    <>
+                      {/* Public Auth Routes (No Header/Footer) */}
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
                       <Route
-                        path="/featured-product/:id"
-                        element={<FeaturedProductPage />}
+                        path="/forgot-password"
+                        element={<ForgotPasswordPage />}
                       />
-                      <Route path="/search" element={<SearchPage />} />
-                    </Route>
+                      <Route path="/terms" element={<TermsPage />} />
 
-                    {/* Protected App Routes (With Header/Footer) - Require Login */}
-                    <Route
-                      element={
-                        <ProtectedRoute>
-                          <Layout />
-                        </ProtectedRoute>
-                      }
-                    >
-                      <Route path="/search" element={<SearchPage />} />
-                      <Route path="/payment" element={<PaymentPage />} />
-                      <Route path="/orders" element={<OrdersPage />} />
-                      <Route path="/profile" element={<ProfilePage />} />
+                      {/* Public Routes (With Header/Footer) - Accessible without login */}
+                      <Route element={<Layout />}>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/product/:id" element={<ProductPage />} />
+                        <Route
+                          path="/featured-product/:id"
+                          element={<FeaturedProductPage />}
+                        />
+                        <Route path="/search" element={<SearchPage />} />
+                      </Route>
+
+                      {/* Protected App Routes (With Header/Footer) - Require Login */}
                       <Route
-                        path="/admin/dashboard"
-                        element={<AdminDashboard />}
-                      />
-                      <Route path="/wishlist" element={<WishlistPage />} />
-                      <Route path="*" element={<NotFoundPage />} />
-                    </Route>
-                  </>
-                )}
-              </Routes>
+                        element={
+                          <ProtectedRoute>
+                            <Layout />
+                          </ProtectedRoute>
+                        }
+                      >
+                        <Route path="/search" element={<SearchPage />} />
+                        <Route path="/payment" element={<PaymentPage />} />
+                        <Route path="/orders" element={<OrdersPage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route
+                          path="/admin/dashboard"
+                          element={<AdminDashboard />}
+                        />
+                        <Route path="/wishlist" element={<WishlistPage />} />
+                        <Route path="/cart" element={<CartPage />} />
+                        <Route path="*" element={<NotFoundPage />} />
+                      </Route>
+                    </>
+                  )}
+                </Routes>
+              </CartProvider>
             </WishlistProvider>
           </AuthProvider>
         </ToastProvider>

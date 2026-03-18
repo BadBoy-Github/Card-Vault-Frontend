@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 import {
   HiQrcode,
   HiCheck,
@@ -21,6 +23,8 @@ export default function PaymentPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { clearCart } = useCart();
+  const { showToast } = useToast();
   const canvasRef = useRef(null);
 
   const orderId = searchParams.get("orderId");
@@ -209,41 +213,133 @@ export default function PaymentPage() {
       if (!orderId) {
         const pendingOrderData = sessionStorage.getItem(sessionKey);
 
-        // Create order with UTR - stock will be reduced in backend
-        const createRes = await fetch(`${API_URL}/${apiEndpoint}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-          body: JSON.stringify({
-            ...(pendingOrderData
-              ? JSON.parse(pendingOrderData)
-              : { orderItems: [], totalPrice: parseFloat(amount) }),
-            utrNumber: utrNumber.trim(),
-            paymentAmount: parseFloat(amount),
-            paymentStatus: "awaiting_verification",
-          }),
-        });
+        // Parse order items
+        const orderData = pendingOrderData
+          ? JSON.parse(pendingOrderData)
+          : { orderItems: [], totalPrice: parseFloat(amount) };
 
-        const createdOrder = await createRes.json();
+        const { orderItems } = orderData;
 
-        if (createRes.ok) {
-          sessionStorage.removeItem(sessionKey);
-          setMessage({
-            type: "success",
-            text: "UTR submitted successfully! Redirecting to orders...",
-          });
-          setOrder(createdOrder);
-          setTimeout(() => {
-            navigate("/orders");
-          }, 1500);
-        } else {
-          setMessage({
-            type: "error",
-            text: createdOrder.message || "Failed to create order",
-          });
+        // Expand items based on quantity - each quantity becomes a separate order
+        const expandedItems = [];
+        if (orderItems && orderItems.length > 0) {
+          for (const item of orderItems) {
+            // Create separate entry for each quantity
+            for (let i = 0; i < item.qty; i++) {
+              expandedItems.push({
+                ...item,
+                qty: 1, // Each order has quantity 1
+              });
+            }
+          }
         }
+
+        // Create separate orders for each expanded item
+        if (expandedItems.length > 0) {
+          const createdOrders = [];
+          let allSuccessful = true;
+
+          for (const item of expandedItems) {
+            const itemOrderType = item.featuredProduct ? "featured" : "regular";
+            const itemApiEndpoint =
+              itemOrderType === "featured" ? "orders?type=featured" : "orders";
+
+            const createRes = await fetch(`${API_URL}/${itemApiEndpoint}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`,
+              },
+              body: JSON.stringify({
+                orderItems: [item],
+                totalPrice: item.price * item.qty,
+                type: itemOrderType,
+                utrNumber: utrNumber.trim(),
+                paymentAmount: item.price * item.qty,
+                paymentStatus: "awaiting_verification",
+              }),
+            });
+
+            if (createRes.ok) {
+              createdOrders.push(await createRes.json());
+            } else {
+              allSuccessful = false;
+              const errorData = await createRes.json();
+              setMessage({
+                type: "error",
+                text: errorData.message || `Failed to order ${item.name}`,
+              });
+              break;
+            }
+          }
+
+          if (allSuccessful) {
+            sessionStorage.removeItem(sessionKey);
+            setMessage({
+              type: "success",
+              text: "UTR submitted successfully! Redirecting to orders...",
+            });
+            setOrder(createdOrders[0]);
+            await clearCart();
+            setTimeout(() => {
+              navigate("/orders");
+            }, 1500);
+          }
+          setSubmitting(false);
+          return;
+        }
+
+        // Fallback: Single item order with quantity 1 - use original logic
+        if (orderItems && orderItems.length === 1 && orderItems[0].qty === 1) {
+          const item = orderItems[0];
+          const itemOrderType = item.featuredProduct ? "featured" : "regular";
+          const itemApiEndpoint =
+            itemOrderType === "featured" ? "orders?type=featured" : "orders";
+
+          const createRes = await fetch(`${API_URL}/${itemApiEndpoint}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+            body: JSON.stringify({
+              orderItems: [item],
+              totalPrice: item.price,
+              type: itemOrderType,
+              utrNumber: utrNumber.trim(),
+              paymentAmount: item.price,
+              paymentStatus: "awaiting_verification",
+            }),
+          });
+
+          const createdOrder = await createRes.json();
+
+          if (createRes.ok) {
+            sessionStorage.removeItem(sessionKey);
+            setMessage({
+              type: "success",
+              text: "UTR submitted successfully! Redirecting to orders...",
+            });
+            setOrder(createdOrder);
+            await clearCart();
+            setTimeout(() => {
+              navigate("/orders");
+            }, 1500);
+          } else {
+            setMessage({
+              type: "error",
+              text: createdOrder.message || "Failed to create order",
+            });
+          }
+          setSubmitting(false);
+          return;
+        }
+
+        // This shouldn't happen, but just in case
+        setMessage({
+          type: "error",
+          text: "Invalid order data",
+        });
         setSubmitting(false);
         return;
       }
@@ -277,10 +373,28 @@ export default function PaymentPage() {
           navigate("/orders");
         }, 1500);
       } else {
-        setMessage({
-          type: "error",
-          text: data.message || "Failed to submit UTR",
-        });
+        // Check if it's an insufficient stock error
+        const errorMessage = data.message || "Failed to submit UTR";
+        if (
+          errorMessage.toLowerCase().includes("insufficient stock") ||
+          errorMessage.toLowerCase().includes("not available") ||
+          errorMessage.toLowerCase().includes("out of stock")
+        ) {
+          // Show toast and clear cart, then redirect to cart
+          showToast(
+            "You lost it! Someone else was faster. Better luck next time! 😔",
+            "error",
+          );
+          await clearCart();
+          setTimeout(() => {
+            navigate("/cart");
+          }, 2000);
+        } else {
+          setMessage({
+            type: "error",
+            text: errorMessage,
+          });
+        }
       }
     } catch (e) {
       console.error(e);

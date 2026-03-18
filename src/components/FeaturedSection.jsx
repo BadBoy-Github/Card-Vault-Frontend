@@ -48,6 +48,7 @@ export default function FeaturedSection() {
     <section
       className="section-padding-lg mt-28"
       aria-labelledby="featured-heading"
+      id="featured"
     >
       <div className="container-wide">
         <div className="mb-8 text-center sm:mb-12">

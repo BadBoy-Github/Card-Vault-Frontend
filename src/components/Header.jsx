@@ -2,6 +2,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import {
   HiCreditCard,
   HiCollection,
@@ -13,10 +15,13 @@ import {
   HiHeart,
   HiLockClosed,
   HiCog,
+  HiShoppingCart,
 } from "react-icons/hi";
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const { cartItemCount } = useCart();
+  const { wishlistItemCount } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [dpModalOpen, setDpModalOpen] = useState(false);
@@ -52,6 +57,7 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Close mobile menu when route changes
   // Close mobile menu when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -99,7 +105,7 @@ export default function Header() {
           className="flex shrink-0 items-center gap-2 text-[19px] font-bold tracking-tight text-[var(--color-accent)] sm:text-[21px]"
           onClick={closeMobileMenu}
         >
-          <img src="/logo.png" alt="" className="h-10 w-10" />
+          <img src="/logo.png" alt="Card Vault Logo" className="h-10 w-10" />
           <span className="truncate text-[var(--color-text)]">Card Vault</span>
         </Link>
 
@@ -196,6 +202,11 @@ export default function Header() {
                     >
                       <HiHeart className="h-4 w-4" />
                       <span>My Wishlist</span>
+                      {wishlistItemCount > 0 && (
+                        <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                          {wishlistItemCount > 9 ? "9+" : wishlistItemCount}
+                        </span>
+                      )}
                     </Link>
                   ) : (
                     <>
@@ -206,9 +217,27 @@ export default function Header() {
                       >
                         <HiHeart className="h-4 w-4" />
                         <span>My Wishlist</span>
+                        {wishlistItemCount > 0 && (
+                          <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                            {wishlistItemCount > 9 ? "9+" : wishlistItemCount}
+                          </span>
+                        )}
                       </Link>
                     </>
                   )}
+                  <Link
+                    to="/cart"
+                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
+                    onClick={() => setUserDropdownOpen(false)}
+                  >
+                    <HiShoppingCart className="h-4 w-4" />
+                    <span>My Cart</span>
+                    {cartItemCount > 0 && (
+                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-[10px] font-bold text-white">
+                        {cartItemCount > 9 ? "9+" : cartItemCount}
+                      </span>
+                    )}
+                  </Link>
                   <Link
                     to="/orders"
                     className="flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] text-[var(--color-text-muted)] transition hover:bg-white/5 hover:text-[var(--color-text)]"
@@ -272,6 +301,7 @@ export default function Header() {
             </div>
           )}
           <ThemeToggle />
+          {/* Cart Icon */}
         </nav>
 
         {/* Mobile: right side icons + hamburger */}
@@ -380,6 +410,24 @@ export default function Header() {
                 <span>Contact</span>
                 <HiPhone className="h-6 w-6 text-[var(--color-text-muted)]" />
               </Link>
+              {user && (
+                <Link
+                  to="/wishlist"
+                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                  onClick={closeMobileMenu}
+                >
+                  <span>Wishlist</span>
+                  <HiHeart className="h-6 w-6 text-[var(--color-text-muted)]" />
+                </Link>
+              )}
+              <Link
+                to="/cart"
+                className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
+                onClick={closeMobileMenu}
+              >
+                <span>Cart</span>
+                <HiShoppingCart className="h-6 w-6 text-[var(--color-text-muted)]" />
+              </Link>
               <Link
                 to="/orders"
                 className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
@@ -396,16 +444,6 @@ export default function Header() {
                 >
                   <span>Dashboard</span>
                   <HiLockClosed className="h-6 w-6 text-[var(--color-text-muted)]" />
-                </Link>
-              )}
-              {user && (
-                <Link
-                  to="/wishlist"
-                  className="flex min-h-[44px] items-center justify-between rounded-xl px-4 text-[17px] text-[var(--color-text)]"
-                  onClick={closeMobileMenu}
-                >
-                  <span>Wishlist</span>
-                  <HiHeart className="h-6 w-6 text-[var(--color-text-muted)]" />
                 </Link>
               )}
               <div className="my-2 border-t border-[var(--color-glass-border)]" />
