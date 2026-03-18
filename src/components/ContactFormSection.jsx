@@ -172,35 +172,26 @@ export default function ContactFormSection() {
     <section id="contact" className="section-padding-lg px-4 sm:px-6 md:px-8">
       <div className="mx-auto max-w-5xl">
         {/* Header - Top Left */}
-        <div className="mb-10">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="relative">
-              <HiChatAlt2 className="text-4xl sm:text-5xl text-[var(--color-accent)]" />
-            </div>
-            <h1 className="apple-display text-[var(--color-text)]">
-              Contact Us
-            </h1>
-          </div>
-          <p className="apple-body max-w-xl text-[var(--color-text-secondary)]">
-            Have a question? We'd love to hear from you. Send us a message and
-            we'll respond as soon as possible.
-          </p>
-        </div>
 
         {/* Two Column Layout: Left Content + Right Form */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Left Column - Additional Info & Links */}
           <div className="flex flex-col justify-between">
             <div>
-              <h2 className="mb-4 text-xl font-semibold text-[var(--color-text)]">
-                Get in Touch
-              </h2>
-              <p className="mb-6 text-[var(--color-text-secondary)]">
-                Whether you have a question about our products, need help with
-                an order, or want to report an issue, we're here to help. Feel
-                free to reach out through the form or use any of the contact
-                methods below.
-              </p>
+              <div className="mb-10">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="relative">
+                    <HiChatAlt2 className="text-4xl sm:text-5xl text-[var(--color-accent)]" />
+                  </div>
+                  <h1 className="apple-display text-[var(--color-text)]">
+                    Contact Us
+                  </h1>
+                </div>
+                <p className="apple-body max-w-xl text-[var(--color-text-secondary)]">
+                  Have a question? We'd love to hear from you. Send us a message
+                  and we'll respond as soon as possible.
+                </p>
+              </div>
             </div>
 
             {/* Contact Links */}
@@ -211,7 +202,7 @@ export default function ContactFormSection() {
               <div className="flex flex-col gap-3">
                 {/* Portfolio/Admin Link */}
                 <a
-                  href="https://elayabarathi.vercel.app"
+                  href="https://elayabarathimv.vercel.app"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-center gap-3 rounded-xl border border-gray-400/30 bg-[var(--color-surface)] p-3 text-[var(--color-text)] transition-all hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/5"
@@ -224,7 +215,7 @@ export default function ContactFormSection() {
                       Portfolio / Admin
                     </span>
                     <span className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)]">
-                      elayabarathi.vercel.app{" "}
+                      elayabarathimv.vercel.app{" "}
                       <HiExternalLink className="h-3 w-3" />
                     </span>
                   </div>
@@ -232,7 +223,7 @@ export default function ContactFormSection() {
 
                 {/* Email Link */}
                 <a
-                  href="mailto:elayabarathi123@gmail.com"
+                  href="mailto:elayabarathiedison@gmail.com"
                   className="group flex items-center gap-3 rounded-xl border border-gray-400/30 bg-[var(--color-surface)] p-3 text-[var(--color-text)] transition-all hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/5"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
@@ -241,14 +232,14 @@ export default function ContactFormSection() {
                   <div className="flex-1">
                     <span className="block text-sm font-medium">Email Us</span>
                     <span className="text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)]">
-                      elayabarathi123@gmail.com
+                      elayabarathiedison@gmail.com
                     </span>
                   </div>
                 </a>
 
                 {/* WhatsApp Link */}
                 <a
-                  href="https://wa.me/919344875728"
+                  href="https://wa.me/919842852121"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-center gap-3 rounded-xl border border-gray-400/30 bg-[var(--color-surface)] p-3 text-[var(--color-text)] transition-all hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/5"
