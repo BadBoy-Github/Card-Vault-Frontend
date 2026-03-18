@@ -58,6 +58,7 @@ export default function Header() {
   }, []);
 
   // Close mobile menu when route changes
+  // Close mobile menu when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location]);

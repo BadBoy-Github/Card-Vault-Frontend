@@ -8,23 +8,18 @@ const API_URL =
 export default function FeaturedGiftCardGrid() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       setLoading(true);
-      setError(false);
       try {
         const res = await fetch(`${API_URL}/products?type=featured`);
         const data = await res.json();
         if (res.ok) {
           setProducts(data || []);
-        } else {
-          setError(true);
         }
       } catch (err) {
         console.error("Error fetching featured products:", err);
-        setError(true);
       } finally {
         setLoading(false);
       }

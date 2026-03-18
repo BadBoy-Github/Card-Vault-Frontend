@@ -5,10 +5,7 @@ import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { HiHeart, HiShoppingCart, HiCheck } from "react-icons/hi";
-import SEO, {
-  generateProductSchema,
-  generateBreadcrumbSchema,
-} from "../components/SEO";
+import SEO, { generateProductSchema } from "../components/SEO";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
@@ -19,7 +16,7 @@ export default function ProductPage() {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  const { wishlist, isInWishlist, toggleWishlist } = useWishlist();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const { isInCart, addToCart, removeFromCart } = useCart();
   const { warning } = useToast();
   const [quantity, setQuantity] = useState(1);
@@ -32,16 +29,6 @@ export default function ProductPage() {
 
   // Generate SEO and schema when card is loaded
   const productSchema = card ? generateProductSchema(card) : null;
-  const breadcrumbSchema = card
-    ? generateBreadcrumbSchema([
-        { name: "Home", url: "https://card-vaults.vercel.app/" },
-        { name: "Gift Cards", url: "https://card-vaults.vercel.app/search" },
-        {
-          name: card.name,
-          url: `https://card-vaults.vercel.app/product/${id}`,
-        },
-      ])
-    : null;
 
   useEffect(() => {
     const fetchProduct = async () => {
