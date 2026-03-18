@@ -56,7 +56,7 @@ export default function Footer() {
               onClick={scrollToTop}
               className="flex items-center gap-2 text-[18px] font-bold text-[var(--color-text)] mb-2 justify-center lg:justify-start"
             >
-              <img src="/logo.png" alt="" className="h-8 w-8" />
+              <img src="/logo.png" alt="Card Vault Logo" className="h-8 w-8" />
               <span>Card Vault</span>
             </Link>
             <p className="text-[13px] text-[var(--color-text-muted)] mb-3 max-w-sm">
