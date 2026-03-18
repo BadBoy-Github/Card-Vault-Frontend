@@ -196,9 +196,9 @@ export default function ContactFormSection() {
 
             {/* Contact Links */}
             <div className="space-y-4">
-              <h3 className="text-sm font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
+              <h2 className="text-sm font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
                 Contact Options
-              </h3>
+              </h2>
               <div className="flex flex-col gap-3">
                 {/* Portfolio/Admin Link */}
                 <a

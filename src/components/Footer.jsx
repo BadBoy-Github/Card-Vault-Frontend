@@ -56,7 +56,13 @@ export default function Footer() {
               onClick={scrollToTop}
               className="flex items-center gap-2 text-[18px] font-bold text-[var(--color-text)] mb-2 justify-center lg:justify-start"
             >
-              <img src="/logo.png" alt="Card Vault Logo" className="h-8 w-8" />
+              <img
+                src="/logo.webp"
+                alt="Card Vault Logo"
+                className="h-8 w-8"
+                width={32}
+                height={32}
+              />
               <span>Card Vault</span>
             </Link>
             <p className="text-[13px] text-[var(--color-text-muted)] mb-3 max-w-sm">
@@ -78,9 +84,9 @@ export default function Footer() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Sitemap */}
             <div className="lg:col-span-5">
-              <h3 className="font-semibold text-[var(--color-text)] mb-4">
+              <h2 className="font-semibold text-[var(--color-text)] mb-4">
                 Sitemap
-              </h3>
+              </h2>
               <div className="grid grid-cols-2 gap-x-6 gap-y-2">
                 {/* Left column */}
                 <nav className="flex flex-col gap-2 text-[14px]">
@@ -120,9 +126,9 @@ export default function Footer() {
 
             {/* Social Links */}
             <div className="lg:col-span-6">
-              <h3 className="font-semibold text-[var(--color-text)] mb-4">
+              <h2 className="font-semibold text-[var(--color-text)] mb-4">
                 Connect
-              </h3>
+              </h2>
               <div className="flex flex-col gap-3">
                 {socialLinks.map((link) => {
                   const Icon = link.icon;
