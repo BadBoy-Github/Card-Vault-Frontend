@@ -2,10 +2,48 @@ import { Link } from "react-router-dom";
 import { HiMail, HiGlobe, HiChatAlt2 } from "react-icons/hi";
 import { FaWhatsapp } from "react-icons/fa";
 
+// Sitemap links data - easy to edit
+const sitemapLinks = [
+  { name: "Home", href: "/" },
+  { name: "Why Us?", href: "/#about" },
+  { name: "Featured", href: "/featured" },
+  { name: "Gift Cards", href: "/#gift-cards" },
+  { name: "Wishlist", href: "/wishlist" },
+  { name: "Cart", href: "/cart" },
+  { name: "Orders", href: "/orders" },
+  { name: "Contact", href: "/#contact" },
+];
+
+// Social links data - easy to edit
+const socialLinks = [
+  {
+    name: "Portfolio",
+    href: "https://elayabarathimv.vercel.app",
+    icon: HiGlobe,
+    external: true,
+  },
+  {
+    name: "Email",
+    href: "mailto:elayabarathi123@gmail.com",
+    icon: HiMail,
+    external: false,
+  },
+  {
+    name: "WhatsApp",
+    href: "https://wa.me/919344875728",
+    icon: FaWhatsapp,
+    external: true,
+  },
+];
+
 export default function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  // Split sitemap into two columns
+  const sitemapLeft = sitemapLinks.slice(0, 4);
+  const sitemapRight = sitemapLinks.slice(4);
 
   return (
     <footer className="mt-auto border-t border-[var(--color-glass-border)] bg-white/5 py-10">
@@ -30,7 +68,7 @@ export default function Footer() {
             </p>
             <Link
               to="/terms"
-              className="text-[12px] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
+              className="text-[12px] text-yellow-500/60 hover:text-yellow-500 transition"
             >
               Read our Terms & Conditions
             </Link>
@@ -44,58 +82,30 @@ export default function Footer() {
                 Sitemap
               </h3>
               <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                {/* Left column */}
                 <nav className="flex flex-col gap-2 text-[14px]">
-                  <Link
-                    to="/"
-                    onClick={scrollToTop}
-                    className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    to="/#featured"
-                    className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                  >
-                    Why Us?
-                  </Link>
-                  <Link
-                    to="#featured-gift-cards"
-                    className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                  >
-                    Featured Cards
-                  </Link>
-                  <Link
-                    to="/#gift-cards"
-                    className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                  >
-                    Gift Cards
-                  </Link>
+                  {sitemapLeft.map((link) => (
+                    <Link
+                      key={link.name}
+                      to={link.href}
+                      onClick={link.href === "/" ? scrollToTop : undefined}
+                      className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition w-fit"
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
                 </nav>
+                {/* Right column */}
                 <nav className="flex flex-col gap-2 text-[14px]">
-                  <Link
-                    to="/wishlist"
-                    className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                  >
-                    Wishlist
-                  </Link>
-                  <Link
-                    to="/cart"
-                    className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                  >
-                    Cart
-                  </Link>
-                  <Link
-                    to="/orders"
-                    className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                  >
-                    Orders
-                  </Link>
-                  <Link
-                    to="/#contact"
-                    className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                  >
-                    Contact
-                  </Link>
+                  {sitemapRight.map((link) => (
+                    <Link
+                      key={link.name}
+                      to={link.href}
+                      className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition w-fit"
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
                 </nav>
               </div>
             </div>
@@ -114,31 +124,30 @@ export default function Footer() {
                 Connect
               </h3>
               <div className="flex flex-col gap-3">
-                <a
-                  href="https://elayabarathimv.vercel.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-[14px] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                >
-                  <HiGlobe className="h-5 w-5" />
-                  <span>Portfolio</span>
-                </a>
-                <a
-                  href="mailto:elayabarathi123@gmail.com"
-                  className="flex items-center gap-3 text-[14px] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                >
-                  <HiMail className="h-5 w-5" />
-                  <span>Email</span>
-                </a>
-                <a
-                  href="https://wa.me/919842852121"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-[14px] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
-                >
-                  <FaWhatsapp className="h-5 w-5" />
-                  <span>WhatsApp</span>
-                </a>
+                {socialLinks.map((link) => {
+                  const Icon = link.icon;
+                  return link.external ? (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 text-[14px] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span>{link.name}</span>
+                    </a>
+                  ) : (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      className="flex items-center gap-3 text-[14px] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span>{link.name}</span>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>
