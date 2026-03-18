@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
+import { useToast } from "./ToastContext";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
@@ -8,6 +9,7 @@ const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const { user } = useAuth();
+  const { warning } = useToast();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +35,14 @@ export function CartProvider({ children }) {
       const data = await res.json();
       if (res.ok && data) {
         setCart(data.products || []);
+        // Check if any products were removed due to being out of stock
+        if (data.removedOutOfStock && data.removedOutOfStock.length > 0) {
+          data.removedOutOfStock.forEach((item) => {
+            warning(
+              `${item.name} is now out of stock and has been removed from your cart`,
+            );
+          });
+        }
       } else {
         setCart([]);
       }

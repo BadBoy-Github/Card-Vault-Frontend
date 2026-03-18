@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 import {
   HiQrcode,
   HiCheck,
@@ -21,6 +23,8 @@ export default function PaymentPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { clearCart } = useCart();
+  const { showToast } = useToast();
   const canvasRef = useRef(null);
 
   const orderId = searchParams.get("orderId");
@@ -235,6 +239,8 @@ export default function PaymentPage() {
             text: "UTR submitted successfully! Redirecting to orders...",
           });
           setOrder(createdOrder);
+          // Clear cart after successful order
+          await clearCart();
           setTimeout(() => {
             navigate("/orders");
           }, 1500);
@@ -277,10 +283,28 @@ export default function PaymentPage() {
           navigate("/orders");
         }, 1500);
       } else {
-        setMessage({
-          type: "error",
-          text: data.message || "Failed to submit UTR",
-        });
+        // Check if it's an insufficient stock error
+        const errorMessage = data.message || "Failed to submit UTR";
+        if (
+          errorMessage.toLowerCase().includes("insufficient stock") ||
+          errorMessage.toLowerCase().includes("not available") ||
+          errorMessage.toLowerCase().includes("out of stock")
+        ) {
+          // Show toast and clear cart, then redirect to cart
+          showToast(
+            "You lost it! Someone else was faster. Better luck next time! 😔",
+            "error",
+          );
+          await clearCart();
+          setTimeout(() => {
+            navigate("/cart");
+          }, 2000);
+        } else {
+          setMessage({
+            type: "error",
+            text: errorMessage,
+          });
+        }
       }
     } catch (e) {
       console.error(e);

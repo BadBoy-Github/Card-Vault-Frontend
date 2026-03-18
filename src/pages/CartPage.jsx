@@ -86,7 +86,9 @@ export default function CartPage() {
       {cart.length > 0 && (
         <div className="mb-6 rounded-xl bg-yellow-500/10 border border-yellow-500/30 p-4">
           <p className="text-[14px] text-yellow-600">
-            <span className="font-semibold">Note:</span> Adding items to cart doesn't reserve them. Complete payment quickly to secure your purchase before others do!
+            <span className="font-semibold">Note:</span> Adding items to cart
+            doesn't reserve them. Complete payment quickly to secure your
+            purchase before others do!
           </p>
         </div>
       )}
@@ -231,6 +233,24 @@ export default function CartPage() {
               <Link
                 to={`/payment?amount=${subtotal}`}
                 className="glass-cta mt-6 inline-flex w-full items-center justify-center rounded-xl px-8 py-3.5 text-[17px] font-semibold text-white transition-all hover:scale-[1.01] active:scale-[0.99]"
+                onClick={() => {
+                  // Store cart items in sessionStorage for payment page to create order
+                  const orderItems = cart.map((item) => ({
+                    name: item.product?.name,
+                    brand: item.product?.brand,
+                    price: item.product?.price,
+                    image: item.product?.image,
+                    qty: item.quantity,
+                    product: item.product?._id,
+                  }));
+                  sessionStorage.setItem(
+                    "pendingOrder",
+                    JSON.stringify({
+                      orderItems,
+                      totalPrice: subtotal,
+                    }),
+                  );
+                }}
               >
                 Proceed to Checkout
               </Link>
