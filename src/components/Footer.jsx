@@ -53,16 +53,16 @@ export default function Footer() {
                     Home
                   </Link>
                   <Link
-                    to="/#about"
+                    to="/#featured"
                     className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
                   >
                     Why Us?
                   </Link>
                   <Link
-                    to="/featured"
+                    to="#featured-gift-cards"
                     className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition"
                   >
-                    Featured
+                    Featured Cards
                   </Link>
                   <Link
                     to="/#gift-cards"
@@ -139,7 +139,6 @@ export default function Footer() {
                   <FaWhatsapp className="h-5 w-5" />
                   <span>WhatsApp</span>
                 </a>
-                
               </div>
             </div>
           </div>

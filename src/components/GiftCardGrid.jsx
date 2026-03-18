@@ -73,14 +73,17 @@ export default function GiftCardGrid() {
 
   if (products.length === 0) {
     return (
-      <section id="gift-cards" className="flex flex-1 flex-col section-padding">
+      <section
+        id="gift-cards"
+        className="flex flex-1 flex-col section-padding bg-gradient-to-b from-transparent to-[var(--color-glass)]"
+      >
         <div className="container-wide">
           <div className="mb-8 text-center sm:mb-10">
             <h2 className="apple-display text-[var(--color-text)]">
-              Choose a gift card
+              Gift Cards
             </h2>
             <p className="apple-body mt-2 px-2 text-[15px] sm:mt-3 sm:text-[17px] md:text-[19px]">
-              All cards are delivered digitally. Pick one and go.
+              Exclusive offers and special codes. Grab them before they're gone!
             </p>
           </div>
           <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -113,14 +116,15 @@ export default function GiftCardGrid() {
   }
 
   return (
-    <section id="gift-cards" className="flex flex-1 flex-col section-padding">
+    <section
+      id="gift-cards"
+      className="flex flex-1 flex-col section-padding bg-gradient-to-b from-transparent to-[var(--color-glass)]"
+    >
       <div className="container-wide">
         <div className="mb-8 text-center sm:mb-10">
-          <h2 className="apple-display text-[var(--color-text)]">
-            Choose a gift card
-          </h2>
+          <h2 className="apple-display text-[var(--color-text)]">Gift Cards</h2>
           <p className="apple-body mt-2 px-2 text-[15px] sm:mt-3 sm:text-[17px] md:text-[19px]">
-            All cards are delivered digitally. Pick one and go.
+            Exclusive offers and special codes. Grab them before they're gone!
           </p>
         </div>
 
