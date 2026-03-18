@@ -105,7 +105,13 @@ export default function Header() {
           className="flex shrink-0 items-center gap-2 text-[19px] font-bold tracking-tight text-[var(--color-accent)] sm:text-[21px]"
           onClick={closeMobileMenu}
         >
-          <img src="/logo.png" alt="Card Vault Logo" className="h-10 w-10" />
+          <img
+            src="/logo.webp"
+            alt="Card Vault Logo"
+            className="h-10 w-10"
+            width={40}
+            height={40}
+          />
           <span className="truncate text-[var(--color-text)]">Card Vault</span>
         </Link>
 

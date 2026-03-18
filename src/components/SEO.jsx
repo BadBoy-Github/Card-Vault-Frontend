@@ -23,7 +23,7 @@ const DEFAULT_SEO = {
     "Card Vault (card-vault, card vaults, card-vaults) - Your #1 destination for digital gift cards in India. Buy gaming, entertainment & shopping gift cards online with instant email delivery. Secure payments via UPI, Cards & More. 100+ brands available at Card Vault.",
   keywords:
     "card vault, card-vault, card vaults, card-vaults, gift cards, digital gift cards, buy gift card online, gaming gift cards, prepaid cards, online gift cards, digital vouchers, instant gift card delivery, steam gift card, playstation gift card, xbox gift card, itunes gift card, google play gift card, amazon gift card, shopping gift cards, gift card India",
-  image: "/logo.png",
+  image: "/logo.webp",
   url: "https://card-vaults.vercel.app",
   siteName: "Card Vault",
   type: "website",
@@ -149,7 +149,7 @@ const addOrganizationSchema = (baseUrl) => {
     name: "Card Vault",
     alternateName: ["card-vault", "card vaults", "card-vaults"],
     url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
+    logo: `${baseUrl}/logo.webp`,
     description: DEFAULT_SEO.description,
     sameAs: [
       "https://twitter.com/cardvault",
