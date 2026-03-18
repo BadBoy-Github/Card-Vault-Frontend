@@ -231,9 +231,15 @@ export default function CartPage() {
                 {cart.length} {cart.length === 1 ? "item" : "items"} in cart
               </p>
               <Link
-                to={`/payment?amount=${subtotal}`}
+                to={`/payment?amount=${subtotal}&type=${cart.some((item) => item.product?.type === "featured") ? "featured" : "regular"}`}
                 className="glass-cta mt-6 inline-flex w-full items-center justify-center rounded-xl px-8 py-3.5 text-[17px] font-semibold text-white transition-all hover:scale-[1.01] active:scale-[0.99]"
                 onClick={() => {
+                  // Determine order type based on products in cart
+                  const hasFeatured = cart.some(
+                    (item) => item.product?.type === "featured",
+                  );
+                  const orderType = hasFeatured ? "featured" : "regular";
+
                   // Store cart items in sessionStorage for payment page to create order
                   const orderItems = cart.map((item) => ({
                     name: item.product?.name,
@@ -242,9 +248,15 @@ export default function CartPage() {
                     image: item.product?.image,
                     qty: item.quantity,
                     product: item.product?._id,
+                    // Add featuredProduct field if it's a featured product
+                    ...(item.product?.type === "featured"
+                      ? { featuredProduct: item.product?._id }
+                      : {}),
                   }));
                   sessionStorage.setItem(
-                    "pendingOrder",
+                    orderType === "featured"
+                      ? "pendingFeaturedOrder"
+                      : "pendingOrder",
                     JSON.stringify({
                       orderItems,
                       totalPrice: subtotal,

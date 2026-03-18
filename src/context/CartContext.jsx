@@ -143,18 +143,19 @@ export function CartProvider({ children }) {
 
   const clearCart = async () => {
     try {
-      const res = await fetch(`${API_URL}/cart/clear`, {
+      const res = await fetch(`${API_URL}/cart`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      const data = await res.json();
       if (res.ok) {
-        setCart(data.products || []);
+        setCart([]);
       }
     } catch (err) {
-      console.error("Error clearing cart:", err);
+      // If API call fails, just clear locally
+      console.warn("Error clearing cart, clearing locally:", err);
+      setCart([]);
     }
   };
 

@@ -7,7 +7,11 @@ import {
   HiPaperAirplane,
   HiChatAlt2,
   HiCheck,
+  HiExternalLink,
+  HiGlobeAlt,
+  HiChat,
 } from "react-icons/hi";
+import { FaWhatsapp } from "react-icons/fa";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://card-vault-backend.vercel.app/api";
@@ -165,206 +169,288 @@ export default function ContactFormSection() {
   }, [user]);
 
   return (
-    <section
-      id="contact"
-      className="section-padding-lg px-4 sm:px-6 md:px-8"
-    >
-      <div className="mx-auto max-w-2xl">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <div className="mb-4 flex justify-center">
+    <section id="contact" className="section-padding-lg px-4 sm:px-6 md:px-8">
+      <div className="mx-auto max-w-5xl">
+        {/* Header - Top Left */}
+        <div className="mb-10">
+          <div className="mb-4 flex items-center gap-3">
             <div className="relative">
-              <HiChatAlt2 className="text-5xl sm:text-6xl text-[var(--color-accent)]" />
+              <HiChatAlt2 className="text-4xl sm:text-5xl text-[var(--color-accent)]" />
             </div>
+            <h1 className="apple-display text-[var(--color-text)]">
+              Contact Us
+            </h1>
           </div>
-          <h1 className="apple-display mb-3 text-[var(--color-text)]">
-            Contact Us
-          </h1>
-          <p className="apple-body text-[var(--color-text-secondary)]">
+          <p className="apple-body max-w-xl text-[var(--color-text-secondary)]">
             Have a question? We'd love to hear from you. Send us a message and
             we'll respond as soon as possible.
           </p>
         </div>
 
-        {/* Contact Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="glass-panel rounded-[40px] p-6 sm:p-8"
-        >
-          {/* Name Field (Read-only) */}
-          <div className="mb-5">
-            <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-              <HiUser className="mr-2 inline-block" />
-              Your Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              readOnly
-              disabled
-              className="w-full rounded-xl border border-gray-400/50 bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] opacity-60 cursor-not-allowed"
-              placeholder="Your name from registration"
-            />
+        {/* Two Column Layout: Left Content + Right Form */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* Left Column - Additional Info & Links */}
+          <div className="flex flex-col justify-between">
+            <div>
+              <h2 className="mb-4 text-xl font-semibold text-[var(--color-text)]">
+                Get in Touch
+              </h2>
+              <p className="mb-6 text-[var(--color-text-secondary)]">
+                Whether you have a question about our products, need help with
+                an order, or want to report an issue, we're here to help. Feel
+                free to reach out through the form or use any of the contact
+                methods below.
+              </p>
+            </div>
+
+            {/* Contact Links */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
+                Contact Options
+              </h3>
+              <div className="flex flex-col gap-3">
+                {/* Portfolio/Admin Link */}
+                <a
+                  href="https://elayabarathi.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 rounded-xl border border-gray-400/30 bg-[var(--color-surface)] p-3 text-[var(--color-text)] transition-all hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/5"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+                    <HiGlobeAlt className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="block text-sm font-medium">
+                      Portfolio / Admin
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)]">
+                      elayabarathi.vercel.app{" "}
+                      <HiExternalLink className="h-3 w-3" />
+                    </span>
+                  </div>
+                </a>
+
+                {/* Email Link */}
+                <a
+                  href="mailto:elayabarathi123@gmail.com"
+                  className="group flex items-center gap-3 rounded-xl border border-gray-400/30 bg-[var(--color-surface)] p-3 text-[var(--color-text)] transition-all hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/5"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+                    <HiMail className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="block text-sm font-medium">Email Us</span>
+                    <span className="text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)]">
+                      elayabarathi123@gmail.com
+                    </span>
+                  </div>
+                </a>
+
+                {/* WhatsApp Link */}
+                <a
+                  href="https://wa.me/919344875728"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 rounded-xl border border-gray-400/30 bg-[var(--color-surface)] p-3 text-[var(--color-text)] transition-all hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/5"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+                    <FaWhatsapp className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="block text-sm font-medium">WhatsApp</span>
+                    <span className="text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)]">
+                      Chat with us on WhatsApp
+                    </span>
+                  </div>
+                </a>
+              </div>
+            </div>
           </div>
 
-          {/* Email Field (Read-only) */}
-          <div className="mb-5">
-            <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-              <HiMail className="mr-2 inline-block" />
-              Your Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              readOnly
-              disabled
-              className="w-full rounded-xl border border-gray-400/50 bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] opacity-60 cursor-not-allowed"
-              placeholder="your.email@example.com"
-            />
-          </div>
-
-          {/* Category Dropdown */}
-          <div className="mb-5">
-            <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-              Category
-            </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              disabled={isSending}
-              className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
-                touched.category && errors.category
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-blue-500/50 focus:border-blue-500"
-              }`}
-            >
-              {CATEGORIES.map((cat) => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.label}
-                </option>
-              ))}
-            </select>
-            {touched.category && errors.category && (
-              <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
-                {errors.category}
-              </p>
-            )}
-          </div>
-
-          {/* Subject Field */}
-          <div className="mb-5">
-            <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-              Subject
-            </label>
-            <input
-              type="text"
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              disabled={isSending}
-              className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
-                touched.subject && errors.subject
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-blue-500/50 focus:border-blue-500"
-              }`}
-              placeholder="Brief description of your inquiry"
-            />
-            {touched.subject && errors.subject && (
-              <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
-                {errors.subject}
-              </p>
-            )}
-            {touched.subject && !errors.subject && formData.subject && (
-              <p className="mt-1.5 text-[13px] text-green-400 flex items-center gap-1">
-                <HiCheck className="h-4 w-4" /> Valid
-              </p>
-            )}
-          </div>
-
-          {/* Message Field */}
-          <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
-              Message
-            </label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              disabled={isSending}
-              rows={5}
-              className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none ${
-                touched.message && errors.message
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-blue-500/50 focus:border-blue-500"
-              }`}
-              placeholder="Tell us more about your inquiry..."
-            />
-            {touched.message && errors.message && (
-              <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
-                {errors.message}
-              </p>
-            )}
-            {touched.message && !errors.message && formData.message && (
-              <p className="mt-1.5 text-[13px] text-green-400 flex items-center gap-1">
-                <HiCheck className="h-4 w-4" /> Valid
-              </p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSending}
-            className="w-full rounded-xl bg-[var(--color-accent)] py-4 text-base font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 flex items-center justify-center gap-2"
+          {/* Right Column - Contact Form */}
+          <form
+            onSubmit={handleSubmit}
+            className="glass-panel rounded-[40px] p-6 sm:p-8"
           >
-            {isSending ? (
-              <>
-                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                Sending...
-              </>
-            ) : (
-              <>
-                <HiPaperAirplane className="h-5 w-5" />
-                Send Message
-              </>
-            )}
-          </button>
+            {/* Name Field (Read-only) */}
+            <div className="mb-5">
+              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <HiUser className="mr-2 inline-block" />
+                Your Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                readOnly
+                disabled
+                className="w-full rounded-xl border border-gray-400/50 bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] opacity-60 cursor-not-allowed"
+                placeholder="Your name from registration"
+              />
+            </div>
 
-          {/* Login prompt for non-authenticated users */}
-          {!user && (
-            <p className="mt-4 text-center text-sm text-[var(--color-text-secondary)]">
-              Please{" "}
-              <a
-                href="/login"
-                className="text-[var(--color-accent)] hover:underline"
+            {/* Email Field (Read-only) */}
+            <div className="mb-5">
+              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                <HiMail className="mr-2 inline-block" />
+                Your Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                readOnly
+                disabled
+                className="w-full rounded-xl border border-gray-400/50 bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] opacity-60 cursor-not-allowed"
+                placeholder="your.email@example.com"
+              />
+            </div>
+
+            {/* Category Dropdown */}
+            <div className="mb-5">
+              <label
+                htmlFor="category"
+                className="mb-2 block text-sm font-medium text-[var(--color-text)]"
               >
-                login
-              </a>{" "}
-              to contact us with your registered email.
-            </p>
-          )}
-        </form>
+                Category
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={isSending}
+                className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
+                  touched.category && errors.category
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-blue-500/50 focus:border-blue-500"
+                }`}
+              >
+                {CATEGORIES.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+              {touched.category && errors.category && (
+                <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
+                  {errors.category}
+                </p>
+              )}
+            </div>
+
+            {/* Subject Field */}
+            <div className="mb-5">
+              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                Subject
+              </label>
+              <input
+                type="text"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={isSending}
+                className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${
+                  touched.subject && errors.subject
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-blue-500/50 focus:border-blue-500"
+                }`}
+                placeholder="Brief description of your inquiry"
+              />
+              {touched.subject && errors.subject && (
+                <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
+                  {errors.subject}
+                </p>
+              )}
+              {touched.subject && !errors.subject && formData.subject && (
+                <p className="mt-1.5 text-[13px] text-green-400 flex items-center gap-1">
+                  <HiCheck className="h-4 w-4" /> Valid
+                </p>
+              )}
+            </div>
+
+            {/* Message Field */}
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-[var(--color-text)]">
+                Message
+              </label>
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={isSending}
+                rows={5}
+                className={`w-full rounded-xl border bg-[var(--color-surface)] px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none ${
+                  touched.message && errors.message
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-blue-500/50 focus:border-blue-500"
+                }`}
+                placeholder="Tell us more about your inquiry..."
+              />
+              {touched.message && errors.message && (
+                <p className="mt-1.5 text-[13px] text-red-400 flex items-center gap-1">
+                  {errors.message}
+                </p>
+              )}
+              {touched.message && !errors.message && formData.message && (
+                <p className="mt-1.5 text-[13px] text-green-400 flex items-center gap-1">
+                  <HiCheck className="h-4 w-4" /> Valid
+                </p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSending}
+              className="w-full rounded-xl bg-[var(--color-accent)] py-4 text-base font-semibold text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 flex items-center justify-center gap-2"
+            >
+              {isSending ? (
+                <>
+                  <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <HiPaperAirplane className="h-5 w-5" />
+                  Send Message
+                </>
+              )}
+            </button>
+
+            {/* Login prompt for non-authenticated users */}
+            {!user && (
+              <p className="mt-4 text-center text-sm text-[var(--color-text-secondary)]">
+                Please{" "}
+                <a
+                  href="/login"
+                  className="text-[var(--color-accent)] hover:underline"
+                >
+                  login
+                </a>{" "}
+                to contact us with your registered email.
+              </p>
+            )}
+          </form>
+        </div>
       </div>
     </section>
   );
