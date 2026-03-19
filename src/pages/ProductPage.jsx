@@ -98,7 +98,7 @@ export default function ProductPage() {
 
   // SEO - Product Page
   const productTitle = `${card.name} - Buy Gift Card on Card Vault`;
-  const productDescription = `Buy ${card.name} gift card online on Card Vault. Instant delivery via email. ${card.description || "Get your digital gift card now!"}`;
+  const productDescription = `Buy ${card.name} gift card online on Card Vault. ${card.subheading || "Instant delivery via email."} ${card.description || "Get your digital gift card now!"}`;
 
   const handleBuy = async () => {
     if (!user) {
@@ -273,6 +273,11 @@ export default function ProductPage() {
                 <p className="text-sm text-[var(--color-accent)]">
                   {card.category}
                 </p>
+                {card.subheading && (
+                  <p className="text-sm text-[var(--color-text-muted)] mt-2 font-medium">
+                    {card.subheading}
+                  </p>
+                )}
                 <p className="apple-body mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
                   {card.description}
                 </p>
