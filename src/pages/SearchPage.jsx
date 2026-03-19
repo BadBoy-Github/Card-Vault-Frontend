@@ -49,18 +49,26 @@ export default function SearchPage() {
         }
         params.append("page", page);
         params.append("limit", 20);
+        params.append("type", "all"); // Search both regular and featured products
 
         const res = await fetch(`${API_URL}/products?${params.toString()}`);
         const data = await res.json();
         if (res.ok) {
           // Handle both array response and object with products/pages
+          let products = [];
           if (Array.isArray(data)) {
-            setResults(data || []);
+            products = data || [];
             setTotalPages(1);
           } else {
-            setResults(data.products || data || []);
+            products = data.products || data || [];
             setTotalPages(data.pages || 1);
           }
+          // Map subheading to description for featured products
+          const mappedProducts = products.map((p) => ({
+            ...p,
+            description: p.subheading || p.description || "",
+          }));
+          setResults(mappedProducts);
         }
       } catch (error) {
         console.error("Error fetching results:", error);
