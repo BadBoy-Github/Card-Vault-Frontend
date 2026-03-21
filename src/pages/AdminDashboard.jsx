@@ -13,6 +13,7 @@ import {
   HiPaperAirplane,
   HiInformationCircle,
   HiCheck,
+  HiChartBar,
 } from "react-icons/hi";
 
 const API_URL =
@@ -23,7 +24,18 @@ const DEFAULT_ADMIN_EMAIL =
 export default function AdminDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("users");
+  const [activeTab, setActiveTab] = useState("analytics");
+  const [analyticsData, setAnalyticsData] = useState({
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalUsers: 0,
+    totalProducts: 0,
+    revenueByDay: [],
+    ordersByDay: [],
+    topProducts: [],
+    recentOrders: [],
+    monthlyRevenue: [],
+  });
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [users, setUsers] = useState([]);
@@ -126,7 +138,17 @@ export default function AdminDashboard() {
     try {
       // Determine which endpoints to fetch based on activeTab
       let endpoints = [];
-      if (activeTab === "featured-products") {
+      if (activeTab === "analytics") {
+        // Analytics needs all data including featured
+        endpoints = [
+          "products",
+          "products?type=featured",
+          "users",
+          "orders",
+          "orders?type=featured",
+          "newsletter",
+        ];
+      } else if (activeTab === "featured-products") {
         endpoints = [
           "products?type=featured",
           "users",
@@ -152,22 +174,30 @@ export default function AdminDashboard() {
         ),
       );
 
-      setProducts(Array.isArray(results[0]) ? results[0] : []);
-      setUsers(Array.isArray(results[1]) ? results[1] : []);
-      // Show all orders including pending ones
-      const allOrders = Array.isArray(results[2]) ? results[2] : [];
-      setOrders(allOrders);
-      // Set newsletter subscribers
-      const allSubscribers = Array.isArray(results[3]) ? results[3] : [];
-      setNewsletterSubscribers(allSubscribers);
+      // Handle results based on tab
+      if (activeTab === "analytics") {
+        setProducts(Array.isArray(results[0]) ? results[0] : []);
+        setFeaturedProducts(Array.isArray(results[1]) ? results[1] : []);
+        setUsers(Array.isArray(results[2]) ? results[2] : []);
+        setOrders(Array.isArray(results[3]) ? results[3] : []);
+        setFeaturedOrders(Array.isArray(results[4]) ? results[4] : []);
+        setNewsletterSubscribers(Array.isArray(results[5]) ? results[5] : []);
+      } else {
+        setProducts(Array.isArray(results[0]) ? results[0] : []);
+        setUsers(Array.isArray(results[1]) ? results[1] : []);
+        const allOrders = Array.isArray(results[2]) ? results[2] : [];
+        setOrders(allOrders);
+        const allSubscribers = Array.isArray(results[3]) ? results[3] : [];
+        setNewsletterSubscribers(allSubscribers);
 
-      // Handle featured products and orders
-      if (
-        activeTab === "featured-products" ||
-        activeTab === "featured-orders"
-      ) {
-        setFeaturedProducts(Array.isArray(results[0]) ? results[0] : []);
-        setFeaturedOrders(Array.isArray(results[2]) ? results[2] : []);
+        // Handle featured products and orders
+        if (
+          activeTab === "featured-products" ||
+          activeTab === "featured-orders"
+        ) {
+          setFeaturedProducts(Array.isArray(results[0]) ? results[0] : []);
+          setFeaturedOrders(Array.isArray(results[2]) ? results[2] : []);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -940,6 +970,7 @@ export default function AdminDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-glass-border)] pb-2">
           <div className="flex gap-4 overflow-x-auto">
             {[
+              "analytics",
               "users",
               "products",
               "featured-products",
@@ -955,7 +986,14 @@ export default function AdminDashboard() {
                     : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
                 } capitalize`}
               >
-                {tab}
+                {tab === "analytics" ? (
+                  <span className="flex items-center gap-2">
+                    <HiChartBar className="h-4 w-4" />
+                    Analytics
+                  </span>
+                ) : (
+                  tab
+                )}
               </button>
             ))}
           </div>
@@ -994,6 +1032,272 @@ export default function AdminDashboard() {
         ) : (
           <div className="glass-panel overflow-hidden rounded-2xl">
             <div className="overflow-x-auto">
+              {/* Analytics Tab */}
+              {activeTab === "analytics" && (
+                <div className="p-6">
+                  <h2 className="apple-title mb-6 text-[var(--color-text)]">
+                    Sales Analytics
+                  </h2>
+
+                  {/* Stats Cards - Custom Layout */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    {/* Revenue - Left side, spans 2 rows */}
+                    <div className="glass-card rounded-xl p-6 ">
+                      <p className="text-[12px] uppercase tracking-wider text-[var(--color-text-muted)] mb-2">
+                        Total Revenue
+                      </p>
+                      <p className="text-3xl md:text-5xl font-bold text-green-500">
+                        ₹
+                        {(
+                          orders.reduce(
+                            (sum, o) => sum + (o.totalPrice || 0),
+                            0,
+                          ) +
+                          featuredOrders.reduce(
+                            (sum, o) => sum + (o.totalPrice || 0),
+                            0,
+                          )
+                        ).toLocaleString()}
+                      </p>
+                      <div className="mt-4 space-y-2">
+                        <span className="text-[13px] text-[var(--color-text-muted)]">
+                          <span className="text-green-400 font-semibold">
+                            ₹
+                            {orders
+                              .reduce((sum, o) => sum + (o.totalPrice || 0), 0)
+                              .toLocaleString()}
+                          </span>{" "}
+                          from orders +{" "}
+                        </span>
+                        <span className="text-[13px] text-[var(--color-text-muted)]">
+                          <span className="text-green-400 font-semibold">
+                            ₹
+                            {featuredOrders
+                              .reduce((sum, o) => sum + (o.totalPrice || 0), 0)
+                              .toLocaleString()}
+                          </span>{" "}
+                          from featured orders
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Middle Column - Orders top, Products bottom */}
+                    <div className="flex gap-3 flex-col justify-between glass-card rounded-xl p-5">
+                      <p className="">Total Orders:</p>
+                      <p className="text-3xl font-bold text-[var(--color-accent)] mb-2">
+                        {" "}
+                        {orders.length + featuredOrders.length}
+                      </p>
+                      <div className="flex gap-3">
+                        <div
+                          className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                          onClick={() => setActiveTab("orders")}
+                        >
+                          <p className="text-2xl font-bold text-[var(--color-text)]">
+                            {orders.length}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Orders
+                          </p>
+                        </div>
+                        <div
+                          className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                          onClick={() => setActiveTab("featured-orders")}
+                        >
+                          <p className="text-2xl font-bold text-[var(--color-text)]">
+                            {featuredOrders.length}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Featured
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 flex-col justify-between glass-card rounded-xl p-5">
+                      <p className="">Total Products:</p>
+                      <p className="text-3xl font-bold text-[var(--color-accent)] mb-2">
+                        {" "}
+                        {products.length + featuredProducts.length}
+                      </p>
+                      <div className="flex gap-3">
+                        <div
+                          className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                          onClick={() => setActiveTab("products")}
+                        >
+                          <p className="text-2xl font-bold text-[var(--color-text)]">
+                            {products.length}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Products
+                          </p>
+                        </div>
+                        <div
+                          className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                          onClick={() => setActiveTab("featured-products")}
+                        >
+                          <p className="text-2xl font-bold text-[var(--color-text)]">
+                            {featuredProducts.length}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Featured
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Column - Users top, Expired bottom */}
+                    <div className="grid grid-rows-2 gap-4">
+                      <div
+                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform text-center"
+                        onClick={() => setActiveTab("users")}
+                      >
+                        <p className="text-2xl font-bold text-[var(--color-text)]">
+                          {users.length}
+                        </p>
+                        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                          Total Users
+                        </p>
+                      </div>
+                      <div className="glass-card rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-red-500">
+                          {products.filter(
+                            (p) =>
+                              p.validityEndDateTime &&
+                              new Date(p.validityEndDateTime) < new Date(),
+                          ).length +
+                            featuredProducts.filter(
+                              (p) =>
+                                p.validityEndDateTime &&
+                                new Date(p.validityEndDateTime) < new Date(),
+                            ).length}
+                        </p>
+                        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                          Expired Till Today
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recent Orders */}
+                  <div className="glass-card rounded-xl p-5 mb-6">
+                    <h3 className="text-[16px] font-semibold text-[var(--color-text)] mb-4">
+                      Recent Orders
+                    </h3>
+                    <div className="space-y-3">
+                      {orders.slice(0, 5).map((order) => (
+                        <div
+                          key={order._id}
+                          className="flex items-center justify-between py-2 border-b border-[var(--color-glass-border)] last:border-0"
+                        >
+                          <div>
+                            <p className="text-[14px] font-medium text-[var(--color-text)]">
+                              {order.orderItems?.[0]?.name || "Order"}
+                            </p>
+                            <p className="text-[12px] text-[var(--color-text-muted)]">
+                              {order.user?.name ||
+                                order.user?.email ||
+                                "Unknown"}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[14px] font-semibold text-[var(--color-accent)]">
+                              ₹{order.totalPrice?.toLocaleString()}
+                            </p>
+                            <p className="text-[12px] capitalize text-[var(--color-text-muted)]">
+                              {order.status || "pending"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                      {orders.length === 0 && (
+                        <p className="text-[14px] text-[var(--color-text-muted)] text-center py-4">
+                          No orders yet
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Orders by Status */}
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="glass-card rounded-xl p-5">
+                      <h3 className="text-[16px] font-semibold text-[var(--color-text)] mb-4">
+                        Orders by Status
+                      </h3>
+                      <div className="space-y-3">
+                        {["pending", "completed", "cancelled"].map((status) => {
+                          const count = orders.filter(
+                            (o) => o.status === status,
+                          ).length;
+                          const percentage =
+                            orders.length > 0
+                              ? Math.round((count / orders.length) * 100)
+                              : 0;
+                          return (
+                            <div key={status}>
+                              <div className="flex justify-between text-[13px] mb-1">
+                                <span className="capitalize text-[var(--color-text-muted)]">
+                                  {status}
+                                </span>
+                                <span className="text-[var(--color-text)]">
+                                  {count} ({percentage}%)
+                                </span>
+                              </div>
+                              <div className="h-2 bg-[var(--color-surface)] rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full ${status === "completed" ? "bg-green-500" : status === "cancelled" ? "bg-red-500" : "bg-yellow-500"}`}
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="glass-card rounded-xl p-5">
+                      <h3 className="text-[16px] font-semibold text-[var(--color-text)] mb-4">
+                        Top Products
+                      </h3>
+                      <div className="space-y-3">
+                        {products.slice(0, 3).map((product, index) => {
+                          const orderCount = orders.filter((o) =>
+                            o.orderItems?.some(
+                              (item) =>
+                                item.product === product._id ||
+                                item.product === product.id,
+                            ),
+                          ).length;
+                          return (
+                            <div
+                              key={product._id || product.id}
+                              className="flex items-center gap-3"
+                            >
+                              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[11px] font-bold text-[var(--color-accent)]">
+                                {index + 1}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[13px] font-medium text-[var(--color-text)] truncate">
+                                  {product.name}
+                                </p>
+                                <p className="text-[11px] text-[var(--color-text-muted)]">
+                                  {orderCount} orders
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {products.length === 0 && (
+                          <p className="text-[14px] text-[var(--color-text-muted)] text-center py-4">
+                            No products yet
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {activeTab === "products" && (
                 <table className="w-full text-left text-[14px]">
                   <thead className="bg-white/5 text-[var(--color-text-muted)]">
@@ -2714,7 +3018,10 @@ export default function AdminDashboard() {
                 <HiX className="h-5 w-5" />
               </button>
             </div>
-            <form onSubmit={handleFeaturedOrderFormSubmit} className="p-6 space-y-4">
+            <form
+              onSubmit={handleFeaturedOrderFormSubmit}
+              className="p-6 space-y-4"
+            >
               <div className="max-h-[60vh] overflow-y-auto px-1 space-y-4">
                 <div>
                   <label className="text-[12px] font-medium text-[var(--color-text-muted)]">
@@ -2808,15 +3115,18 @@ export default function AdminDashboard() {
                         {(() => {
                           const p = featuredProducts.find(
                             (prod) =>
-                              prod._id === featuredOrderFormData.featuredProductId ||
-                              prod.id === featuredOrderFormData.featuredProductId,
+                              prod._id ===
+                                featuredOrderFormData.featuredProductId ||
+                              prod.id ===
+                                featuredOrderFormData.featuredProductId,
                           );
                           const currentQty = selectedFeaturedOrder
                             ? selectedFeaturedOrder.orderItems.find((i) => {
                                 const itemProductId =
                                   typeof i.featuredProduct === "string"
                                     ? i.featuredProduct
-                                    : i.featuredProduct?._id || i.featuredProduct?.toString();
+                                    : i.featuredProduct?._id ||
+                                      i.featuredProduct?.toString();
                                 const prodId = p?._id || p?.id;
                                 return itemProductId === prodId;
                               })?.qty || 0
@@ -2839,7 +3149,8 @@ export default function AdminDashboard() {
                       {(() => {
                         const p = featuredProducts.find(
                           (prod) =>
-                            prod._id === featuredOrderFormData.featuredProductId ||
+                            prod._id ===
+                              featuredOrderFormData.featuredProductId ||
                             prod.id === featuredOrderFormData.featuredProductId,
                         );
                         if (!p) return null;
@@ -2848,7 +3159,8 @@ export default function AdminDashboard() {
                               const itemProductId =
                                 typeof i.featuredProduct === "string"
                                   ? i.featuredProduct
-                                  : i.featuredProduct?._id || i.featuredProduct?.toString();
+                                  : i.featuredProduct?._id ||
+                                    i.featuredProduct?.toString();
                               const prodId = p?._id || p?.id;
                               return itemProductId === prodId;
                             })?.qty || 0
@@ -2881,7 +3193,9 @@ export default function AdminDashboard() {
                       Total Order Price
                     </label>
                     <div className="glass-input w-full mt-1 rounded-xl px-4 py-2 font-bold text-[var(--color-accent)]">
-                      ₹{featuredOrderFormData.productPrice * featuredOrderFormData.quantity}
+                      ₹
+                      {featuredOrderFormData.productPrice *
+                        featuredOrderFormData.quantity}
                     </div>
                   </div>
                 </div>
@@ -2968,7 +3282,8 @@ export default function AdminDashboard() {
                   )}
                   <div>
                     <p className="font-medium text-[var(--color-text)]">
-                      {selectedFeaturedOrder.orderItems?.[0]?.name || "Gift Card"}
+                      {selectedFeaturedOrder.orderItems?.[0]?.name ||
+                        "Gift Card"}
                     </p>
                     <p className="text-[12px] text-[var(--color-text-muted)]">
                       Order ID: {selectedFeaturedOrder._id?.substring(0, 8)}...
@@ -2994,7 +3309,9 @@ export default function AdminDashboard() {
                 {/* Card Number / Redeem Code */}
                 <div>
                   <label className="text-[12px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
-                    {selectedFeaturedOrder.type === "featured" ? "Redeem Code" : "Card Number"}
+                    {selectedFeaturedOrder.type === "featured"
+                      ? "Redeem Code"
+                      : "Card Number"}
                   </label>
                   <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 font-mono text-[var(--color-text)]">
                     {selectedFeaturedOrder.giftCardCode
@@ -3020,7 +3337,9 @@ export default function AdminDashboard() {
                       Gift Card Sent At
                     </label>
                     <div className="glass-input w-full mt-1 rounded-xl px-4 py-2.5 text-[var(--color-text)]">
-                      {new Date(selectedFeaturedOrder.giftCardSentAt).toLocaleString()}
+                      {new Date(
+                        selectedFeaturedOrder.giftCardSentAt,
+                      ).toLocaleString()}
                     </div>
                   </div>
                 )}
@@ -3262,10 +3581,14 @@ export default function AdminDashboard() {
                 >
                   Close
                 </button>
-                {selectedFeaturedOrder.paymentStatus === "awaiting_verification" && (
+                {selectedFeaturedOrder.paymentStatus ===
+                  "awaiting_verification" && (
                   <button
                     onClick={() => {
-                      handleFeaturedUpdatePaymentStatus(selectedFeaturedOrder._id, "verified");
+                      handleFeaturedUpdatePaymentStatus(
+                        selectedFeaturedOrder._id,
+                        "verified",
+                      );
                       closeModals();
                     }}
                     className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-xl py-3 font-bold transition-colors"
