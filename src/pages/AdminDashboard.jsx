@@ -1039,87 +1039,141 @@ export default function AdminDashboard() {
                     Sales Analytics
                   </h2>
 
-                  {/* Stats Cards */}
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-                    <div className="glass-card rounded-xl p-5">
-                      <p className="text-[12px] uppercase tracking-wider text-[var(--color-text-muted)] mb-1">
+                  {/* Stats Cards - Custom Layout */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    {/* Revenue - Left side, spans 2 rows */}
+                    <div className="glass-card rounded-xl p-6 ">
+                      <p className="text-[12px] uppercase tracking-wider text-[var(--color-text-muted)] mb-2">
                         Total Revenue
                       </p>
-                      <p className="text-2xl font-bold text-[var(--color-accent)]">
+                      <p className="text-3xl md:text-5xl font-bold text-green-500">
                         ₹
-                        {orders
-                          .reduce((sum, o) => sum + (o.totalPrice || 0), 0)
-                          .toLocaleString()}
+                        {(
+                          orders.reduce(
+                            (sum, o) => sum + (o.totalPrice || 0),
+                            0,
+                          ) +
+                          featuredOrders.reduce(
+                            (sum, o) => sum + (o.totalPrice || 0),
+                            0,
+                          )
+                        ).toLocaleString()}
                       </p>
-                    </div>
-                    <div className="flex gap-3 glass-card p-5 rounded-xl">
-                      <div className="flex flex-col max-w-[20%]">
-                        <p className="text-gray-300  text-sm">Total Orders</p>
-                        <p className="text-3xl  font-bold text-[var(--color-text)]">
-                          {orders.length + featuredOrders.length}
-                        </p>
-                      </div>
-                      <div
-                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
-                        onClick={() => setActiveTab("orders")}
-                      >
-                        <p className="text-2xl font-bold text-[var(--color-text)]">
-                          {orders.length}
-                        </p>
-                        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
-                          Orders
-                        </p>
-                      </div>
-                      <div
-                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
-                        onClick={() => setActiveTab("featured-orders")}
-                      >
-                        <p className="text-2xl font-bold text-[var(--color-text)]">
-                          {featuredOrders.length}
-                        </p>
-                        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
-                          Featured
-                        </p>
+                      <div className="mt-4 space-y-2">
+                        <span className="text-[13px] text-[var(--color-text-muted)]">
+                          <span className="text-green-400 font-semibold">
+                            ₹
+                            {orders
+                              .reduce((sum, o) => sum + (o.totalPrice || 0), 0)
+                              .toLocaleString()}
+                          </span>{" "}
+                          from orders +{" "}
+                        </span>
+                        <span className="text-[13px] text-[var(--color-text-muted)]">
+                          <span className="text-green-400 font-semibold">
+                            ₹
+                            {featuredOrders
+                              .reduce((sum, o) => sum + (o.totalPrice || 0), 0)
+                              .toLocaleString()}
+                          </span>{" "}
+                          from featured orders
+                        </span>
                       </div>
                     </div>
-                    <div
-                      className="glass-card rounded-xl p-5 cursor-pointer hover:scale-[1.02] transition-transform"
-                      onClick={() => setActiveTab("users")}
-                    >
-                      <p className="text-[12px] uppercase tracking-wider text-[var(--color-text-muted)] mb-1">
-                        Total Users
+
+                    {/* Middle Column - Orders top, Products bottom */}
+                    <div className="flex gap-3 flex-col justify-between glass-card rounded-xl p-5">
+                      <p className="">Total Orders:</p>
+                      <p className="text-3xl font-bold text-[var(--color-accent)] mb-2">
+                        {" "}
+                        {orders.length + featuredOrders.length}
                       </p>
-                      <p className="text-2xl font-bold text-[var(--color-text)]">
-                        {users.length}
-                      </p>
+                      <div className="flex gap-3">
+                        <div
+                          className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                          onClick={() => setActiveTab("orders")}
+                        >
+                          <p className="text-2xl font-bold text-[var(--color-text)]">
+                            {orders.length}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Orders
+                          </p>
+                        </div>
+                        <div
+                          className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                          onClick={() => setActiveTab("featured-orders")}
+                        >
+                          <p className="text-2xl font-bold text-[var(--color-text)]">
+                            {featuredOrders.length}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Featured
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex gap-3 p-5 glass-card rounded-xl">
-                      <div className="flex flex-col max-w-[20%]">
-                        <p className="text-gray-300  text-sm">Total Products</p>
-                        <p className="text-3xl font-bold text-[var(--color-text)]">
-                          {products.length + featuredProducts.length}
-                        </p>
+
+                    <div className="flex gap-3 flex-col justify-between glass-card rounded-xl p-5">
+                      <p className="">Total Products:</p>
+                      <p className="text-3xl font-bold text-[var(--color-accent)] mb-2">
+                        {" "}
+                        {products.length + featuredProducts.length}
+                      </p>
+                      <div className="flex gap-3">
+                        <div
+                          className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                          onClick={() => setActiveTab("products")}
+                        >
+                          <p className="text-2xl font-bold text-[var(--color-text)]">
+                            {products.length}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Products
+                          </p>
+                        </div>
+                        <div
+                          className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                          onClick={() => setActiveTab("featured-products")}
+                        >
+                          <p className="text-2xl font-bold text-[var(--color-text)]">
+                            {featuredProducts.length}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                            Featured
+                          </p>
+                        </div>
                       </div>
+                    </div>
+
+                    {/* Right Column - Users top, Expired bottom */}
+                    <div className="grid grid-rows-2 gap-4">
                       <div
-                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
-                        onClick={() => setActiveTab("products")}
+                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform text-center"
+                        onClick={() => setActiveTab("users")}
                       >
                         <p className="text-2xl font-bold text-[var(--color-text)]">
-                          {products.length}
+                          {users.length}
                         </p>
                         <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
-                          Products
+                          Total Users
                         </p>
                       </div>
-                      <div
-                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
-                        onClick={() => setActiveTab("featured-products")}
-                      >
-                        <p className="text-2xl font-bold text-[var(--color-text)]">
-                          {featuredProducts.length}
+                      <div className="glass-card rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-red-500">
+                          {products.filter(
+                            (p) =>
+                              p.validityEndDateTime &&
+                              new Date(p.validityEndDateTime) < new Date(),
+                          ).length +
+                            featuredProducts.filter(
+                              (p) =>
+                                p.validityEndDateTime &&
+                                new Date(p.validityEndDateTime) < new Date(),
+                            ).length}
                         </p>
                         <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
-                          Featured
+                          Expired Till Today
                         </p>
                       </div>
                     </div>
@@ -1206,7 +1260,7 @@ export default function AdminDashboard() {
                         Top Products
                       </h3>
                       <div className="space-y-3">
-                        {products.slice(0, 5).map((product, index) => {
+                        {products.slice(0, 3).map((product, index) => {
                           const orderCount = orders.filter((o) =>
                             o.orderItems?.some(
                               (item) =>
