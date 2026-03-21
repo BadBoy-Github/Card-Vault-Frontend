@@ -1052,15 +1052,40 @@ export default function AdminDashboard() {
                           .toLocaleString()}
                       </p>
                     </div>
-                    <div className="glass-card rounded-xl p-5">
-                      <p className="text-[12px] uppercase tracking-wider text-[var(--color-text-muted)] mb-1">
-                        Total Orders
-                      </p>
-                      <p className="text-2xl font-bold text-[var(--color-text)]">
-                        {orders.length + featuredOrders.length}
-                      </p>
+                    <div className="flex gap-3 glass-card p-5 rounded-xl">
+                      <div className="flex flex-col max-w-[20%]">
+                        <p className="text-gray-300  text-sm">Total Orders</p>
+                        <p className="text-3xl  font-bold text-[var(--color-text)]">
+                          {orders.length + featuredOrders.length}
+                        </p>
+                      </div>
+                      <div
+                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                        onClick={() => setActiveTab("orders")}
+                      >
+                        <p className="text-2xl font-bold text-[var(--color-text)]">
+                          {orders.length}
+                        </p>
+                        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                          Orders
+                        </p>
+                      </div>
+                      <div
+                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                        onClick={() => setActiveTab("featured-orders")}
+                      >
+                        <p className="text-2xl font-bold text-[var(--color-text)]">
+                          {featuredOrders.length}
+                        </p>
+                        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                          Featured
+                        </p>
+                      </div>
                     </div>
-                    <div className="glass-card rounded-xl p-5">
+                    <div
+                      className="glass-card rounded-xl p-5 cursor-pointer hover:scale-[1.02] transition-transform"
+                      onClick={() => setActiveTab("users")}
+                    >
                       <p className="text-[12px] uppercase tracking-wider text-[var(--color-text-muted)] mb-1">
                         Total Users
                       </p>
@@ -1068,13 +1093,35 @@ export default function AdminDashboard() {
                         {users.length}
                       </p>
                     </div>
-                    <div className="glass-card rounded-xl p-5">
-                      <p className="text-[12px] uppercase tracking-wider text-[var(--color-text-muted)] mb-1">
-                        Products
-                      </p>
-                      <p className="text-2xl font-bold text-[var(--color-text)]">
-                        {products.length + featuredProducts.length}
-                      </p>
+                    <div className="flex gap-3 p-5 glass-card rounded-xl">
+                      <div className="flex flex-col max-w-[20%]">
+                        <p className="text-gray-300  text-sm">Total Products</p>
+                        <p className="text-3xl font-bold text-[var(--color-text)]">
+                          {products.length + featuredProducts.length}
+                        </p>
+                      </div>
+                      <div
+                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                        onClick={() => setActiveTab("products")}
+                      >
+                        <p className="text-2xl font-bold text-[var(--color-text)]">
+                          {products.length}
+                        </p>
+                        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                          Products
+                        </p>
+                      </div>
+                      <div
+                        className="glass-card rounded-xl p-4 cursor-pointer hover:scale-[1.02] transition-transform flex-1 text-center"
+                        onClick={() => setActiveTab("featured-products")}
+                      >
+                        <p className="text-2xl font-bold text-[var(--color-text)]">
+                          {featuredProducts.length}
+                        </p>
+                        <p className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)]">
+                          Featured
+                        </p>
+                      </div>
                     </div>
                   </div>
 
