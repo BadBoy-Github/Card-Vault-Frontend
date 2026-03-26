@@ -9,7 +9,7 @@ export default function NotFoundPage() {
         title="404 - Page Not Found"
         description="Oops! The page you're looking for doesn't exist. Visit Card Vault for the best digital gift cards. Browse our collection of gaming, entertainment & shopping gift cards with instant delivery."
         keywords="404, page not found, error page, card vault, gift cards"
-        noIndex={true}
+        noIndex={false}
       />
       <div className="container-wide flex flex-col py-6 sm:py-8 mt-20">
         <div className="glass-panel mx-auto flex w-full max-w-5xl flex-col items-center justify-center rounded-[40px] p-6 text-center">
