@@ -13,6 +13,7 @@ Allow: /profile
 Allow: /terms
 Allow: /login
 Allow: /register
+Allow: /404
 
 # Disallow admin and private areas
 Disallow: /api/
