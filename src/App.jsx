@@ -96,6 +96,7 @@ function App() {
                           element={<FeaturedProductPage />}
                         />
                         <Route path="/search" element={<SearchPage />} />
+                        <Route path="*" element={<NotFoundPage />} />
                       </Route>
 
                       {/* Protected App Routes (With Header/Footer) - Require Login */}
@@ -116,7 +117,6 @@ function App() {
                         />
                         <Route path="/wishlist" element={<WishlistPage />} />
                         <Route path="/cart" element={<CartPage />} />
-                        <Route path="*" element={<NotFoundPage />} />
                       </Route>
                     </>
                   )}
