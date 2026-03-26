@@ -51,7 +51,7 @@ export default function LoginPage() {
         title="Login to Card Vault"
         description="Login to your Card Vault account to access your wishlist, orders, and manage your digital gift cards. Secure login to buy gaming, entertainment & shopping gift cards."
         keywords="login, sign in, card vault, account access, digital gift cards"
-        noIndex={true}
+        noIndex={false}
       />
       <div className="flex min-h-screen items-center justify-center bg-[var(--color-section-bg)] px-4 py-12 sm:px-6 md:px-8">
         <div className="glass-panel w-full max-w-[400px] rounded-2xl p-6 sm:p-10 md:p-12">
