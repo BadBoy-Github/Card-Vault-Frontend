@@ -66,7 +66,7 @@ export default function Carousel() {
             </p>
             <a
               href={CAROUSEL_SLIDES[currentSlide].link}
-              className="bg-[var(--color-accent)] px-5 py-3 rounded-full inline-flex items-center gap-2 text-[15px] font-medium"
+              className="glass-cta px-5 py-3 rounded-full inline-flex items-center gap-2 text-[15px] font-medium"
             >
               {CAROUSEL_SLIDES[currentSlide].cta}
               <svg
