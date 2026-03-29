@@ -1,6 +1,9 @@
 import SEO from "./SEO";
 import ShinyText from "./ShinyText";
 
+// React Icons
+import { RxDividerVertical } from "react-icons/rx";
+
 export default function Hero() {
   return (
     <>
@@ -49,10 +52,10 @@ export default function Hero() {
             Pick a card. Any card. We know you want to.
           </p>
           <a
-            href="#gift-cards"
-            className="apple-link mt-6 inline-flex min-h-[44px] items-center gap-1.5 text-[15px] font-medium sm:mt-8 sm:text-[17px]"
+            href="/search"
+            className="glass-cta mt-6 inline-flex min-h-[44px] items-center gap-1.5 text-[15px] font-medium sm:mt-8 sm:text-[17px] rounded-4xl px-5 py-3 mb-4"
           >
-            Browse gift cards
+            Browse all cards
             <svg
               className="h-4 w-4 shrink-0"
               fill="none"
@@ -67,9 +70,23 @@ export default function Hero() {
               />
             </svg>
           </a>
+          <div className="flex gap-4 justify-center items-center">
+            <a
+              href="#featured-gift-cards"
+              className="apple-link font-medium sm:text-[17px]"
+            >
+              Featured Products
+            </a>
+            <RxDividerVertical className="hidden md:flex size-6"/>
+            <a
+              href="#gift-cards"
+              className="apple-link font-medium sm:text-[17px]"
+            >
+              Gift Cards
+            </a>
+          </div>
         </div>
       </section>
     </>
   );
 }
-
