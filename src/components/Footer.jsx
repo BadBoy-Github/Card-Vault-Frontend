@@ -5,8 +5,8 @@ import { FaWhatsapp } from "react-icons/fa";
 // Sitemap links data - easy to edit
 const sitemapLinks = [
   { name: "Home", href: "/" },
-  { name: "Why Us?", href: "/#about" },
-  { name: "Featured", href: "/featured" },
+  { name: "Why Us?", href: "/#featured" },
+  { name: "Featured", href: "/#featured-gift-cards" },
   { name: "Gift Cards", href: "/#gift-cards" },
   { name: "Wishlist", href: "/wishlist" },
   { name: "Cart", href: "/cart" },
