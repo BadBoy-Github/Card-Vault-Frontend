@@ -141,12 +141,31 @@ export default function FeaturedGiftCardGrid() {
           ))}
         </div>
         {products.length > 4 && (
-          <div className="mt-8 text-center">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
             <Link
               to="/search?type=featured"
               className="apple-link inline-flex items-center gap-1.5 text-[15px] font-medium"
             >
               View All Featured Products
+              <svg
+                className="h-4 w-4 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+            <Link
+              to="/search"
+              className="glass-cta inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-[15px] font-medium text-white"
+            >
+              View All Products
               <svg
                 className="h-4 w-4 shrink-0"
                 fill="none"

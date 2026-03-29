@@ -9,6 +9,7 @@ const API_URL =
 export default function SearchPage() {
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("q") || "";
+  const typeParam = new URLSearchParams(location.search).get("type") || "all";
 
   // Dynamic SEO based on search query - Optimized for card vault keywords
   const seoTitle = query
@@ -37,7 +38,12 @@ export default function SearchPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, typeParam]);
+
+  // Reset page when type changes
+  useEffect(() => {
+    setPage(1);
+  }, [typeParam]);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -49,7 +55,7 @@ export default function SearchPage() {
         }
         params.append("page", page);
         params.append("limit", 20);
-        params.append("type", "all"); // Search both regular and featured products
+        params.append("type", typeParam);
 
         const res = await fetch(`${API_URL}/products?${params.toString()}`);
         const data = await res.json();
