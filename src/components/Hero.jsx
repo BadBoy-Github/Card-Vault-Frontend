@@ -30,7 +30,7 @@ export default function Hero() {
                 speed={2}
                 delay={0}
                 color="#2997ff"
-                shineColor="#5eb3ff"
+                shineColor="#0A6FE9"
                 spread={120}
                 direction="left"
                 yoyo={false}
@@ -77,7 +77,7 @@ export default function Hero() {
             >
               Featured Products
             </a>
-            <RxDividerVertical className="hidden md:flex size-6"/>
+            <RxDividerVertical className="hidden md:flex size-6" />
             <a
               href="#gift-cards"
               className="apple-link font-medium sm:text-[17px]"
