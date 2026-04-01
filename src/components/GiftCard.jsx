@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
-import { HiHeart, HiShoppingCart, HiCheck } from "react-icons/hi";
+import { HiHeart, HiShoppingCart, HiCheck, HiClock } from "react-icons/hi";
 import { useState } from "react";
 
 const API_URL =
@@ -22,6 +22,7 @@ export default function GiftCard({
     popular,
     price,
     stock,
+    validityEndDateTime,
   } = card;
   const { user } = useAuth();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -34,7 +35,20 @@ export default function GiftCard({
   const productUrlId = card.id || card._id;
   const wishlisted = isInWishlist(productId);
   const inCart = isInCart(productId);
-  const isAvailable = stock > 0;
+
+  // Check if product is expired or expiring soon
+  const now = new Date();
+  const expiryDate = validityEndDateTime ? new Date(validityEndDateTime) : null;
+  const isExpired = expiryDate && expiryDate < now;
+  const daysUntilExpiry = expiryDate
+    ? Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24))
+    : null;
+  const isExpiringSoon =
+    daysUntilExpiry !== null && daysUntilExpiry <= 30 && daysUntilExpiry > 0;
+
+  // Set stock to 0 if expired
+  const effectiveStock = isExpired ? 0 : stock;
+  const isAvailable = effectiveStock > 0;
 
   const handleToggleWishlist = async (e) => {
     e.preventDefault();
@@ -134,7 +148,7 @@ export default function GiftCard({
       )}
 
       <article
-        className={`glass-card group relative flex flex-col overflow-hidden rounded-2xl h-full transition-all duration-300 hover:shadow-xl hover:shadow-[var(--color-accent)]/10 ${popular ? "ring-2 ring-[var(--color-accent)] ring-offset-2 ring-offset-[var(--color-background)]" : ""}`}
+        className={`glass-card group relative flex flex-col overflow-hidden rounded-2xl h-full transition-all duration-300 hover:shadow-xl hover:shadow-[var(--color-accent)]/10 ${popular ? "ring-2 ring-[var(--color-accent)] ring-offset-2 ring-offset-[var(--color-background)]" : ""} ${isExpired ? "grayscale opacity-60" : ""}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -203,13 +217,21 @@ export default function GiftCard({
               {denomination || `₹${card.price}`}
             </span>
             <div className="flex flex-col items-end">
-              {card.stock > 0 && card.stock <= 2 ? (
+              {effectiveStock > 0 && effectiveStock <= 2 ? (
                 <span className="text-[11px] font-bold text-red-500 animate-pulse">
-                  Only {card.stock} left
+                  Only {effectiveStock} left
                 </span>
               ) : null}
+              {isExpiringSoon && (
+                <div className="flex items-center gap-1 text-yellow-500">
+                  <HiClock className="h-3 w-3" />
+                  <span className="text-[10px] font-medium">
+                    Expires in {daysUntilExpiry} days
+                  </span>
+                </div>
+              )}
               <span className="text-[13px] font-medium text-[var(--color-accent)] sm:text-[14px]">
-                {card.stock > 0 ? "View Details" : "Out of stock"}
+                {isAvailable ? "View Details" : "Out of stock"}
               </span>
             </div>
           </div>

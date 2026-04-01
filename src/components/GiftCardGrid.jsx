@@ -19,13 +19,37 @@ export default function GiftCardGrid() {
         const data = await res.json();
         if (res.ok) {
           // Handle both array response and object with products/pages
+          let fetchedProducts = [];
           if (Array.isArray(data)) {
-            setProducts(data || []);
+            fetchedProducts = data || [];
             setTotalPages(1);
           } else {
-            setProducts(data.products || data || []);
+            fetchedProducts = data.products || data || [];
             setTotalPages(data.pages || 1);
           }
+
+          // Sort products: expired products last
+          const now = new Date();
+          const sortedProducts = [...fetchedProducts].sort((a, b) => {
+            const aExpiry = a.validityEndDateTime
+              ? new Date(a.validityEndDateTime)
+              : null;
+            const bExpiry = b.validityEndDateTime
+              ? new Date(b.validityEndDateTime)
+              : null;
+            const aExpired = aExpiry && aExpiry < now;
+            const bExpired = bExpiry && bExpiry < now;
+
+            // If both are expired or both are not expired, maintain original order
+            if (aExpired === bExpired) return 0;
+            // If a is expired and b is not, a comes after b
+            if (aExpired && !bExpired) return 1;
+            // If b is expired and a is not, a comes before b
+            if (!aExpired && bExpired) return -1;
+            return 0;
+          });
+
+          setProducts(sortedProducts);
         }
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -116,6 +140,22 @@ export default function GiftCardGrid() {
     );
   }
 
+  // Filter products for home page display
+  // If more than 4 products, don't show expired ones
+  // If 4 or fewer products, show all (expired ones last due to sorting)
+  const now = new Date();
+  const displayProducts =
+    products.length > 4
+      ? products
+          .filter((p) => {
+            const expiryDate = p.validityEndDateTime
+              ? new Date(p.validityEndDateTime)
+              : null;
+            return !expiryDate || expiryDate >= now;
+          })
+          .slice(0, 4)
+      : products;
+
   return (
     <section
       id="gift-cards"
@@ -130,11 +170,9 @@ export default function GiftCardGrid() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-          {(products.length > 4 ? products.slice(0, 4) : products).map(
-            (card) => (
-              <GiftCard key={card.id || card._id} card={card} />
-            ),
-          )}
+          {displayProducts.map((card) => (
+            <GiftCard key={card.id || card._id} card={card} />
+          ))}
         </div>
 
         {/* View All Buttons */}
