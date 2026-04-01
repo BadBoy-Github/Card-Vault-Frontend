@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/sitemap.xml",
-            "destination": "/sitemap.xml"
+            "destination": "https://card-vault-backend.vercel.app/api/sitemap"
         },
         {
             "source": "/robots.txt",
