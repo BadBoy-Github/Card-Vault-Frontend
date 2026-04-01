@@ -16,7 +16,30 @@ export default function FeaturedGiftCardGrid() {
         const res = await fetch(`${API_URL}/products?type=featured`);
         const data = await res.json();
         if (res.ok) {
-          setProducts(data || []);
+          const fetchedProducts = data || [];
+
+          // Sort products: expired products last
+          const now = new Date();
+          const sortedProducts = [...fetchedProducts].sort((a, b) => {
+            const aExpiry = a.validityEndDateTime
+              ? new Date(a.validityEndDateTime)
+              : null;
+            const bExpiry = b.validityEndDateTime
+              ? new Date(b.validityEndDateTime)
+              : null;
+            const aExpired = aExpiry && aExpiry < now;
+            const bExpired = bExpiry && bExpiry < now;
+
+            // If both are expired or both are not expired, maintain original order
+            if (aExpired === bExpired) return 0;
+            // If a is expired and b is not, a comes after b
+            if (aExpired && !bExpired) return 1;
+            // If b is expired and a is not, a comes before b
+            if (!aExpired && bExpired) return -1;
+            return 0;
+          });
+
+          setProducts(sortedProducts);
         }
       } catch (err) {
         console.error("Error fetching featured products:", err);

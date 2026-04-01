@@ -74,7 +74,29 @@ export default function SearchPage() {
             ...p,
             description: p.subheading || p.description || "",
           }));
-          setResults(mappedProducts);
+
+          // Sort products: expired products last
+          const now = new Date();
+          const sortedProducts = [...mappedProducts].sort((a, b) => {
+            const aExpiry = a.validityEndDateTime
+              ? new Date(a.validityEndDateTime)
+              : null;
+            const bExpiry = b.validityEndDateTime
+              ? new Date(b.validityEndDateTime)
+              : null;
+            const aExpired = aExpiry && aExpiry < now;
+            const bExpired = bExpiry && bExpiry < now;
+
+            // If both are expired or both are not expired, maintain original order
+            if (aExpired === bExpired) return 0;
+            // If a is expired and b is not, a comes after b
+            if (aExpired && !bExpired) return 1;
+            // If b is expired and a is not, a comes before b
+            if (!aExpired && bExpired) return -1;
+            return 0;
+          });
+
+          setResults(sortedProducts);
         }
       } catch (error) {
         console.error("Error fetching results:", error);
