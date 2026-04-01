@@ -4,20 +4,29 @@ import { Link } from "react-router-dom";
 const CAROUSEL_SLIDES = [
   {
     id: 1,
-    title: "The Ultimate Destination",
-    subtitle: "For Digital Gift Cards",
+    title: "Digital Gift Cards Hub",
+    subtitle: "Top Up. Store. Spend Anytime",
     description:
-      "Premium gaming, entertainment & shopping cards with instant delivery",
+      "Buy digital gift cards and add value directly to your wallet for seamless and flexible spending across platforms.",
     cta: "Browse gift cards",
     link: "/#gift-cards",
   },
   {
     id: 2,
+    title: "Redeemable Deals",
+    subtitle: "Unlock Exclusive Savings",
+    description:
+      "Grab featured products with redeem codes and enjoy special discounts applied directly to the original price.",
+    cta: "View featured",
+    link: "/#featured-gift-cards",
+  },
+  {
+    id: 3,
     title: "Secure Payments",
     subtitle: "UPI Transaction",
     description: "Safe and secure transactions for your peace of mind",
     cta: "View all cards",
-    link: "/#gift-cards",
+    link: "/search",
   },
 ];
 
