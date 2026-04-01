@@ -76,7 +76,7 @@ export default function GiftCardGrid() {
             <div className="animate-pulse h-5 w-96 bg-[var(--color-surface)] rounded mt-3 mx-auto" />
           </div>
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-            {[...Array(4)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <div key={i} className="glass-card rounded-2xl overflow-hidden">
                 <div className="animate-pulse aspect-video bg-[var(--color-surface)]" />
                 <div className="p-5 space-y-3">
@@ -153,7 +153,7 @@ export default function GiftCardGrid() {
               : null;
             return !expiryDate || expiryDate >= now;
           })
-          .slice(0, 4)
+          .slice(0, 8)
       : products;
 
   return (

@@ -14,6 +14,7 @@ import {
   HiInformationCircle,
   HiCheck,
   HiChartBar,
+  HiClock,
 } from "react-icons/hi";
 
 const API_URL =
@@ -1351,6 +1352,21 @@ export default function AdminDashboard() {
                                 LOW
                               </span>
                             )}
+                            {p.validityEndDateTime &&
+                              (() => {
+                                const now = new Date();
+                                const expiryDate = new Date(
+                                  p.validityEndDateTime,
+                                );
+                                const daysUntilExpiry = Math.ceil(
+                                  (expiryDate - now) / (1000 * 60 * 60 * 24),
+                                );
+                                return (
+                                  daysUntilExpiry <= 30 && daysUntilExpiry > 0
+                                );
+                              })() && (
+                                <HiClock className="h-4 w-4 text-yellow-500 mt-1" />
+                              )}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right space-x-3">
@@ -1693,6 +1709,21 @@ export default function AdminDashboard() {
                                 LOW
                               </span>
                             )}
+                            {p.validityEndDateTime &&
+                              (() => {
+                                const now = new Date();
+                                const expiryDate = new Date(
+                                  p.validityEndDateTime,
+                                );
+                                const daysUntilExpiry = Math.ceil(
+                                  (expiryDate - now) / (1000 * 60 * 60 * 24),
+                                );
+                                return (
+                                  daysUntilExpiry <= 30 && daysUntilExpiry > 0
+                                );
+                              })() && (
+                                <HiClock className="h-4 w-4 text-yellow-500 mt-1" />
+                              )}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right space-x-3">
