@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
-import { HiHeart, HiShoppingCart, HiCheck } from "react-icons/hi";
+import { HiHeart, HiShoppingCart, HiCheck, HiClock } from "react-icons/hi";
 import SEO, { generateProductSchema } from "../components/SEO";
 
 const API_URL =
@@ -306,6 +306,35 @@ export default function ProductPage() {
                           Out of Stock
                         </span>
                       )}
+                      {card.validityEndDateTime &&
+                        (() => {
+                          const now = new Date();
+                          const expiryDate = new Date(card.validityEndDateTime);
+                          const daysUntilExpiry = Math.ceil(
+                            (expiryDate - now) / (1000 * 60 * 60 * 24),
+                          );
+                          const isExpired = expiryDate < now;
+                          const isExpiringSoon =
+                            daysUntilExpiry <= 30 && daysUntilExpiry > 0;
+
+                          if (isExpired) {
+                            return (
+                              <span className="text-[11px] font-bold text-red-500">
+                                Expired
+                              </span>
+                            );
+                          } else if (isExpiringSoon) {
+                            return (
+                              <div className="flex items-center gap-1 text-yellow-500">
+                                <HiClock className="h-3 w-3" />
+                                <span className="text-[10px] font-medium">
+                                  Expires in {daysUntilExpiry} days
+                                </span>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-3 justify-end">
