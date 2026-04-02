@@ -171,8 +171,15 @@ export default function CustomCursor() {
           }
         }
 
-        /* Hide custom cursor on touch devices */
+        /* Hide custom cursor on touch devices and mobile/tablet screens */
         @media (hover: none) and (pointer: coarse) {
+          .custom-cursor-component {
+            display: none !important;
+          }
+        }
+        
+        /* Hide custom cursor on screens smaller than desktop */
+        @media (max-width: 1023px) {
           .custom-cursor-component {
             display: none !important;
           }
