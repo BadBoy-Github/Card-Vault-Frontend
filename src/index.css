@@ -84,10 +84,8 @@ body {
   flex-direction: column;
 }
 
-/* Hide default cursor and use custom cursor */
-* {
-  cursor: none !important;
-}
+/* Remove cursor hiding - let both normal and custom cursors be visible on desktop */
+/* Custom cursor component handles its own visibility */
 
 /* Custom Thin Scrollbar - Visible in both light and dark modes */
 ::-webkit-scrollbar {
