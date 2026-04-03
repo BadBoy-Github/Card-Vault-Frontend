@@ -59,21 +59,21 @@ export default function CustomCursor() {
     }
   }, [position]);
 
-  if (!isVisible) return null;
-
-  return (
-    <>
-      {/* Main cursor dot */}
-      <div
-        ref={cursorRef}
-        className="fixed pointer-events-none z-[9999] mix-blend-difference"
-        style={{
-          left: 0,
-          top: 0,
-          transform: `translate(${position.x}px, ${position.y}px)`,
-          transition: "transform 0.05s ease-out",
-        }}
-      >
+   if (!isVisible) return null;
+ 
+   return (
+     <>
+       {/* Main cursor dot */}
+       <div
+         ref={cursorRef}
+         className="fixed pointer-events-none z-[9999] mix-blend-difference custom-cursor-component"
+         style={{
+           left: 0,
+           top: 0,
+           transform: `translate(${position.x}px, ${position.y}px)`,
+           transition: "transform 0.05s ease-out",
+         }}
+       >
         {/* Inner dot - bigger */}
         <div
           className="absolute rounded-full bg-white"
@@ -151,40 +151,26 @@ export default function CustomCursor() {
         />
       </div>
 
-      {/* Keyframe animations */}
-      <style>{`
-        @keyframes spin-clockwise {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes spin-counter-clockwise {
-          from {
-            transform: rotate(360deg);
-          }
-          to {
-            transform: rotate(0deg);
-          }
-        }
-
-        /* Hide custom cursor on touch devices and mobile/tablet screens */
-        @media (hover: none) and (pointer: coarse) {
-          .custom-cursor-component {
-            display: none !important;
-          }
-        }
-        
-        /* Hide custom cursor on screens smaller than desktop */
-        @media (max-width: 1023px) {
-          .custom-cursor-component {
-            display: none !important;
-          }
-        }
-      `}</style>
+       {/* Keyframe animations */}
+       <style>{`
+         @keyframes spin-clockwise {
+           from {
+             transform: rotate(0deg);
+           }
+           to {
+             transform: rotate(360deg);
+           }
+         }
+ 
+         @keyframes spin-counter-clockwise {
+           from {
+             transform: rotate(360deg);
+           }
+           to {
+             transform: rotate(0deg);
+           }
+         }
+       `}</style>
     </>
   );
 }

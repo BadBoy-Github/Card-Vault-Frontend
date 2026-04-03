@@ -87,6 +87,20 @@ body {
 /* Remove cursor hiding - let both normal and custom cursors be visible on desktop */
 /* Custom cursor component handles its own visibility */
 
+/* Hide custom cursor on touch devices and mobile/tablet screens */
+@media (hover: none) and (pointer: coarse) {
+  .custom-cursor-component {
+    display: none !important;
+  }
+}
+
+/* Hide custom cursor on screens smaller than desktop */
+@media (max-width: 1023px) {
+  .custom-cursor-component {
+    display: none !important;
+  }
+}
+
 /* Custom Thin Scrollbar - Visible in both light and dark modes */
 ::-webkit-scrollbar {
   width: 8px;
