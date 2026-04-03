@@ -91,6 +91,8 @@ body {
 @media (hover: none) and (pointer: coarse) {
   .custom-cursor-component {
     display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
 }
 
@@ -98,6 +100,17 @@ body {
 @media (max-width: 1023px) {
   .custom-cursor-component {
     display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+}
+
+/* Additional fallback: hide on any non-desktop devices */
+@media not all and (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .custom-cursor-component {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
 }
 

@@ -4,50 +4,73 @@ export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const cursorRef = useRef(null);
   const ringsRef = useRef(null);
 
   useEffect(() => {
-    // Mouse movement handler
-    const handleMouseMove = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      setIsVisible(true);
+    // Check if device is desktop (hover capable and not touch)
+    const checkIfDesktop = () => {
+      const isHoverCapable = window.matchMedia('(hover: hover)').matches;
+      const isNotTouch = window.matchMedia('(pointer: fine)').matches;
+      const isDesktopScreen = window.innerWidth >= 1024;
+
+      setIsDesktop(isHoverCapable && isNotTouch && isDesktopScreen);
     };
 
-    // Mouse enter/leave handlers
-    const handleMouseEnter = () => setIsVisible(true);
-    const handleMouseLeave = () => setIsVisible(false);
+    checkIfDesktop();
 
-    // Handle hover state for interactive elements
-    const handleMouseOver = (e) => {
-      const target = e.target;
-      if (
-        target.tagName === "A" ||
-        target.tagName === "BUTTON" ||
-        target.closest("a") ||
-        target.closest("button") ||
-        target.classList.contains("cursor-pointer") ||
-        target.closest(".cursor-pointer")
-      ) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
-    };
+    // Listen for window resize to update desktop status
+    window.addEventListener('resize', checkIfDesktop);
 
-    // Add event listeners
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseenter", handleMouseEnter);
-    document.addEventListener("mouseleave", handleMouseLeave);
-    document.addEventListener("mouseover", handleMouseOver);
+    // Only add mouse event listeners if it's desktop
+    if (isDesktop) {
+      // Mouse movement handler
+      const handleMouseMove = (e) => {
+        setPosition({ x: e.clientX, y: e.clientY });
+        setIsVisible(true);
+      };
+
+      // Mouse enter/leave handlers
+      const handleMouseEnter = () => setIsVisible(true);
+      const handleMouseLeave = () => setIsVisible(false);
+
+      // Handle hover state for interactive elements
+      const handleMouseOver = (e) => {
+        const target = e.target;
+        if (
+          target.tagName === "A" ||
+          target.tagName === "BUTTON" ||
+          target.closest("a") ||
+          target.closest("button") ||
+          target.classList.contains("cursor-pointer") ||
+          target.closest(".cursor-pointer")
+        ) {
+          setIsHovering(true);
+        } else {
+          setIsHovering(false);
+        }
+      };
+
+      // Add event listeners
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseenter", handleMouseEnter);
+      document.addEventListener("mouseleave", handleMouseLeave);
+      document.addEventListener("mouseover", handleMouseOver);
+
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseenter", handleMouseEnter);
+        document.removeEventListener("mouseleave", handleMouseLeave);
+        document.removeEventListener("mouseover", handleMouseOver);
+        window.removeEventListener('resize', checkIfDesktop);
+      };
+    }
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseenter", handleMouseEnter);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      document.removeEventListener("mouseover", handleMouseOver);
+      window.removeEventListener('resize', checkIfDesktop);
     };
-  }, []);
+  }, [isDesktop]);
 
   // Smooth follow with CSS transform
   useEffect(() => {
@@ -59,8 +82,9 @@ export default function CustomCursor() {
     }
   }, [position]);
 
-   if (!isVisible) return null;
- 
+   // Only render on desktop devices
+   if (!isDesktop || !isVisible) return null;
+
    return (
      <>
        {/* Main cursor dot */}
@@ -91,7 +115,7 @@ export default function CustomCursor() {
       {/* Circling rings - bigger and closer to cursor */}
       <div
         ref={ringsRef}
-        className="fixed pointer-events-none z-[9998]"
+        className="fixed pointer-events-none z-[9998] custom-cursor-component"
         style={{
           left: 0,
           top: 0,
