@@ -72,17 +72,17 @@ export default function Hero() {
           </a>
           <div className="flex gap-4 justify-center items-center">
             <a
-              href="#featured-gift-cards"
-              className="apple-link font-medium sm:text-[17px]"
-            >
-              Featured Products
-            </a>
-            <RxDividerVertical className="hidden md:flex size-6" />
-            <a
               href="#gift-cards"
               className="apple-link font-medium sm:text-[17px]"
             >
               Gift Cards
+            </a>
+            <RxDividerVertical className="flex size-6" />
+            <a
+              href="#redeem-codes"
+              className="apple-link font-medium sm:text-[17px]"
+            >
+              Redeem Codes
             </a>
           </div>
         </div>

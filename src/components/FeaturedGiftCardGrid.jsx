@@ -54,7 +54,7 @@ export default function FeaturedGiftCardGrid() {
   if (loading) {
     return (
       <section
-        id="featured-gift-cards"
+        id="redeem-codes"
         className="flex flex-1 flex-col section-padding"
       >
         <div className="container-wide">
@@ -87,13 +87,13 @@ export default function FeaturedGiftCardGrid() {
   if (products.length === 0) {
     return (
       <section
-        id="featured-gift-cards"
+        id="redeem-codes"
         className="flex flex-1 flex-col section-padding bg-gradient-to-b from-transparent to-[var(--color-glass)]"
       >
         <div className="container-wide">
           <div className="mb-8 text-center sm:mb-10">
             <h2 className="apple-display text-[var(--color-text)]">
-              Featured Gift Cards
+              Redeem Codes
             </h2>
             <p className="apple-body mt-2 px-2 text-[15px] sm:mt-3 sm:text-[17px] md:text-[19px]">
               Exclusive offers and special codes. Check back soon for amazing
@@ -138,14 +138,11 @@ export default function FeaturedGiftCardGrid() {
   }
 
   return (
-    <section
-      id="featured-gift-cards"
-      className="flex flex-1 flex-col section-padding"
-    >
+    <section id="redeem-codes" className="flex flex-1 flex-col section-padding">
       <div className="container-wide">
         <div className="mb-8 text-center sm:mb-10">
           <h2 className="apple-display text-[var(--color-text)]">
-            Featured Gift Cards
+            Redeem Codes
           </h2>
           <p className="apple-body mt-2 px-2 text-[15px] sm:mt-3 sm:text-[17px] md:text-[19px]">
             Exclusive offers and special codes. Grab them before they're gone!
@@ -169,7 +166,7 @@ export default function FeaturedGiftCardGrid() {
               to="/search?type=featured"
               className="apple-link inline-flex items-center gap-1.5 text-[15px] font-medium"
             >
-              View All Featured Products
+              View All Redeem Codes
               <svg
                 className="h-4 w-4 shrink-0"
                 fill="none"
