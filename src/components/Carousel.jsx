@@ -17,8 +17,8 @@ const CAROUSEL_SLIDES = [
     subtitle: "Unlock Exclusive Savings",
     description:
       "Grab featured products with redeem codes and enjoy special discounts applied directly to the original price.",
-    cta: "View featured",
-    link: "/#featured-gift-cards",
+    cta: "View Codes",
+    link: "/#redeem-codes",
   },
   {
     id: 3,
