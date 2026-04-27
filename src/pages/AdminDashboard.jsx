@@ -1232,7 +1232,7 @@ export default function AdminDashboard() {
                         Orders by Status
                       </h3>
                       <div className="space-y-3">
-                        {["pending", "completed", "cancelled"].map((status) => {
+                        {["pending", "delivered", "cancelled"].map((status) => {
                           const allOrders = [...orders, ...featuredOrders];
                           const count = allOrders.filter(
                             (o) => o.status === status,
@@ -1241,11 +1241,12 @@ export default function AdminDashboard() {
                             allOrders.length > 0
                               ? Math.round((count / allOrders.length) * 100)
                               : 0;
+                          const displayStatus = status === "delivered" ? "completed" : status;
                           return (
                             <div key={status}>
                               <div className="flex justify-between text-[13px] mb-1">
                                 <span className="capitalize text-[var(--color-text-muted)]">
-                                  {status}
+                                  {displayStatus}
                                 </span>
                                 <span className="text-[var(--color-text)]">
                                   {count} ({percentage}%)
@@ -1253,7 +1254,7 @@ export default function AdminDashboard() {
                               </div>
                               <div className="h-2 bg-[var(--color-surface)] rounded-full overflow-hidden">
                                 <div
-                                  className={`h-full rounded-full ${status === "completed" ? "bg-green-500" : status === "cancelled" ? "bg-red-500" : "bg-yellow-500"}`}
+                                  className={`h-full rounded-full ${status === "delivered" ? "bg-green-500" : status === "cancelled" ? "bg-red-500" : "bg-yellow-500"}`}
                                   style={{ width: `${percentage}%` }}
                                 />
                               </div>
