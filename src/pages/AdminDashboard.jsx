@@ -1186,32 +1186,38 @@ export default function AdminDashboard() {
                       Recent Orders
                     </h3>
                     <div className="space-y-3">
-                      {orders.slice(0, 5).map((order) => (
-                        <div
-                          key={order._id}
-                          className="flex items-center justify-between py-2 border-b border-[var(--color-glass-border)] last:border-0"
-                        >
-                          <div>
-                            <p className="text-[14px] font-medium text-[var(--color-text)]">
-                              {order.orderItems?.[0]?.name || "Order"}
-                            </p>
-                            <p className="text-[12px] text-[var(--color-text-muted)]">
-                              {order.user?.name ||
-                                order.user?.email ||
-                                "Unknown"}
-                            </p>
+                      {(() => {
+                        const allOrders = [...orders, ...featuredOrders];
+                        const recentOrders = allOrders
+                          .sort((a, b) => b._id.localeCompare(a._id))
+                          .slice(0, 3);
+                        return recentOrders.map((order) => (
+                          <div
+                            key={order._id}
+                            className="flex items-center justify-between py-2 border-b border-[var(--color-glass-border)] last:border-0"
+                          >
+                            <div>
+                              <p className="text-[14px] font-medium text-[var(--color-text)]">
+                                {order.orderItems?.[0]?.name || "Order"}
+                              </p>
+                              <p className="text-[12px] text-[var(--color-text-muted)]">
+                                {order.user?.name ||
+                                  order.user?.email ||
+                                  "Unknown"}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-[14px] font-semibold text-[var(--color-accent)]">
+                                ₹{order.totalPrice?.toLocaleString()}
+                              </p>
+                              <p className="text-[12px] capitalize text-[var(--color-text-muted)]">
+                                {order.status || "pending"}
+                              </p>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-[14px] font-semibold text-[var(--color-accent)]">
-                              ₹{order.totalPrice?.toLocaleString()}
-                            </p>
-                            <p className="text-[12px] capitalize text-[var(--color-text-muted)]">
-                              {order.status || "pending"}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                      {orders.length === 0 && (
+                        ));
+                      })()}
+                      {orders.length === 0 && featuredOrders.length === 0 && (
                         <p className="text-[14px] text-[var(--color-text-muted)] text-center py-4">
                           No orders yet
                         </p>
@@ -1226,19 +1232,21 @@ export default function AdminDashboard() {
                         Orders by Status
                       </h3>
                       <div className="space-y-3">
-                        {["pending", "completed", "cancelled"].map((status) => {
-                          const count = orders.filter(
+                        {["pending", "delivered", "cancelled"].map((status) => {
+                          const allOrders = [...orders, ...featuredOrders];
+                          const count = allOrders.filter(
                             (o) => o.status === status,
                           ).length;
                           const percentage =
-                            orders.length > 0
-                              ? Math.round((count / orders.length) * 100)
+                            allOrders.length > 0
+                              ? Math.round((count / allOrders.length) * 100)
                               : 0;
+                          const displayStatus = status === "delivered" ? "completed" : status;
                           return (
                             <div key={status}>
                               <div className="flex justify-between text-[13px] mb-1">
                                 <span className="capitalize text-[var(--color-text-muted)]">
-                                  {status}
+                                  {displayStatus}
                                 </span>
                                 <span className="text-[var(--color-text)]">
                                   {count} ({percentage}%)
@@ -1246,7 +1254,7 @@ export default function AdminDashboard() {
                               </div>
                               <div className="h-2 bg-[var(--color-surface)] rounded-full overflow-hidden">
                                 <div
-                                  className={`h-full rounded-full ${status === "completed" ? "bg-green-500" : status === "cancelled" ? "bg-red-500" : "bg-yellow-500"}`}
+                                  className={`h-full rounded-full ${status === "delivered" ? "bg-green-500" : status === "cancelled" ? "bg-red-500" : "bg-yellow-500"}`}
                                   style={{ width: `${percentage}%` }}
                                 />
                               </div>
