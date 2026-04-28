@@ -11,6 +11,7 @@ import {
   HiGlobeAlt,
   HiChat,
 } from "react-icons/hi";
+import { FaLinkedinIn } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 
 const API_URL =
@@ -221,6 +222,24 @@ export default function ContactFormSection() {
                   </div>
                 </a>
 
+                <div className="w-full bg-sky-600/50 h-px my-1"></div>
+
+                {/* LinkedIn */}
+                <a
+                  href="https://www.linkedin.com/company/card-vaults/"
+                  className="group flex items-center gap-3 rounded-xl border border-gray-400/30 bg-[var(--color-surface)] p-3 text-[var(--color-text)] transition-all hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/5"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+                    <FaLinkedinIn className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="block text-sm font-medium">LinkedIn</span>
+                    <span className="text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)]">
+                      linkedin.com/company/card-vaults
+                    </span>
+                  </div>
+                </a>
+
                 {/* Email Link */}
                 <a
                   href="mailto:elayabarathiedison@gmail.com"
@@ -250,7 +269,7 @@ export default function ContactFormSection() {
                   <div className="flex-1">
                     <span className="block text-sm font-medium">WhatsApp</span>
                     <span className="text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)]">
-                      Chat with us on WhatsApp
+                      Ping us @ +91 98428 52121
                     </span>
                   </div>
                 </a>

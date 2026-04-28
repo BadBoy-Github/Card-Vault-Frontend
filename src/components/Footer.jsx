@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { HiMail, HiGlobe, HiChatAlt2 } from "react-icons/hi";
 import { FaWhatsapp } from "react-icons/fa";
+import { FaLinkedinIn } from "react-icons/fa";
 
 // Sitemap links data - easy to edit
 const sitemapLinks = [
@@ -20,6 +21,12 @@ const socialLinks = [
     name: "Portfolio",
     href: "https://elayabarathimv.vercel.app",
     icon: HiGlobe,
+    external: true,
+  },
+  {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/company/card-vaults",
+    icon: FaLinkedinIn,
     external: true,
   },
   {
